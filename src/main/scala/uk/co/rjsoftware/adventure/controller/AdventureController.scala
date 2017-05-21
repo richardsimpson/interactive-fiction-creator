@@ -49,6 +49,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     mainWindow.addListener(executeCommand)
 
+    // initialise the view
     say(this.adventure.getIntroduction)
     say("")
 
@@ -288,12 +289,12 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         }
     }
 
-    private def examine(item: Item): Unit = {
-        var found:Boolean = this.currentRoom.contains(item)
+    private def isItemInRoomOrPlayerInventory(item:Item) : Boolean = {
+        this.currentRoom.contains(item) || this.player.contains(item)
+    }
 
-        if (!found) {
-            found = this.player.contains(item)
-        }
+    private def examine(item: Item): Unit = {
+        var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
         if (!found) {
             say("Cannot find the " + item.getName)
@@ -325,11 +326,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     }
 
     private def turnOnOrOff(item:Item, turningOn:Boolean) : Unit = {
-        var found:Boolean = this.currentRoom.contains(item)
-
-        if (!found) {
-            found = this.player.contains(item)
-        }
+        var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
         if (!found) {
             say("Cannot find the " + item.getName)

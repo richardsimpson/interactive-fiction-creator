@@ -61,7 +61,6 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(adventure, mainWindow)
-        this.classUnderTest.init()
         this.player = this.classUnderTest.getPlayer
 
         try
