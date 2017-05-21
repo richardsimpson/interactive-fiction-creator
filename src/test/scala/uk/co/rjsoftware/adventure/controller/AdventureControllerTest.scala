@@ -32,7 +32,7 @@ class AdventureControllerTest extends FunSuite {
         bedroom.addItem(tv)
 
         // TODO: Currently, CustomVerb's require a Noun.  Allow custom verbs without nouns.
-        tv.addVerb(new CustomVerb(List("WATCH", "{noun}")),
+        tv.addVerb(new CustomVerb(List("WATCH {noun}")),
             "say('You watch the TV for a while.');"
         )
 

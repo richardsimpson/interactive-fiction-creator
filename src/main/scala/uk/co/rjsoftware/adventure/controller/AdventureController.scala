@@ -19,24 +19,19 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private var currentRoom : Room = null
     private val player : Player = new Player()
 
-    // TODO: Clean up Verb class, and make it's constructor simpler
-
     private var verbs : List[Verb] = Nil
-    verbs ::= new Verb(List("NORTH"), List(List("N")), false, false)
-    verbs ::= new Verb(List("EAST"), List(List("E")), false, false)
-    verbs ::= new Verb(List("SOUTH"), List(List("S")), false, false)
-    verbs ::= new Verb(List("WEST"), List(List("W")), false, false)
-    verbs ::= new Verb(List("LOOK"), List(List("L")), false, false)
-    verbs ::= new Verb(List("EXITS"), false, false)
-    verbs ::= new Verb(List("EXAMINE", "{noun}"), List(List("EXAM", "{noun}"), List("X", "{noun}")), false, true)
-    verbs ::= new Verb(List("GET", "{noun}"), List(List("TAKE", "{noun}")), false, true)
-    verbs ::= new Verb(List("DROP", "{noun}"), false, true)
-    verbs ::= new Verb(List("INVENTORY"), List(List("INV"), List("I")), false, false)
-
-    // TODO: Remove 'preposition required' from Verb class
-
-    verbs ::= new Verb(List("TURN", "ON", "{noun}"), true, true)
-    verbs ::= new Verb(List("TURN", "OFF", "{noun}"), true, true)
+    verbs ::= new Verb(List("NORTH", "N"))
+    verbs ::= new Verb(List("EAST", "E"))
+    verbs ::= new Verb(List("SOUTH", "S"))
+    verbs ::= new Verb(List("WEST", "W"))
+    verbs ::= new Verb(List("LOOK", "L"))
+    verbs ::= new Verb(List("EXITS"))
+    verbs ::= new Verb(List("EXAMINE {noun}", "EXAM {noun}", "X {noun}"))
+    verbs ::= new Verb(List("GET {noun}", "TAKE {noun}"))
+    verbs ::= new Verb(List("DROP {noun}"))
+    verbs ::= new Verb(List("INVENTORY", "INV", "I"))
+    verbs ::= new Verb(List("TURN ON {noun}"))
+    verbs ::= new Verb(List("TURN OFF {noun}"))
 
     // add in any custom verbs
     for (room <- adventure.getRooms) {
@@ -90,34 +85,39 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     private def newDetermineVerb(inputWords:Array[String]): VerbNoun = {
 
-        @tailrec
-        def iterateVerbWords(inputWords:Array[String], verbWords:List[String], result:VerbNoun): VerbNoun = {
-            if (verbWords == Nil) {
-                return result
-            }
+        def iterateVerbWords(inputWords:Array[String], verbWords:String, result:VerbNoun): VerbNoun = {
 
-            if (inputWords.length == 0) {
-                return null
-            }
+            @tailrec
+            def doIterateVerbWords(inputWords:Array[String], verbWords:Array[String], result:VerbNoun): VerbNoun = {
+                if (verbWords.length == 0) {
+                    return result
+                }
 
-            // TODO: Allow for additional words, so 'GET THE TV' would be allowed
-
-            if (verbWords.head.equals("{noun}")) {
-                val noun = determineNoun(this.nouns.values, inputWords.head)
-                if (noun == null) {
+                if (inputWords.length == 0) {
                     return null
                 }
-                else result.noun = noun
-            }
-            else if (!verbWords.head.equals(inputWords.head)) {
-                return null
+
+                // TODO: Allow for additional words, so 'GET THE TV' would be allowed
+
+                if (verbWords.head.equals("{noun}")) {
+                    val noun = determineNoun(this.nouns.values, inputWords.head)
+                    if (noun == null) {
+                        return null
+                    }
+                    else result.noun = noun
+                }
+                else if (!verbWords.head.equals(inputWords.head)) {
+                    return null
+                }
+
+                doIterateVerbWords(inputWords.tail, verbWords.tail, result)
             }
 
-            iterateVerbWords(inputWords.tail, verbWords.tail, result)
+            doIterateVerbWords(inputWords, verbWords.split(" "), result)
         }
 
         @tailrec
-        def iterateVerbSynonymns(inputWords:Array[String], verbSynonymns:List[List[String]], result:VerbNoun): VerbNoun = {
+        def iterateVerbSynonymns(inputWords:Array[String], verbSynonymns:List[String], result:VerbNoun): VerbNoun = {
             if (verbSynonymns == Nil) {
                 return null
             }
@@ -176,42 +176,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
         // TODO: HELP
         // TODO: GET ALL / TAKE ALL
-
-//        val verbLocation : VerbLocation = determineVerb(words)
-//        if (verbLocation == null) {
-//            say("I don't understand what you are trying to do.")
-//            return
-//        }
-//
-//        var nextWordIndex = verbLocation.location+1
-//        var verb = verbLocation.verb.getVerb
-//
-//        if (verbLocation.verb.isPrepositionRequired) {
-//            verb = verb + " " + words(nextWordIndex)
-//            nextWordIndex = nextWordIndex + 1
-//        }
-//
-//        if (!verbLocation.verb.isNounRequired) {
-//            executeCommand(verb, null)
-//            return
-//        }
-//
-//        // assuming here that the noun immediately follows the verb (or the preposition)
-//        var noun : Item = null
-//        if (words.length > nextWordIndex) {
-//            noun = determineNoun(this.nouns.values, words(nextWordIndex))
-//        }
-//
-//        if (noun == null) {
-//            say(verb + " what?")
-//            return
-//        }
-//
-//        // scala's preferred equivalent of 'instanceOf' is to use pattern matching
-//        verbLocation.verb match {
-//            case customVerb: CustomVerb => executeCustomVerb(customVerb, noun)
-//            case _ => executeCommand(verb, noun)
-//        }
 
         val verbNoun:VerbNoun = newDetermineVerb(words)
         if (verbNoun == null) {
@@ -383,12 +347,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             }
             else if (turningOn) {
                 item.switchOn()
-                // TODO: now, how to create a custom verb, such as 'watch'?
-                // scripts need to be attached to verbs
-                // items can have arbitrary verbs, as well as standard ones.
-                // check for 'standard' verbs that don't require an object (NORTH, INV, etc), then check the
-                // verb against the object, which can have custom (or standard) verbs associated with it, together
-                // with custom scripts.
             }
             else {
                 item.switchOff()
@@ -436,8 +394,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
 
 }
-
-private class VerbLocation(val verb:Verb, val location:Int)
 
 private class VerbNoun(var verb:Verb, var noun:Item)
 
