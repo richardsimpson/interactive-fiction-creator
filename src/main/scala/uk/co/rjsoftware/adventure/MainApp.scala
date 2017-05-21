@@ -59,18 +59,16 @@ class MainApp extends Application {
         loader.setLocation(getClass.getResource("view/mainwindow.fxml"))
         val rootLayout:BorderPane = loader.load()
 
-        val mainWindowView:MainWindowView = loader.getController()
-
-        val adventureController:AdventureController = new AdventureController(adventure, mainWindowView)
-
         // Show the scene containing the root layout
         val scene:Scene = new Scene(rootLayout)
         primaryStage.setScene(scene)
         primaryStage.show()
 
         // initialise the view after showing the scene, as then the request to focus the input box will work
+        val mainWindowView:MainWindowView = loader.getController()
         mainWindowView.init(this.adventure)
-        adventureController.init()
+
+        val adventureController:AdventureController = new AdventureController(adventure, mainWindowView)
     }
 
 }

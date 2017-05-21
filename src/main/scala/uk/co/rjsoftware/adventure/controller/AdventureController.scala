@@ -15,7 +15,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private val manager = new ScriptEngineManager
     private val engine = manager.getEngineByName("nashorn")
 
-
     private var currentRoom : Room = null
     private val player : Player = new Player()
 
@@ -50,16 +49,13 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     mainWindow.addListener(executeCommand)
 
-    // TODO: See if you can move init into the constructor
-    def init() : Unit = {
-        say(this.adventure.getIntroduction)
-        say("")
+    say(this.adventure.getIntroduction)
+    say("")
 
-        this.currentRoom = this.adventure.getStartRoom
+    this.currentRoom = this.adventure.getStartRoom
 
-        look()
-        exits()
-    }
+    look()
+    exits()
 
     // FOR TESTING ONLY
     def getCurrentRoom : Room = {
