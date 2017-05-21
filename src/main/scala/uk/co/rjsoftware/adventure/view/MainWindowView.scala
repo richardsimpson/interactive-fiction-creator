@@ -2,12 +2,12 @@ package uk.co.rjsoftware.adventure.view
 
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, TextArea, TextField}
-import javafx.scene.input.KeyCode
+import javafx.scene.input.{KeyCode, KeyEvent}
 
 import uk.co.rjsoftware.adventure.controller.AdventureController
 import uk.co.rjsoftware.adventure.model._
-
 import java.util
+import javafx.event.{ActionEvent, EventHandler}
 
 /**
   * Created by richardsimpson on 15/05/2017.
@@ -28,13 +28,18 @@ class MainWindowView extends MainWindow {
     def init(adventure:Adventure) : Unit = {
         this.outputTextArea.setText("")
 
-        inputTextField.setOnKeyPressed(event => {
-            if (event.getCode == KeyCode.ENTER) {
+        inputTextField.setOnKeyPressed(new EventHandler[KeyEvent] {
+            override def handle(event: KeyEvent): Unit = {
+                if (event.getCode == KeyCode.ENTER) {
+                    submitCommand()
+                }
+            }
+        })
+        enterButton.setOnAction(new EventHandler[ActionEvent](){
+            override def handle(event: ActionEvent): Unit = {
                 submitCommand()
             }
         })
-
-        enterButton.setOnAction(_ => submitCommand())
         inputTextField.requestFocus()
     }
 
