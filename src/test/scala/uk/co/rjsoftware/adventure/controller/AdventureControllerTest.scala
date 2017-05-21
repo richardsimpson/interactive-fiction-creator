@@ -31,7 +31,8 @@ class AdventureControllerTest extends FunSuite {
         bedroom.addItem(lamp)
         bedroom.addItem(tv)
 
-        tv.addVerb(new CustomVerb("WATCH"),
+        // TODO: Currently, CustomVerb's require a Noun.  Allow custom verbs without nouns.
+        tv.addVerb(new CustomVerb(List("WATCH", "{noun}")),
             "say('You watch the TV for a while.');"
         )
 
@@ -155,7 +156,7 @@ class AdventureControllerTest extends FunSuite {
 
     test("verb DROP") {
         mainWindow.fireCommand(new CommandEvent("west"))
-        mainWindow.fireCommand(new CommandEvent("take lamp"))
+        mainWindow.fireCommand(new CommandEvent("get lamp"))
         mainWindow.fireCommand(new CommandEvent("east"))
         mainWindow.fireCommand(new CommandEvent("drop lamp"))
 

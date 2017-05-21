@@ -3,10 +3,10 @@ package uk.co.rjsoftware.adventure.model
 /**
   * Created by richardsimpson on 20/05/2017.
   */
-class CustomVerb(private val verb:String,
-                 private var synonyms:List[String]) extends Verb(verb, synonyms, prepositionRequired=false, nounRequired=true) {
+class CustomVerb(private val verbWords:List[String],
+                 private var synonyms:List[List[String]]) extends Verb(verbWords, synonyms, prepositionRequired=false, nounRequired=true) {
 
-    def this(verb:String) {
-        this(verb, Nil)
+    def this(verbWords:List[String]) {
+        this(verbWords, Nil)
     }
 }

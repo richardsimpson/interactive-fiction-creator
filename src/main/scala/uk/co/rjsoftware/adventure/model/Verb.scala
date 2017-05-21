@@ -4,21 +4,25 @@ package uk.co.rjsoftware.adventure.model
   * Created by richardsimpson on 20/05/2017.
   */
 // TODO: Does this class change the value of synonyms in the calling code?
-class Verb(private val verb:String,
-           private var synonyms:List[String],
+class Verb(private val verbWords:List[String],
+           private var synonyms:List[List[String]],
            private val prepositionRequired:Boolean,
            private val nounRequired:Boolean) {
 
-    this.synonyms ::= this.verb
+    this.synonyms ::= this.verbWords
 
-    def this(verb:String, prepositionRequired:Boolean, nounRequired:Boolean) {
-        this(verb, Nil, prepositionRequired, nounRequired)
+    def this(verbWords:List[String], prepositionRequired:Boolean, nounRequired:Boolean) {
+        this(verbWords, Nil, prepositionRequired, nounRequired)
     }
     def getVerb : String = {
-        this.verb
+        this.verbWords.mkString(" ")
     }
 
-    def getSynonyms : List[String] = {
+    def getVerbWords : List[String] = {
+        this.verbWords
+    }
+
+    def getSynonyms : List[List[String]] = {
         this.synonyms
     }
 

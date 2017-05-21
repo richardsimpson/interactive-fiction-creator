@@ -27,7 +27,7 @@ class MainApp extends Application {
     bedroom.addItem(lamp)
 
     val tv:Item = new Item("TV", "A 28\" TV.")
-    tv.addVerb(new CustomVerb("WATCH"),
+    tv.addVerb(new CustomVerb(List("WATCH")),
                 "if (isSwitchedOn('tv')) {" +
                 "    say('You watch the TV for a while.  It\\'s showing a Western of some kind.');" +
                 "}" +
