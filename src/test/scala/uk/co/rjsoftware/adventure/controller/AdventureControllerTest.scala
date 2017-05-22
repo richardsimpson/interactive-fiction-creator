@@ -260,6 +260,14 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You watch the TV for a while.")
     }
 
+    test("additional words between verb and noun: GET THE {noun}") {
+        mainWindow.fireCommand(new CommandEvent("west"))
+        mainWindow.fireCommand(new CommandEvent("get the lamp"))
+        assert(!bedroom.contains(lamp))
+        assert(player.contains(lamp))
+    }
+
+
     // TODO Add a test for the script functions isSwitchedOn and isSwitchedOff
     // TODO: Add test where two object have the same verb defined
 }

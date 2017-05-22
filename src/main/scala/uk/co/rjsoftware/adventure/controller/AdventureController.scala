@@ -79,19 +79,35 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         this.player
     }
 
-    private def determineNoun(nouns:Iterable[Item], inputWord:String) : Item = {
-        if (nouns == Nil) {
-            return null
-        }
-
-        if (nouns.head.getName.toUpperCase == inputWord) {
-            return nouns.head
-        }
-
-        determineNoun(nouns.tail, inputWord)
-    }
-
     private def newDetermineVerb(inputWords:Array[String]): VerbNoun = {
+
+        @tailrec
+        def determineNoun(nouns:Iterable[Item], inputWord:String) : Item = {
+            if (nouns == Nil) {
+                return null
+            }
+
+            if (nouns.head.getName.toUpperCase == inputWord) {
+                return nouns.head
+            }
+
+            determineNoun(nouns.tail, inputWord)
+        }
+
+        @tailrec
+        def iterateInputToFindNoun(inputWords:Array[String]) : Item = {
+            if (inputWords.length == 0) {
+                return null
+            }
+
+            val item:Item = determineNoun(this.nouns.values, inputWords.head)
+
+            if (item != null) {
+                return item
+            }
+
+            iterateInputToFindNoun(inputWords.tail)
+        }
 
         def iterateVerbWords(inputWords:Array[String], verbWords:String, result:VerbNoun): VerbNoun = {
 
@@ -105,10 +121,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
                     return null
                 }
 
-                // TODO: Allow for additional words, so 'GET THE TV' would be allowed
-
                 if (verbWords.head.equals("{noun}")) {
-                    val noun = determineNoun(this.nouns.values, inputWords.head)
+                    val noun = iterateInputToFindNoun(inputWords)
                     if (noun == null) {
                         return null
                     }
