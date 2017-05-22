@@ -32,10 +32,7 @@ class AdventureControllerTest extends FunSuite {
         bedroom.addItem(tv)
 
         // TODO: Currently, CustomVerb's require a Noun.  Allow custom verbs without nouns.
-        tv.addVerb(new CustomVerb(List("WATCH {noun}")),
-            "say('You watch the TV for a while.');"
-        )
-
+        tv.addVerb(new CustomVerb(List("WATCH {noun}"), "say('You watch the TV for a while.');"))
 
         //          bathroom
         //             |
@@ -70,90 +67,90 @@ class AdventureControllerTest extends FunSuite {
         }
     }
 
-    test("verb NORTH") {
+    test("verb: NORTH") {
         mainWindow.fireCommand(new CommandEvent("north"))
         assert(this.classUnderTest.getCurrentRoom == bathroom)
     }
 
-    test("verb SOUTH") {
+    test("verb: SOUTH") {
         mainWindow.fireCommand(new CommandEvent("south"))
         assert(this.classUnderTest.getCurrentRoom == bedroom2)
     }
 
-    test("verb EAST") {
+    test("verb: EAST") {
         mainWindow.fireCommand(new CommandEvent("east"))
         assert(this.classUnderTest.getCurrentRoom == veranda)
     }
 
-    test("verb WEST") {
+    test("verb: WEST") {
         mainWindow.fireCommand(new CommandEvent("west"))
         assert(this.classUnderTest.getCurrentRoom == bedroom)
     }
 
-    test("verb N") {
+    test("verb: N") {
         mainWindow.fireCommand(new CommandEvent("n"))
         assert(this.classUnderTest.getCurrentRoom == bathroom)
     }
 
-    test("verb S") {
+    test("verb: S") {
         mainWindow.fireCommand(new CommandEvent("s"))
         assert(this.classUnderTest.getCurrentRoom == bedroom2)
     }
 
-    test("verb E") {
+    test("verb: E") {
         mainWindow.fireCommand(new CommandEvent("e"))
         assert(this.classUnderTest.getCurrentRoom == veranda)
     }
 
-    test("verb W") {
+    test("verb: W") {
         mainWindow.fireCommand(new CommandEvent("w"))
         assert(this.classUnderTest.getCurrentRoom == bedroom)
     }
 
-    test("verb LOOK") {
+    test("verb: LOOK") {
         mainWindow.fireCommand(new CommandEvent("look"))
         this.mainWindow.getLastMessage should equal (landing.getDescription)
     }
 
-    test("verb EXITS") {
+    test("verb: EXITS") {
         mainWindow.fireCommand(new CommandEvent("exits"))
         this.mainWindow.getLastMessage should equal ("From here you can go North, South, East, West, ")
 
     }
 
-    test("verb EXAMINE") {
+    test("verb: EXAMINE {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("examine lamp"))
         this.mainWindow.getLastMessage should equal (lamp.getDescription)
     }
 
-    test("verb EXAM") {
+    test("verb: EXAM {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("exam lamp"))
         this.mainWindow.getLastMessage should equal (lamp.getDescription)
     }
 
-    test("verb X") {
+    test("verb: X {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("x lamp"))
         this.mainWindow.getLastMessage should equal (lamp.getDescription)
     }
 
-    test("verb GET") {
+    test("verb: GET {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("get lamp"))
         assert(!bedroom.contains(lamp))
         assert(player.contains(lamp))
     }
 
-    test("verb TAKE") {
+    test("verb: TAKE {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("take lamp"))
         assert(!bedroom.contains(lamp))
         assert(player.contains(lamp))
     }
 
-    test("verb DROP") {
+    test("verb: DROP {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("get lamp"))
         mainWindow.fireCommand(new CommandEvent("east"))
@@ -164,7 +161,7 @@ class AdventureControllerTest extends FunSuite {
         assert(!player.contains(lamp))
     }
 
-    test("verb INVENTORY when empty") {
+    test("verb: INVENTORY (when empty)") {
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("inventory"))
@@ -176,7 +173,7 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("Nothing")
     }
 
-    test("verb INVENTORY when not empty") {
+    test("verb: INVENTORY (when not empty)") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("get lamp"))
 
@@ -191,7 +188,7 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("lamp")
     }
 
-    test("verb INVENTORY when contains multiple items") {
+    test("verb: INVENTORY (when contains multiple items)") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("get lamp"))
         mainWindow.fireCommand(new CommandEvent("get tv"))
@@ -208,7 +205,7 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("lamp")
     }
 
-    test("verb INV when empty") {
+    test("verb: INV (when empty)") {
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("inv"))
@@ -220,7 +217,7 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("Nothing")
     }
 
-    test("verb I when empty") {
+    test("verb: I (when empty)") {
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("i"))
@@ -232,14 +229,14 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("Nothing")
     }
 
-    test("verb TURN (ON)") {
+    test("verb: TURN ON {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("turn on lamp"))
 
         assert(this.bedroom.getItem(lamp.getName).get.isOn)
     }
 
-    test("verb TURN (OFF)") {
+    test("verb: TURN OFF {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("turn on lamp"))
         mainWindow.fireCommand(new CommandEvent("turn off lamp"))
@@ -247,7 +244,7 @@ class AdventureControllerTest extends FunSuite {
         assert(!this.bedroom.getItem(lamp.getName).get.isOn)
     }
 
-    test("custom verb, using script function SAY") {
+    test("custom verb: WATCH {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
 
         mainWindow.clearMessages()

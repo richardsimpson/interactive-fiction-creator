@@ -32,12 +32,21 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     verbs ::= new Verb(List("TURN ON {noun}"))
     verbs ::= new Verb(List("TURN OFF {noun}"))
 
+    // TODO: Add verbs:
+    //          READ, SEARCH, TASTE, WEAR, SWITCH ON/OFF, LOCK, UNLOCK, EAT, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
+    //          SIT ON / SIT UPON / SIT DOWN ON / SIT DOWN UPON, HIT, PUSH, PULL, THROW, TOUCH, KILL, TIE, UNTIE, CLIMB,
+    //          SPEAK TO / SPEAK / TALK TO / TALK, LISTEN TO, MOVE, SMELL / SNIFF, KNOCK, SHOW, BUY,
+    //       Add synonyms:
+    //          SWITCH {noun} ON/OFF
+    //          TURN {noun} ON/OFF
+
+    // TODO: Allow verbs to be associated with Rooms?  Like WEST, LOOK, etc?
+    // TODO: Allow custom verb to override a standard one for a specific room or item.
+
     // add in any custom verbs
     for (room <- adventure.getRooms) {
         for (item <- room.getItems.values) {
-            for (customVerb <- item.getVerbs.keys) {
-                verbs ::= customVerb
-            }
+            verbs :::= item.getVerbs
         }
     }
 
@@ -188,12 +197,12 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         }
     }
 
-    private def executeCustomVerb(verb:CustomVerb, item:Item): Unit = {
-        var found:Boolean = this.currentRoom.contains(item)
+    private def isItemInRoomOrPlayerInventory(item:Item) : Boolean = {
+        this.currentRoom.contains(item) || this.player.contains(item)
+    }
 
-        if (!found) {
-            found = this.player.contains(item)
-        }
+    private def executeCustomVerb(verb:CustomVerb, item:Item): Unit = {
+        var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
         if (!found) {
             say("Cannot find the " + item.getName)
@@ -202,9 +211,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
         if (!item.getVerbs.contains(verb)) {
             say("You cannot do that with the " + item.getName)
+            return
         }
-
-        var script:Option[String] = item.getVerbs.get(verb)
 
         engine.put("controller", new AdventureControllerWrapper(this))
         engine.eval(
@@ -212,7 +220,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             "function isSwitchedOn(itemName) { return controller.isSwitchedOn(itemName) }\n" +
             "function isSwitchedOff(itemName) { return controller.isSwitchedOff(itemName) }\n" +
             "\n" +
-            script.get)
+            verb.getScript)
     }
 
     private def executeCommand(verb:String, item:Item): Unit = {
@@ -287,10 +295,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             this.currentRoom.addItem(item)
             say("You drop the " + item.getName)
         }
-    }
-
-    private def isItemInRoomOrPlayerInventory(item:Item) : Boolean = {
-        this.currentRoom.contains(item) || this.player.contains(item)
     }
 
     private def examine(item: Item): Unit = {
