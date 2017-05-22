@@ -42,7 +42,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     // TODO: Allow verbs to be associated with Rooms?  Like WEST, LOOK, etc?
     // TODO: Allow custom verb to override a standard one for a specific room or item.
-
+    // TODO: Support synonyms for items: e.g. Newspaper and Paper
     // add in any custom verbs
     for (room <- adventure.getRooms) {
         for (item <- room.getItems.values) {
@@ -338,33 +338,42 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         }
     }
 
-    // TODO: Provide feedback when turning on an item
     private def turnOn(item: Item) : Unit = {
-        turnOnOrOff(item, turningOn = true)
-    }
-
-    private def turnOff(item: Item) : Unit = {
-        turnOnOrOff(item, turningOn = false)
-    }
-
-    private def turnOnOrOff(item:Item, turningOn:Boolean) : Unit = {
         var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
         if (!found) {
             say("Cannot find the " + item.getName)
         }
+        else if (!item.isSwitchable) {
+            say("You can't turn on the " + item.getName)
+        }
         else {
-            if (turningOn && item.isOn) {
+            if (item.isOn) {
                 say(item.getName + " is already on")
             }
-            if (!turningOn && item.isOff) {
-                say(item.getName + " is already off")
-            }
-            else if (turningOn) {
+            else {
                 item.switchOn()
+                say(item.getSwitchOnMessage.getOrElse("You turn on the " + item.getName))
+            }
+        }
+    }
+
+    private def turnOff(item: Item) : Unit = {
+        var found:Boolean = isItemInRoomOrPlayerInventory(item)
+
+        if (!found) {
+            say("Cannot find the " + item.getName)
+        }
+        else if (!item.isSwitchable) {
+            say("You can't turn off the " + item.getName)
+        }
+        else {
+            if (item.isOff) {
+                say(item.getName + " is already off")
             }
             else {
                 item.switchOff()
+                say(item.getSwitchOffMessage.getOrElse("You turn off the " + item.getName))
             }
         }
     }

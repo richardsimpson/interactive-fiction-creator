@@ -21,8 +21,11 @@ class AdventureControllerTest extends FunSuite {
     private val bathroom:Room = new Room("bathroom", "This is the en-suite bathroom.")
     private val veranda:Room = new Room("veranda", "This is the veranda.")
 
-    private val lamp:Item = new Item("lamp", "A bedside lamp. with a simple on/off switch")
-    private val tv:Item = new Item("TV", "A 28\" TV.")
+    private val lamp:Item = new Item("lamp", "A bedside lamp. with a simple on/off switch",
+        switchable = true)
+    private val tv:Item = new Item("TV", "A 28\" TV.",
+        switchable = true, "the TV flickers into life", "the TV is now off")
+    private val newspaper:Item = new Item("newspaper", "The Daily Bugle", switchable = false)
 
     override def withFixture(test: NoArgTest) = {
         // Shared setup (run at beginning of each test)
@@ -30,6 +33,7 @@ class AdventureControllerTest extends FunSuite {
 
         bedroom.addItem(lamp)
         bedroom.addItem(tv)
+        bedroom.addItem(newspaper)
 
         // TODO: Currently, CustomVerb's require a Noun.  Allow custom verbs without nouns.
         tv.addVerb(new CustomVerb(List("WATCH {noun}")),
@@ -234,17 +238,94 @@ class AdventureControllerTest extends FunSuite {
 
     test("verb: TURN ON {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
+
+        mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent("turn on lamp"))
 
         assert(this.bedroom.getItem(lamp.getName).get.isOn)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("You turn on the lamp")
+    }
+
+    test("verb: TURN ON {noun} (when the item has a custom message defined for switching on") {
+        mainWindow.fireCommand(new CommandEvent("west"))
+
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("turn on tv"))
+
+        assert(this.bedroom.getItem(lamp.getName).get.isOn)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("the TV flickers into life")
+    }
+
+    test("verb: TURN ON {noun} (when the item is not switchable)") {
+        mainWindow.fireCommand(new CommandEvent("west"))
+
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("turn on newspaper"))
+
+        assert(this.bedroom.getItem(newspaper.getName).get.isOff)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("You can't turn on the newspaper")
     }
 
     test("verb: TURN OFF {noun}") {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("turn on lamp"))
+
+        mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent("turn off lamp"))
 
         assert(!this.bedroom.getItem(lamp.getName).get.isOn)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("You turn off the lamp")
+    }
+
+    test("verb: TURN OFF {noun} (when the item has a custom message defined for switching off") {
+        mainWindow.fireCommand(new CommandEvent("west"))
+        mainWindow.fireCommand(new CommandEvent("turn on tv"))
+
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("turn off tv"))
+
+        assert(!this.bedroom.getItem(lamp.getName).get.isOn)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("the TV is now off")
+    }
+
+    test("verb: TURN OFF {noun} (when the item is not switchable)") {
+        mainWindow.fireCommand(new CommandEvent("west"))
+
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("turn off newspaper"))
+
+        assert(this.bedroom.getItem(newspaper.getName).get.isOff)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("You can't turn off the newspaper")
     }
 
     test("custom verb: WATCH {noun}") {
