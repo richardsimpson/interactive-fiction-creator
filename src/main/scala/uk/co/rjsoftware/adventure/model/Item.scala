@@ -12,7 +12,7 @@ class Item(private var name:String, private var description:String) {
     //          Use/Give...
     //          Player...
 
-    private var customVerbs:List[CustomVerb] = Nil
+    private var customVerbs:Map[CustomVerb, String] = Map[CustomVerb, String]()
 
     //var switchable:Boolean = false
     private var on:Boolean = false
@@ -33,11 +33,11 @@ class Item(private var name:String, private var description:String) {
         this.description = description
     }
 
-    def addVerb(verb:CustomVerb) : Unit = {
-        this.customVerbs ::= verb
+    def addVerb(verb:CustomVerb, script:String) : Unit = {
+        this.customVerbs += (verb -> script)
     }
 
-    def getVerbs : List[CustomVerb] = {
+    def getVerbs : Map[CustomVerb, String] = {
         this.customVerbs
     }
 

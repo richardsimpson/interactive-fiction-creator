@@ -46,7 +46,9 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     // add in any custom verbs
     for (room <- adventure.getRooms) {
         for (item <- room.getItems.values) {
-            verbs :::= item.getVerbs
+            for (customVerb <- item.getVerbs.keys) {
+                verbs ::= customVerb
+            }
         }
     }
 
@@ -214,13 +216,15 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             return
         }
 
+        var script:Option[String] = item.getVerbs.get(verb)
+
         engine.put("controller", new AdventureControllerWrapper(this))
         engine.eval(
             "function say(message) { controller.say(message) }\n" +
             "function isSwitchedOn(itemName) { return controller.isSwitchedOn(itemName) }\n" +
             "function isSwitchedOff(itemName) { return controller.isSwitchedOff(itemName) }\n" +
             "\n" +
-            verb.getScript)
+            script.get)
     }
 
     private def executeCommand(verb:String, item:Item): Unit = {
