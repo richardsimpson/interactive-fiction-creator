@@ -45,13 +45,29 @@ class AdventureControllerTest extends FunSuite {
     diningRoom.addExit(Direction.WEST, livingRoom)
     garden.addExit(Direction.NORTH, livingRoom)
 
+    val verbs:Map[String, Verb] = StandardVerbs.getVerbs.map(
+        verb => (verb.getVerb, verb)
+    ).toMap
+
     override def withFixture(test: NoArgTest) = {
         // Shared setup (run at beginning of each test)
+        setup()
+        try
+            test()
+        finally {
+            // Shared cleanup (run at end of each test)
+        }
+    }
+
+    private def setup(): Unit = {
         val adventure:Adventure = new Adventure("Welcome to the Adventure!")
 
         livingRoom.addItem(lamp)
         livingRoom.addItem(tv)
         livingRoom.addItem(newspaper)
+
+        lamp.switchOff()
+        tv.switchOff()
 
         adventure.addRoom(study)
         adventure.addRoom(livingRoom)
@@ -64,56 +80,65 @@ class AdventureControllerTest extends FunSuite {
         mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(adventure, mainWindow)
         this.player = this.classUnderTest.getPlayer
-
-        try
-            test()
-        finally {
-            // Shared cleanup (run at end of each test)
-        }
     }
 
     test("verb: NORTH") {
-        mainWindow.fireCommand(new CommandEvent("north"))
+        for (verbString <- this.verbs("NORTH").getSynonyms) {
+            setup()
+            testNorth(verbString)
+        }
+    }
+
+    private def testNorth(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
         assert(this.classUnderTest.getCurrentRoom == kitchen)
     }
 
     test("verb: SOUTH") {
-        mainWindow.fireCommand(new CommandEvent("south"))
+        for (verbString <- this.verbs("SOUTH").getSynonyms) {
+            setup()
+            testSouth(verbString)
+        }
+    }
+
+    private def testSouth(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
         assert(this.classUnderTest.getCurrentRoom == garden)
     }
 
     test("verb: EAST") {
-        mainWindow.fireCommand(new CommandEvent("east"))
+        for (verbString <- this.verbs("EAST").getSynonyms) {
+            setup()
+            testEast(verbString)
+        }
+    }
+
+    private def testEast(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
         assert(this.classUnderTest.getCurrentRoom == diningRoom)
     }
 
     test("verb: WEST") {
-        mainWindow.fireCommand(new CommandEvent("west"))
-        assert(this.classUnderTest.getCurrentRoom == study)
+        for (verbString <- this.verbs("WEST").getSynonyms) {
+            setup()
+            testWest(verbString)
+        }
     }
 
-    test("verb: N") {
-        mainWindow.fireCommand(new CommandEvent("n"))
-        assert(this.classUnderTest.getCurrentRoom == kitchen)
-    }
-
-    test("verb: S") {
-        mainWindow.fireCommand(new CommandEvent("s"))
-        assert(this.classUnderTest.getCurrentRoom == garden)
-    }
-
-    test("verb: E") {
-        mainWindow.fireCommand(new CommandEvent("e"))
-        assert(this.classUnderTest.getCurrentRoom == diningRoom)
-    }
-
-    test("verb: W") {
-        mainWindow.fireCommand(new CommandEvent("w"))
+    private def testWest(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
         assert(this.classUnderTest.getCurrentRoom == study)
     }
 
     test("verb: LOOK") {
-        mainWindow.fireCommand(new CommandEvent("look"))
+        for (verbString <- this.verbs("LOOK").getSynonyms) {
+            setup()
+            testLook(verbString)
+        }
+    }
+
+    private def testLook(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
         this.mainWindow.getLastMessage should equal (livingRoom.getDescription)
     }
 
@@ -124,28 +149,26 @@ class AdventureControllerTest extends FunSuite {
     }
 
     test("verb: EXAMINE {noun}") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            testExamineNoun(verbString.replaceAll("\\{noun\\}", "lamp"))
+        }
+    }
+
+    private def testExamineNoun(command:String) {
         mainWindow.fireCommand(new CommandEvent("examine lamp"))
         this.mainWindow.getLastMessage should equal (lamp.getDescription)
     }
 
-    test("verb: EXAM {noun}") {
-        mainWindow.fireCommand(new CommandEvent("exam lamp"))
-        this.mainWindow.getLastMessage should equal (lamp.getDescription)
-    }
-
-    test("verb: X {noun}") {
-        mainWindow.fireCommand(new CommandEvent("x lamp"))
-        this.mainWindow.getLastMessage should equal (lamp.getDescription)
-    }
-
     test("verb: GET {noun}") {
-        mainWindow.fireCommand(new CommandEvent("get lamp"))
-        assert(!livingRoom.contains(lamp))
-        assert(player.contains(lamp))
+        for (verbString <- this.verbs("GET {noun}").getSynonyms) {
+            setup()
+            testGetNoun(verbString.replaceAll("\\{noun\\}", "lamp"))
+        }
     }
 
-    test("verb: TAKE {noun}") {
-        mainWindow.fireCommand(new CommandEvent("take lamp"))
+    private def testGetNoun(command:String) {
+        mainWindow.fireCommand(new CommandEvent("get lamp"))
         assert(!livingRoom.contains(lamp))
         assert(player.contains(lamp))
     }
@@ -161,9 +184,16 @@ class AdventureControllerTest extends FunSuite {
     }
 
     test("verb: INVENTORY (when empty)") {
+        for (verbString <- this.verbs("INVENTORY").getSynonyms) {
+            setup()
+            testInventory_WhenEmpty(verbString)
+        }
+    }
+
+    private def testInventory_WhenEmpty(command:String) : Unit = {
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("inventory"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         val messages:List[String] = this.mainWindow.getMessages
 
@@ -173,11 +203,18 @@ class AdventureControllerTest extends FunSuite {
     }
 
     test("verb: INVENTORY (when not empty)") {
+        for (verbString <- this.verbs("INVENTORY").getSynonyms) {
+            setup()
+            testInventory_WhenNotEmpty(verbString)
+        }
+    }
+
+    private def testInventory_WhenNotEmpty(command:String) {
         mainWindow.fireCommand(new CommandEvent("get lamp"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("inventory"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         val messages:List[String] = this.mainWindow.getMessages
 
@@ -187,12 +224,19 @@ class AdventureControllerTest extends FunSuite {
     }
 
     test("verb: INVENTORY (when contains multiple items)") {
+        for (verbString <- this.verbs("INVENTORY").getSynonyms) {
+            setup()
+            testInventory_WhenPlayerHasMultipleItems(verbString)
+        }
+    }
+
+    private def testInventory_WhenPlayerHasMultipleItems(command:String) {
         mainWindow.fireCommand(new CommandEvent("get lamp"))
         mainWindow.fireCommand(new CommandEvent("get tv"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("inventory"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         val messages:List[String] = this.mainWindow.getMessages
 
@@ -202,80 +246,11 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("lamp")
     }
 
-    test("verb: INV (when empty)") {
-        mainWindow.clearMessages()
-
-        mainWindow.fireCommand(new CommandEvent("inv"))
-
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 2)
-        messages(1) should equal ("You are currently carrying:")
-        messages(0) should equal ("Nothing")
-    }
-
-    test("verb: I (when empty)") {
-        mainWindow.clearMessages()
-
-        mainWindow.fireCommand(new CommandEvent("i"))
-
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 2)
-        messages(1) should equal ("You are currently carrying:")
-        messages(0) should equal ("Nothing")
-    }
-
-    // TODO: Iterate through the synonyms of the verb instead of having separate test methods
-    // For this, break out the verb list into a separate class, with getter methods, and add a 'verb name' attribute to Verb
-    // Then could also exract the parser into another class
-
     test("verb: TURN ON {noun}") {
-        testTurnOnNoun("turn on lamp")
-    }
-
-    test("verb: TURN ON {noun} (when the item has a custom message defined for switching on") {
-        testTurnOnNoun_WhenItemHasCustomMessageDefined("turn on tv")
-    }
-
-    test("verb: TURN ON {noun} (when the item is not switchable)") {
-        testTurnOnNoun_WhenItemIsNotSwitchable("turn on newspaper")
-    }
-
-    test("verb: TURN OFF {noun}") {
-        testTurnOffNoun("turn off lamp")
-    }
-
-    test("verb: TURN OFF {noun} (when the item has a custom message defined for switching off") {
-        testTurnOffNoun_WhenItemHasCustomMessageDefined("turn off tv")
-    }
-
-    test("verb: TURN OFF {noun} (when the item is not switchable)") {
-        testTurnOffNoun_WhenItemIsNotSwitchable("turn off newspaper")
-    }
-
-    test("verb: TURN {noun} ON") {
-        testTurnOnNoun("turn lamp on")
-    }
-
-    test("verb: TURN {noun} ON (when the item has a custom message defined for switching on") {
-        testTurnOnNoun_WhenItemHasCustomMessageDefined("turn tv on")
-    }
-
-    test("verb: TURN {noun} ON (when the item is not switchable)") {
-        testTurnOnNoun_WhenItemIsNotSwitchable("turn newspaper on")
-    }
-
-    test("verb: TURN {noun} OFF") {
-        testTurnOffNoun("turn lamp off")
-    }
-
-    test("verb: TURN {noun} OFF (when the item has a custom message defined for switching off") {
-        testTurnOffNoun_WhenItemHasCustomMessageDefined("turn tv off")
-    }
-
-    test("verb: TURN {noun} OFF (when the item is not switchable)") {
-        testTurnOffNoun_WhenItemIsNotSwitchable("turn newspaper off")
+        for (verbString <- this.verbs("TURN ON {noun}").getSynonyms) {
+            setup()
+            testTurnOnNoun(verbString.replaceAll("\\{noun\\}", "lamp"))
+        }
     }
 
     private def testTurnOnNoun(command:String): Unit = {
@@ -291,17 +266,31 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You turn on the lamp")
     }
 
+    test("verb: TURN ON {noun} (when the item has a custom message defined for switching on") {
+        for (verbString <- this.verbs("TURN ON {noun}").getSynonyms) {
+            setup()
+            testTurnOnNoun_WhenItemHasCustomMessageDefined(verbString.replaceAll("\\{noun\\}", "tv"))
+        }
+    }
+
     private def testTurnOnNoun_WhenItemHasCustomMessageDefined(command:String): Unit = {
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(lamp.isOn)
+        assert(tv.isOn)
 
         val messages:List[String] = this.mainWindow.getMessages
 
         assert(messages.size == 1)
         messages(0) should equal ("the TV flickers into life")
+    }
+
+    test("verb: TURN ON {noun} (when the item is not switchable)") {
+        for (verbString <- this.verbs("TURN ON {noun}").getSynonyms) {
+            setup()
+            testTurnOnNoun_WhenItemIsNotSwitchable(verbString.replaceAll("\\{noun\\}", "newspaper"))
+        }
     }
 
     private def testTurnOnNoun_WhenItemIsNotSwitchable(command:String) : Unit = {
@@ -315,6 +304,13 @@ class AdventureControllerTest extends FunSuite {
 
         assert(messages.size == 1)
         messages(0) should equal ("You can't turn on the newspaper")
+    }
+
+    test("verb: TURN OFF {noun}") {
+        for (verbString <- this.verbs("TURN OFF {noun}").getSynonyms) {
+            setup()
+            testTurnOffNoun(verbString.replaceAll("\\{noun\\}", "lamp"))
+        }
     }
 
     private def testTurnOffNoun(command:String): Unit = {
@@ -332,6 +328,13 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You turn off the lamp")
     }
 
+    test("verb: TURN OFF {noun} (when the item has a custom message defined for switching off") {
+        for (verbString <- this.verbs("TURN OFF {noun}").getSynonyms) {
+            setup()
+            testTurnOffNoun_WhenItemHasCustomMessageDefined(verbString.replaceAll("\\{noun\\}", "tv"))
+        }
+    }
+
     private def testTurnOffNoun_WhenItemHasCustomMessageDefined(command:String) : Unit = {
         mainWindow.fireCommand(new CommandEvent("turn on tv"))
 
@@ -345,6 +348,13 @@ class AdventureControllerTest extends FunSuite {
 
         assert(messages.size == 1)
         messages(0) should equal ("the TV is now off")
+    }
+
+    test("verb: TURN OFF {noun} (when the item is not switchable)") {
+        for (verbString <- this.verbs("TURN OFF {noun}").getSynonyms) {
+            setup()
+            testTurnOffNoun_WhenItemIsNotSwitchable(verbString.replaceAll("\\{noun\\}", "newspaper"))
+        }
     }
 
     private def testTurnOffNoun_WhenItemIsNotSwitchable(command:String) : Unit = {
