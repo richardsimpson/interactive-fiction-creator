@@ -35,7 +35,6 @@ class AdventureControllerTest extends FunSuite {
         bedroom.addItem(tv)
         bedroom.addItem(newspaper)
 
-        // TODO: Currently, CustomVerb's require a Noun.  Allow custom verbs without nouns.
         tv.addVerb(new CustomVerb(List("WATCH {noun}")),
             "say('You watch the TV for a while.');"
         )
@@ -236,12 +235,64 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("Nothing")
     }
 
+    // TODO: Iterate through the synonyms of the verb instead of having separate test methods
+    // For this, break out the verb list into a separate class, with getter methods, and add a 'verb name' attribute to Verb
+    // Then could also exract the parser into another class
+
     test("verb: TURN ON {noun}") {
+        testTurnOnNoun("turn on lamp")
+    }
+
+    test("verb: TURN ON {noun} (when the item has a custom message defined for switching on") {
+        testTurnOnNoun_WhenItemHasCustomMessageDefined("turn on tv")
+    }
+
+    test("verb: TURN ON {noun} (when the item is not switchable)") {
+        testTurnOnNoun_WhenItemIsNotSwitchable("turn on newspaper")
+    }
+
+    test("verb: TURN OFF {noun}") {
+        testTurnOffNoun("turn off lamp")
+    }
+
+    test("verb: TURN OFF {noun} (when the item has a custom message defined for switching off") {
+        testTurnOffNoun_WhenItemHasCustomMessageDefined("turn off tv")
+    }
+
+    test("verb: TURN OFF {noun} (when the item is not switchable)") {
+        testTurnOffNoun_WhenItemIsNotSwitchable("turn off newspaper")
+    }
+
+    test("verb: TURN {noun} ON") {
+        testTurnOnNoun("turn lamp on")
+    }
+
+    test("verb: TURN {noun} ON (when the item has a custom message defined for switching on") {
+        testTurnOnNoun_WhenItemHasCustomMessageDefined("turn tv on")
+    }
+
+    test("verb: TURN {noun} ON (when the item is not switchable)") {
+        testTurnOnNoun_WhenItemIsNotSwitchable("turn newspaper on")
+    }
+
+    test("verb: TURN {noun} OFF") {
+        testTurnOffNoun("turn lamp off")
+    }
+
+    test("verb: TURN {noun} OFF (when the item has a custom message defined for switching off") {
+        testTurnOffNoun_WhenItemHasCustomMessageDefined("turn tv off")
+    }
+
+    test("verb: TURN {noun} OFF (when the item is not switchable)") {
+        testTurnOffNoun_WhenItemIsNotSwitchable("turn newspaper off")
+    }
+
+    private def testTurnOnNoun(command:String): Unit = {
         mainWindow.fireCommand(new CommandEvent("west"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("turn on lamp"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         assert(this.bedroom.getItem(lamp.getName).get.isOn)
 
@@ -251,12 +302,12 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You turn on the lamp")
     }
 
-    test("verb: TURN ON {noun} (when the item has a custom message defined for switching on") {
+    private def testTurnOnNoun_WhenItemHasCustomMessageDefined(command:String): Unit = {
         mainWindow.fireCommand(new CommandEvent("west"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("turn on tv"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         assert(this.bedroom.getItem(lamp.getName).get.isOn)
 
@@ -266,12 +317,12 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("the TV flickers into life")
     }
 
-    test("verb: TURN ON {noun} (when the item is not switchable)") {
+    private def testTurnOnNoun_WhenItemIsNotSwitchable(command:String) : Unit = {
         mainWindow.fireCommand(new CommandEvent("west"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("turn on newspaper"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         assert(this.bedroom.getItem(newspaper.getName).get.isOff)
 
@@ -281,13 +332,13 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You can't turn on the newspaper")
     }
 
-    test("verb: TURN OFF {noun}") {
+    private def testTurnOffNoun(command:String): Unit = {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("turn on lamp"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("turn off lamp"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         assert(!this.bedroom.getItem(lamp.getName).get.isOn)
 
@@ -297,13 +348,13 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You turn off the lamp")
     }
 
-    test("verb: TURN OFF {noun} (when the item has a custom message defined for switching off") {
+    private def testTurnOffNoun_WhenItemHasCustomMessageDefined(command:String) : Unit = {
         mainWindow.fireCommand(new CommandEvent("west"))
         mainWindow.fireCommand(new CommandEvent("turn on tv"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("turn off tv"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         assert(!this.bedroom.getItem(lamp.getName).get.isOn)
 
@@ -313,12 +364,12 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("the TV is now off")
     }
 
-    test("verb: TURN OFF {noun} (when the item is not switchable)") {
+    private def testTurnOffNoun_WhenItemIsNotSwitchable(command:String) : Unit = {
         mainWindow.fireCommand(new CommandEvent("west"))
 
         mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("turn off newspaper"))
+        mainWindow.fireCommand(new CommandEvent(command))
 
         assert(this.bedroom.getItem(newspaper.getName).get.isOff)
 
@@ -350,5 +401,5 @@ class AdventureControllerTest extends FunSuite {
 
 
     // TODO Add a test for the script functions isSwitchedOn and isSwitchedOff
-    // TODO: Add test where two object have the same verb defined
+    // TODO: Add test where two object have the same custom verb defined
 }

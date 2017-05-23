@@ -29,8 +29,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     verbs ::= new Verb(List("GET {noun}", "TAKE {noun}"))
     verbs ::= new Verb(List("DROP {noun}"))
     verbs ::= new Verb(List("INVENTORY", "INV", "I"))
-    verbs ::= new Verb(List("TURN ON {noun}"))
-    verbs ::= new Verb(List("TURN OFF {noun}"))
+    verbs ::= new Verb(List("TURN ON {noun}", "TURN {noun} ON"))
+    verbs ::= new Verb(List("TURN OFF {noun}", "TURN {noun} OFF"))
 
     // TODO: Add verbs:
     //          READ, SEARCH, TASTE, WEAR, SWITCH ON/OFF, LOCK, UNLOCK, EAT, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
@@ -77,6 +77,11 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     // FOR TESTING ONLY
     def getPlayer : Player = {
         this.player
+    }
+
+    // FOR TESTING ONLY
+    def getVerbs : List[Verb] = {
+        this.verbs
     }
 
     private def newDetermineVerb(inputWords:Array[String]): VerbNoun = {

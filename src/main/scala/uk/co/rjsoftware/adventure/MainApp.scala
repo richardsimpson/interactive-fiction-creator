@@ -18,10 +18,7 @@ class MainApp extends Application {
     private val adventure:Adventure = new Adventure("Welcome to the Adventure!")
 
     val bedroom:Room = new Room("bedroom", "This is your bedroom.  Clothes are strewn " +
-            "across the floor, there is a TV, and a lamp sits on the bedsite table.  Blaa " +
-            "Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. " +
-            "Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. " +
-            "Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. Blaa. ")
+            "across the floor, there is a TV, and a lamp sits on the bedsite table.")
 
     val lamp:Item = new Item("lamp", "A bedside lamp. with a simple on/off switch")
     bedroom.addItem(lamp)
