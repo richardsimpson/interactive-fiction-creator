@@ -79,11 +79,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         this.player
     }
 
-    // FOR TESTING ONLY
-    def getVerbs : List[Verb] = {
-        this.verbs
-    }
-
     private def newDetermineVerb(inputWords:Array[String]): VerbNoun = {
 
         @tailrec

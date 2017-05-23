@@ -27,6 +27,24 @@ class AdventureControllerTest extends FunSuite {
         switchable = true, "the TV flickers into life", "the TV is now off")
     private val newspaper:Item = new Item("newspaper", "The Daily Bugle", switchable = false)
 
+    tv.addVerb(new CustomVerb(List("WATCH {noun}")),
+        "say('You watch the TV for a while.');"
+    )
+
+    //          bathroom
+    //             |
+    //bedroom - landing - veranda
+    //             |
+    //          bedroom2
+    bedroom.addExit(Direction.EAST, landing)
+    landing.addExit(Direction.NORTH, bathroom)
+    landing.addExit(Direction.SOUTH, bedroom2)
+    landing.addExit(Direction.EAST, veranda)
+    landing.addExit(Direction.WEST, bedroom)
+    bathroom.addExit(Direction.SOUTH, landing)
+    veranda.addExit(Direction.WEST, landing)
+    bedroom2.addExit(Direction.NORTH, landing)
+
     override def withFixture(test: NoArgTest) = {
         // Shared setup (run at beginning of each test)
         val adventure:Adventure = new Adventure("Welcome to the Adventure!")
@@ -34,25 +52,6 @@ class AdventureControllerTest extends FunSuite {
         bedroom.addItem(lamp)
         bedroom.addItem(tv)
         bedroom.addItem(newspaper)
-
-        tv.addVerb(new CustomVerb(List("WATCH {noun}")),
-            "say('You watch the TV for a while.');"
-        )
-
-
-        //          bathroom
-        //             |
-        //bedroom - landing - veranda
-        //             |
-        //          bedroom2
-        bedroom.addExit(Direction.EAST, landing)
-        landing.addExit(Direction.NORTH, bathroom)
-        landing.addExit(Direction.SOUTH, bedroom2)
-        landing.addExit(Direction.EAST, veranda)
-        landing.addExit(Direction.WEST, bedroom)
-        bathroom.addExit(Direction.SOUTH, landing)
-        veranda.addExit(Direction.WEST, landing)
-        bedroom2.addExit(Direction.NORTH, landing)
 
         adventure.addRoom(bedroom)
         adventure.addRoom(landing)
