@@ -4,11 +4,11 @@ package uk.co.rjsoftware.adventure.model
   * Created by richardsimpson on 15/05/2017.
   */
 class Item(private val name:String, private val description:String,
-           private val switchable:Boolean, private val switchOnMessage:String=null, private val switchOffMessage:String=null) {
+           private val switchable:Boolean, private val switchOnMessage:String=null, private val switchOffMessage:String=null,
+           private val extraMessageWhenSwitchedOn:String = null, private val extraMessageWhenSwitchedOff:String = null) {
 
     // TODO: To add:
     //          Edible flag, and message when eaten.
-    //          Extra object description when switched on (and off), and script to run when switch on (and off)
     //          Container...
     //          Use/Give...
     //          Player...
@@ -27,6 +27,23 @@ class Item(private val name:String, private val description:String,
 
     def getDescription : String = {
         this.description
+    }
+
+    def getItemDescription : String = {
+        var result : String = this.description
+
+        if (!result.endsWith(".")) {
+            result += '.'
+        }
+
+        if (this.on && this.extraMessageWhenSwitchedOn != null) {
+            result += "  " + this.extraMessageWhenSwitchedOn
+        }
+        else if (!this.on && this.extraMessageWhenSwitchedOff != null) {
+            result += "  " + this.extraMessageWhenSwitchedOff
+        }
+
+        result
     }
 
     def getVerbs : Map[CustomVerb, String] = {
@@ -67,5 +84,13 @@ class Item(private val name:String, private val description:String,
 
     def getSwitchOffMessage : Option[String] = {
         Option.apply(this.switchOffMessage)
+    }
+
+    def getExtraMessageWhenSwitchedOn : String = {
+        this.extraMessageWhenSwitchedOn
+    }
+
+    def getExtraMessageWhenSwitchedOff : String = {
+        this.extraMessageWhenSwitchedOff
     }
 }

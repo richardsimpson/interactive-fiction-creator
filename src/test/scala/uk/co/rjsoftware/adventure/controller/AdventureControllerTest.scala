@@ -21,11 +21,13 @@ class AdventureControllerTest extends FunSuite {
     private val kitchen:Room = new Room("kitchen", "This is the kitchen.")
     private val diningRoom:Room = new Room("diningRoom", "This is the dining room.")
 
-    private val lamp:Item = new Item("lamp", "A bedside lamp. with a simple on/off switch",
+    private val lamp:Item = new Item("lamp", "A bedside lamp. with a simple on/off switch.",
         switchable = true)
-    private val tv:Item = new Item("TV", "A 28\" TV.",
-        switchable = true, "the TV flickers into life", "the TV is now off")
-    private val newspaper:Item = new Item("newspaper", "The Daily Bugle", switchable = false)
+    private val tv:Item = new Item("TV", "A 28\" TV",
+        switchable = true, "the TV flickers into life", "the TV is now off",
+        extraMessageWhenSwitchedOn = "It is showing an old western.",
+        extraMessageWhenSwitchedOff = "It is currently switched off.")
+    private val newspaper:Item = new Item("newspaper", "The Daily Bugle.", switchable = false)
 
     tv.addVerb(new CustomVerb(List("WATCH {noun}")),
         "say('You watch the TV for a while.');"
@@ -148,7 +150,7 @@ class AdventureControllerTest extends FunSuite {
 
     }
 
-    test("verb: EXAMINE {noun}") {
+    test("verb: EXAMINE {noun} (when item does not have an additional description") {
         for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
             setup()
             testExamineNoun(verbString.replaceAll("\\{noun\\}", "lamp"))
@@ -156,8 +158,33 @@ class AdventureControllerTest extends FunSuite {
     }
 
     private def testExamineNoun(command:String) {
-        mainWindow.fireCommand(new CommandEvent("examine lamp"))
+        mainWindow.fireCommand(new CommandEvent(command))
         this.mainWindow.getLastMessage should equal (lamp.getDescription)
+    }
+
+    test("verb: EXAMINE {noun} (when item is switched on, and has an additional description") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            testExamineNoun_WhenSwitchedOnAndHasAdditionalDescription(verbString.replaceAll("\\{noun\\}", "tv"))
+        }
+    }
+
+    private def testExamineNoun_WhenSwitchedOnAndHasAdditionalDescription(command:String) {
+        mainWindow.fireCommand(new CommandEvent("turn on tv"))
+        mainWindow.fireCommand(new CommandEvent(command))
+        this.mainWindow.getLastMessage should equal (tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOn)
+    }
+
+    test("verb: EXAMINE {noun} (when item is switched off, and has an additional description") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            testExamineNoun_WhenSwitchedOffAndHasAdditionalDescription(verbString.replaceAll("\\{noun\\}", "tv"))
+        }
+    }
+
+    private def testExamineNoun_WhenSwitchedOffAndHasAdditionalDescription(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
+        this.mainWindow.getLastMessage should equal (tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOff)
     }
 
     test("verb: GET {noun}") {

@@ -300,7 +300,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             say("Cannot find the " + item.getName)
         }
         else {
-            say(item.getDescription)
+            say(item.getItemDescription)
         }
     }
 
