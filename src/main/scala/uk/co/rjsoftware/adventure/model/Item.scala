@@ -3,7 +3,7 @@ package uk.co.rjsoftware.adventure.model
 /**
   * Created by richardsimpson on 15/05/2017.
   */
-class Item(private val name:String, private val description:String,
+class Item(private val synonyms:List[String], private val description:String,
            private val switchable:Boolean, private val switchOnMessage:String=null, private val switchOffMessage:String=null,
            private val extraMessageWhenSwitchedOn:String = null, private val extraMessageWhenSwitchedOff:String = null) {
 
@@ -18,11 +18,15 @@ class Item(private val name:String, private val description:String,
     private var on:Boolean = false
 
     def this(name:String, description:String) {
-        this(name, description, false, null, null)
+        this(List(name), description, false, null, null)
     }
 
     def getName : String = {
-        this.name
+        this.synonyms.head
+    }
+
+    def getSynonyms : List[String] = {
+        this.synonyms
     }
 
     def getDescription : String = {

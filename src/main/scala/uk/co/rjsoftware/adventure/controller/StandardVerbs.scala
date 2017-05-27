@@ -29,7 +29,8 @@ object StandardVerbs {
 
     // TODO: Allow verbs to be associated with Rooms?  Like WEST, LOOK, etc?
     // TODO: Allow custom verb to override a standard one for a specific room or item.
-    // TODO: Support synonyms for items: e.g. Newspaper and Paper
+
+    // *** TODO: Add two properties to Item, to indicate whether they can be picked up and dropped
 
     def getVerbs : List[Verb] = {
         this.verbs

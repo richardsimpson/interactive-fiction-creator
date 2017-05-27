@@ -60,12 +60,27 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def newDetermineVerb(inputWords:Array[String]): VerbNoun = {
 
         @tailrec
+        def iterateNounSynonyms(synonyms:List[String], inputWord:String) : String = {
+            if (synonyms == Nil) {
+                return null
+            }
+
+            if (synonyms.head.toUpperCase == inputWord) {
+                return synonyms.head
+            }
+
+            iterateNounSynonyms(synonyms.tail, inputWord)
+        }
+
+        @tailrec
         def determineNoun(nouns:Iterable[Item], inputWord:String) : Item = {
             if (nouns == Nil) {
                 return null
             }
 
-            if (nouns.head.getName.toUpperCase == inputWord) {
+            val synonym:String = iterateNounSynonyms(nouns.head.getSynonyms, inputWord)
+
+            if (synonym != null) {
                 return nouns.head
             }
 

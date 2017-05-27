@@ -21,13 +21,13 @@ class AdventureControllerTest extends FunSuite {
     private val kitchen:Room = new Room("kitchen", "This is the kitchen.")
     private val diningRoom:Room = new Room("diningRoom", "This is the dining room.")
 
-    private val lamp:Item = new Item("lamp", "A bedside lamp. with a simple on/off switch.",
+    private val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch.",
         switchable = true)
-    private val tv:Item = new Item("TV", "A 28\" TV",
+    private val tv:Item = new Item(List("TV", "television"), "A 28\" TV",
         switchable = true, "the TV flickers into life", "the TV is now off",
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")
-    private val newspaper:Item = new Item("newspaper", "The Daily Bugle.", switchable = false)
+    private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.", switchable = false)
 
     tv.addVerb(new CustomVerb(List("WATCH {noun}")),
         "say('You watch the TV for a while.');"
@@ -414,6 +414,15 @@ class AdventureControllerTest extends FunSuite {
         assert(player.contains(lamp))
     }
 
+    test("Noun can be referenced by it's synonyms") {
+        mainWindow.fireCommand(new CommandEvent("examine newspaper"))
+        this.mainWindow.getLastMessage should equal (newspaper.getDescription)
+
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("examine paper"))
+        this.mainWindow.getLastMessage should equal (newspaper.getDescription)
+    }
 
     // TODO Add a test for the script functions isSwitchedOn and isSwitchedOff
     // TODO: Add test where two object have the same custom verb defined
