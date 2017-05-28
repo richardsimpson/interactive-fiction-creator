@@ -24,7 +24,7 @@ class MainApp extends Application {
     bedroom.addItem(lamp)
 
     val tv:Item = new Item(List("TV", "television"), "A 28\" TV.",
-        gettable = false, droppable = false, 
+        visible = true, scenery = false, gettable = false, droppable = false,
         switchable = true,
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")

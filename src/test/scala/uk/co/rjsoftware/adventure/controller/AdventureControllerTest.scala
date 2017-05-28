@@ -26,11 +26,13 @@ class AdventureControllerTest extends FunSuite {
     private val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch.",
         switchable = true)
     private val tv:Item = new Item(List("TV", "television"), "A 28\" TV",
-        gettable = false, droppable = false, switchable = true, "the TV flickers into life", "the TV is now off",
+        visible = true, scenery = true, gettable = false, droppable = false,
+        switchable = true, "the TV flickers into life", "the TV is now off",
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")
     private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.",
         gettable = true, droppable = false, switchable = false)
+    private val remote:Item = new Item(List("remote"), "The TV remote", visible = false, scenery = false)
 
     tv.addVerb(new CustomVerb(List("WATCH {noun}")),
         "say('You watch the TV for a while.');"
@@ -77,6 +79,7 @@ class AdventureControllerTest extends FunSuite {
         livingRoom.addItem(lamp)
         livingRoom.addItem(tv)
         livingRoom.addItem(newspaper)
+        livingRoom.addItem(remote)
 
         lamp.switchOff()
         tv.switchOff()
@@ -180,11 +183,10 @@ class AdventureControllerTest extends FunSuite {
 
         val messages:List[String] = this.mainWindow.getMessages
 
-        assert(messages.size == 5)
-        messages(4) should equal (livingRoom.getDescription)
-        messages(3) should equal ("You can also see:")
-        messages(2) should equal ("lamp")
-        messages(1) should equal ("TV")
+        assert(messages.size == 4)
+        messages(3) should equal (livingRoom.getDescription)
+        messages(2) should equal ("You can also see:")
+        messages(1) should equal ("lamp")
         messages(0) should equal ("newspaper")
     }
 
@@ -231,6 +233,18 @@ class AdventureControllerTest extends FunSuite {
         this.mainWindow.getLastMessage should equal (tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOff)
     }
 
+    test("verb: EXAMINE {noun} (when item is not visible") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            testExamineNoun_WhenItemIsNotVisible(verbString.replaceAll("\\{noun\\}", "remote"))
+        }
+    }
+
+    private def testExamineNoun_WhenItemIsNotVisible(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
+        this.mainWindow.getLastMessage should equal ("Cannot find the remote")
+    }
+
     test("verb: GET {noun}") {
         for (verbString <- this.verbs("GET {noun}").getSynonyms) {
             setup()
@@ -255,6 +269,19 @@ class AdventureControllerTest extends FunSuite {
         mainWindow.fireCommand(new CommandEvent(command))
         assert(livingRoom.contains(tv))
         assert(!player.contains(tv))
+    }
+
+    test("verb: GET {noun} (when item is not visible)") {
+        for (verbString <- this.verbs("GET {noun}").getSynonyms) {
+            setup()
+            testGetNoun_WhenItemIsNotVisible(verbString.replaceAll("\\{noun\\}", "remote"))
+        }
+    }
+
+    private def testGetNoun_WhenItemIsNotVisible(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
+        assert(livingRoom.contains(remote))
+        assert(!player.contains(remote))
     }
 
     test("verb: DROP {noun}") {
@@ -402,6 +429,24 @@ class AdventureControllerTest extends FunSuite {
         messages(0) should equal ("You can't turn on the newspaper")
     }
 
+    test("verb: TURN ON {noun} (when the item is not visible)") {
+        for (verbString <- this.verbs("TURN ON {noun}").getSynonyms) {
+            setup()
+            testTurnOnNoun_WhenItemIsNotVisible(verbString.replaceAll("\\{noun\\}", "remote"))
+        }
+    }
+
+    private def testTurnOnNoun_WhenItemIsNotVisible(command:String) : Unit = {
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("Cannot find the remote")
+    }
+
     test("verb: TURN OFF {noun}") {
         for (verbString <- this.verbs("TURN OFF {noun}").getSynonyms) {
             setup()
@@ -464,6 +509,24 @@ class AdventureControllerTest extends FunSuite {
 
         assert(messages.size == 1)
         messages(0) should equal ("You can't turn off the newspaper")
+    }
+
+    test("verb: TURN OFF {noun} (when the item is not visible)") {
+        for (verbString <- this.verbs("TURN OFF {noun}").getSynonyms) {
+            setup()
+            testTurnOffNoun_WhenItemIsNotVisible(verbString.replaceAll("\\{noun\\}", "remote"))
+        }
+    }
+
+    private def testTurnOffNoun_WhenItemIsNotVisible(command:String) : Unit = {
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 1)
+        messages(0) should equal ("Cannot find the remote")
     }
 
     test("custom verb: WATCH {noun}") {

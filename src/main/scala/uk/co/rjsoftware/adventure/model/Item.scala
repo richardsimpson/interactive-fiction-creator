@@ -4,6 +4,7 @@ package uk.co.rjsoftware.adventure.model
   * Created by richardsimpson on 15/05/2017.
   */
 class Item(private val synonyms:List[String], private val description:String,
+           private val visible:Boolean = true, private val scenery:Boolean = false,
            private val gettable:Boolean = true, private val droppable:Boolean = true,
            private val switchable:Boolean = false, private val switchOnMessage:String=null, private val switchOffMessage:String=null,
            private val extraMessageWhenSwitchedOn:String = null, private val extraMessageWhenSwitchedOff:String = null) {
@@ -19,7 +20,7 @@ class Item(private val synonyms:List[String], private val description:String,
     private var on:Boolean = false
 
     def this(name:String, description:String) {
-        this(List(name), description, gettable = true)
+        this(List(name), description)
     }
 
     def getName : String = {
@@ -32,6 +33,14 @@ class Item(private val synonyms:List[String], private val description:String,
 
     def getDescription : String = {
         this.description
+    }
+
+    def isVisible : Boolean = {
+        this.visible
+    }
+
+    def isScenery : Boolean = {
+        this.scenery
     }
 
     def isGettable: Boolean = {

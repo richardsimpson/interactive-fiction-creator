@@ -262,7 +262,9 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         if (!this.currentRoom.getItems.isEmpty) {
             say("You can also see:")
             for (item <- this.currentRoom.getItems.values) {
-                say(item.getName)
+                if (item.isVisible && !item.isScenery) {
+                    say(item.getName)
+                }
             }
         }
     }
@@ -292,7 +294,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def get(item:Item) : Unit = {
         val found:Boolean = this.currentRoom.contains(item)
 
-        if (!found) {
+        if (!found || !item.isVisible) {
             say("Cannot find the " + item.getName)
         }
         else if (!item.isGettable) {
@@ -324,7 +326,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def examine(item: Item): Unit = {
         var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
-        if (!found) {
+        if (!found || !item.isVisible) {
             say("Cannot find the " + item.getName)
         }
         else {
@@ -347,7 +349,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def turnOn(item: Item) : Unit = {
         var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
-        if (!found) {
+        if (!found || !item.isVisible) {
             say("Cannot find the " + item.getName)
         }
         else if (!item.isSwitchable) {
@@ -367,7 +369,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def turnOff(item: Item) : Unit = {
         var found:Boolean = isItemInRoomOrPlayerInventory(item)
 
-        if (!found) {
+        if (!found || !item.isVisible) {
             say("Cannot find the " + item.getName)
         }
         else if (!item.isSwitchable) {

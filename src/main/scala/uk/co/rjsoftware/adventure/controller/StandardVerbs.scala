@@ -42,10 +42,6 @@ object StandardVerbs {
 
     // TODO: Allow custom verb to override a standard one for a specific room or item.
 
-    // *** TODO: Add two properties to Item, to indicate whether they can be picked up and dropped
-    // TODO: Add property to item, to indicate if it should be treated as scenery (not called out as being in the room)
-    // TODO: Add property to item, to indicate if it should be visible (invisible == not accessible)
-
     def getVerbs : List[Verb] = {
         this.verbs
     }
