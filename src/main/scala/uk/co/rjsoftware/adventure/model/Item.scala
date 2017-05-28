@@ -4,7 +4,8 @@ package uk.co.rjsoftware.adventure.model
   * Created by richardsimpson on 15/05/2017.
   */
 class Item(private val synonyms:List[String], private val description:String,
-           private val switchable:Boolean, private val switchOnMessage:String=null, private val switchOffMessage:String=null,
+           private val gettable:Boolean = true, private val droppable:Boolean = true,
+           private val switchable:Boolean = false, private val switchOnMessage:String=null, private val switchOffMessage:String=null,
            private val extraMessageWhenSwitchedOn:String = null, private val extraMessageWhenSwitchedOff:String = null) {
 
     // TODO: To add:
@@ -18,7 +19,7 @@ class Item(private val synonyms:List[String], private val description:String,
     private var on:Boolean = false
 
     def this(name:String, description:String) {
-        this(List(name), description, false, null, null)
+        this(List(name), description, gettable = true)
     }
 
     def getName : String = {
@@ -31,6 +32,14 @@ class Item(private val synonyms:List[String], private val description:String,
 
     def getDescription : String = {
         this.description
+    }
+
+    def isGettable: Boolean = {
+        this.gettable
+    }
+
+    def isDroppable : Boolean = {
+        this.droppable
     }
 
     def getItemDescription : String = {

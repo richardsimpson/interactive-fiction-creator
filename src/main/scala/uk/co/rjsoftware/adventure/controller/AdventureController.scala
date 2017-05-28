@@ -295,6 +295,9 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         if (!found) {
             say("Cannot find the " + item.getName)
         }
+        else if (!item.isGettable) {
+            say("You cannot pick up the " + item.getName)
+        }
         else {
             this.currentRoom.removeItem(item)
             this.player.addItem(item)
@@ -307,6 +310,9 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
         if (!found) {
             say("You do not have the " + item.getName)
+        }
+        else if (!item.isDroppable) {
+            say("You cannot drop the " + item.getName)
         }
         else {
             this.player.removeItem(item)

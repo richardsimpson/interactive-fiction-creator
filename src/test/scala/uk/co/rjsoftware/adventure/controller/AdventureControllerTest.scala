@@ -26,10 +26,11 @@ class AdventureControllerTest extends FunSuite {
     private val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch.",
         switchable = true)
     private val tv:Item = new Item(List("TV", "television"), "A 28\" TV",
-        switchable = true, "the TV flickers into life", "the TV is now off",
+        gettable = false, droppable = false, switchable = true, "the TV flickers into life", "the TV is now off",
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")
-    private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.", switchable = false)
+    private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.",
+        gettable = true, droppable = false, switchable = false)
 
     tv.addVerb(new CustomVerb(List("WATCH {noun}")),
         "say('You watch the TV for a while.');"
@@ -238,9 +239,22 @@ class AdventureControllerTest extends FunSuite {
     }
 
     private def testGetNoun(command:String) {
-        mainWindow.fireCommand(new CommandEvent("get lamp"))
+        mainWindow.fireCommand(new CommandEvent(command))
         assert(!livingRoom.contains(lamp))
         assert(player.contains(lamp))
+    }
+
+    test("verb: GET {noun} (when item cannot be picked up)") {
+        for (verbString <- this.verbs("GET {noun}").getSynonyms) {
+            setup()
+            testGetNoun_WhenItemIsNotGettable(verbString.replaceAll("\\{noun\\}", "tv"))
+        }
+    }
+
+    private def testGetNoun_WhenItemIsNotGettable(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
+        assert(livingRoom.contains(tv))
+        assert(!player.contains(tv))
     }
 
     test("verb: DROP {noun}") {
@@ -251,6 +265,18 @@ class AdventureControllerTest extends FunSuite {
         assert(!livingRoom.contains(lamp))
         assert(diningRoom.contains(lamp))
         assert(!player.contains(lamp))
+    }
+
+    test("verb: DROP {noun} (when item cannot be dropped)") {
+        mainWindow.fireCommand(new CommandEvent("get newspaper"))
+
+        assert(!livingRoom.contains(newspaper))
+        assert(player.contains(newspaper))
+
+        mainWindow.fireCommand(new CommandEvent("drop newspaper"))
+
+        assert(!livingRoom.contains(newspaper))
+        assert(player.contains(newspaper))
     }
 
     test("verb: INVENTORY (when empty)") {
@@ -302,7 +328,7 @@ class AdventureControllerTest extends FunSuite {
 
     private def testInventory_WhenPlayerHasMultipleItems(command:String) {
         mainWindow.fireCommand(new CommandEvent("get lamp"))
-        mainWindow.fireCommand(new CommandEvent("get tv"))
+        mainWindow.fireCommand(new CommandEvent("get newspaper"))
 
         mainWindow.clearMessages()
 
@@ -312,7 +338,7 @@ class AdventureControllerTest extends FunSuite {
 
         assert(messages.size == 3)
         messages(2) should equal ("You are currently carrying:")
-        messages(1) should equal ("TV")
+        messages(1) should equal ("newspaper")
         messages(0) should equal ("lamp")
     }
 
