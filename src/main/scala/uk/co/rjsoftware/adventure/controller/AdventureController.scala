@@ -237,9 +237,11 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def executeCommand(verb:String, item:Item): Unit = {
         verb match {
             case "NORTH" => move(Direction.NORTH)
-            case "EAST" => move(Direction.EAST)
             case "SOUTH" => move(Direction.SOUTH)
+            case "EAST" => move(Direction.EAST)
             case "WEST" => move(Direction.WEST)
+            case "UP" => move(Direction.UP)
+            case "DOWN" => move(Direction.DOWN)
             case "LOOK" => look()
             case "EXITS" => exits()
             case "EXAMINE {noun}" => examine(item)

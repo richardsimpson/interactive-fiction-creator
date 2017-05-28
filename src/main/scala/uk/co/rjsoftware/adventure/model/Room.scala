@@ -1,11 +1,13 @@
 package uk.co.rjsoftware.adventure.model
 
+import scala.collection.immutable.ListMap
+
 /**
   * Created by richardsimpson on 15/05/2017.
   */
 class Room(private val name:String, private val description:String) {
 
-    private var exits:Map[Direction, Room] = Map[Direction, Room]()
+    private var exits:ListMap[Direction, Room] = ListMap[Direction, Room]()
     private var items:Map[String, Item] = Map[String, Item]()
 
     def getDescription : String = {

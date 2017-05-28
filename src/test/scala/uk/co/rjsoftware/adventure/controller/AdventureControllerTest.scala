@@ -20,6 +20,8 @@ class AdventureControllerTest extends FunSuite {
     private val garden:Room = new Room("garden", "This is the garden.")
     private val kitchen:Room = new Room("kitchen", "This is the kitchen.")
     private val diningRoom:Room = new Room("diningRoom", "This is the dining room.")
+    private val landing:Room = new Room("landing", "This is the landing.")
+    private val cellar:Room = new Room("cellar", "This is the cellar.")
 
     private val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch.",
         switchable = true)
@@ -33,16 +35,23 @@ class AdventureControllerTest extends FunSuite {
         "say('You watch the TV for a while.');"
     )
 
-    //          kitchen
-    //             |
-    //study - livingRoom - diningRoom
-    //             |
-    //          garden
+    //           kitchen    landing
+    //                |      |
+    //                N      U
+    //                |      |
+    //study ----W---- livingRoom ----E---- diningRoom
+    //                |      |
+    //                S      D
+    //                |      |
+    //            garden    cellar
+
     study.addExit(Direction.EAST, livingRoom)
     livingRoom.addExit(Direction.NORTH, kitchen)
     livingRoom.addExit(Direction.SOUTH, garden)
     livingRoom.addExit(Direction.EAST, diningRoom)
     livingRoom.addExit(Direction.WEST, study)
+    livingRoom.addExit(Direction.UP, landing)
+    livingRoom.addExit(Direction.DOWN, cellar)
     kitchen.addExit(Direction.SOUTH, livingRoom)
     diningRoom.addExit(Direction.WEST, livingRoom)
     garden.addExit(Direction.NORTH, livingRoom)
@@ -132,6 +141,30 @@ class AdventureControllerTest extends FunSuite {
         assert(this.classUnderTest.getCurrentRoom == study)
     }
 
+    test("verb: UP") {
+        for (verbString <- this.verbs("UP").getSynonyms) {
+            setup()
+            testUp(verbString)
+        }
+    }
+
+    private def testUp(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
+        assert(this.classUnderTest.getCurrentRoom == landing)
+    }
+
+    test("verb: DOWN") {
+        for (verbString <- this.verbs("DOWN").getSynonyms) {
+            setup()
+            testDown(verbString)
+        }
+    }
+
+    private def testDown(command:String) {
+        mainWindow.fireCommand(new CommandEvent(command))
+        assert(this.classUnderTest.getCurrentRoom == cellar)
+    }
+
     test("verb: LOOK") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
@@ -146,7 +179,7 @@ class AdventureControllerTest extends FunSuite {
 
     test("verb: EXITS") {
         mainWindow.fireCommand(new CommandEvent("exits"))
-        this.mainWindow.getLastMessage should equal ("From here you can go North, South, East, West, ")
+        this.mainWindow.getLastMessage should equal ("From here you can go North, South, East, West, Up, Down, ")
 
     }
 

@@ -7,7 +7,9 @@ public enum Direction {
     NORTH("North"),
     EAST("East"),
     SOUTH("South"),
-    WEST("West");
+    WEST("West"),
+    UP("Up"),
+    DOWN("Down");
 
     private String description;
 
