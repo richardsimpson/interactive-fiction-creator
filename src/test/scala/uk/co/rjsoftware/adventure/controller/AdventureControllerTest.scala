@@ -181,19 +181,32 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        val messages:List[String] = this.mainWindow.getMessages
+        assertMessagesAreCorrect(List(
+            livingRoom.getDescription,
+            "You can also see:",
+            "lamp",
+            "newspaper",
+            ""
+        ))
+    }
 
-        assert(messages.size == 4)
-        messages(3) should equal (livingRoom.getDescription)
-        messages(2) should equal ("You can also see:")
-        messages(1) should equal ("lamp")
-        messages(0) should equal ("newspaper")
+    private def assertMessagesAreCorrect(expectedMessages : List[String]): Unit = {
+        val messages:List[String] = this.mainWindow.getMessages
+        assert(messages.size == expectedMessages.size)
+
+        for (index <- expectedMessages.indices) {
+            messages(index) should equal (expectedMessages(index))
+        }
     }
 
     test("verb: EXITS") {
+        this.mainWindow.clearMessages()
         mainWindow.fireCommand(new CommandEvent("exits"))
-        this.mainWindow.getLastMessage should equal ("From here you can go North, South, East, West, Up, Down, ")
 
+        assertMessagesAreCorrect(List(
+            "From here you can go North, South, East, West, Up, Down, ",
+            ""
+        ))
     }
 
     test("verb: EXAMINE {noun} (when item does not have an additional description") {
@@ -204,8 +217,14 @@ class AdventureControllerTest extends FunSuite {
     }
 
     private def testExamineNoun(command:String) {
+        this.mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent(command))
-        this.mainWindow.getLastMessage should equal (lamp.getDescription)
+
+        assertMessagesAreCorrect(List(
+            lamp.getDescription,
+            ""
+        ))
     }
 
     test("verb: EXAMINE {noun} (when item is switched on, and has an additional description") {
@@ -217,8 +236,15 @@ class AdventureControllerTest extends FunSuite {
 
     private def testExamineNoun_WhenSwitchedOnAndHasAdditionalDescription(command:String) {
         mainWindow.fireCommand(new CommandEvent("turn on tv"))
+
+        this.mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent(command))
-        this.mainWindow.getLastMessage should equal (tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOn)
+
+        assertMessagesAreCorrect(List(
+            tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOn,
+            ""
+        ))
     }
 
     test("verb: EXAMINE {noun} (when item is switched off, and has an additional description") {
@@ -229,8 +255,14 @@ class AdventureControllerTest extends FunSuite {
     }
 
     private def testExamineNoun_WhenSwitchedOffAndHasAdditionalDescription(command:String) {
+        this.mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent(command))
-        this.mainWindow.getLastMessage should equal (tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOff)
+
+        assertMessagesAreCorrect(List(
+            tv.getDescription + ".  " + tv.getExtraMessageWhenSwitchedOff,
+            ""
+        ))
     }
 
     test("verb: EXAMINE {noun} (when item is not visible") {
@@ -241,8 +273,14 @@ class AdventureControllerTest extends FunSuite {
     }
 
     private def testExamineNoun_WhenItemIsNotVisible(command:String) {
+        this.mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent(command))
-        this.mainWindow.getLastMessage should equal ("Cannot find the remote")
+
+        assertMessagesAreCorrect(List(
+            "Cannot find the remote",
+            ""
+        ))
     }
 
     test("verb: GET {noun}") {
@@ -318,11 +356,11 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 2)
-        messages(1) should equal ("You are currently carrying:")
-        messages(0) should equal ("Nothing")
+        assertMessagesAreCorrect(List(
+            "You are currently carrying:",
+            "Nothing",
+            ""
+        ))
     }
 
     test("verb: INVENTORY (when not empty)") {
@@ -339,11 +377,11 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 2)
-        messages(1) should equal ("You are currently carrying:")
-        messages(0) should equal ("lamp")
+        assertMessagesAreCorrect(List(
+            "You are currently carrying:",
+            "lamp",
+            ""
+        ))
     }
 
     test("verb: INVENTORY (when contains multiple items)") {
@@ -361,12 +399,12 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 3)
-        messages(2) should equal ("You are currently carrying:")
-        messages(1) should equal ("newspaper")
-        messages(0) should equal ("lamp")
+        assertMessagesAreCorrect(List(
+            "You are currently carrying:",
+            "newspaper",
+            "lamp",
+            ""
+        ))
     }
 
     test("verb: TURN ON {noun}") {
@@ -383,10 +421,10 @@ class AdventureControllerTest extends FunSuite {
 
         assert(lamp.isOn)
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("You turn on the lamp")
+        assertMessagesAreCorrect(List(
+            "You turn on the lamp",
+            ""
+        ))
     }
 
     test("verb: TURN ON {noun} (when the item has a custom message defined for switching on") {
@@ -403,10 +441,10 @@ class AdventureControllerTest extends FunSuite {
 
         assert(tv.isOn)
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("the TV flickers into life")
+        assertMessagesAreCorrect(List(
+            "the TV flickers into life",
+            ""
+        ))
     }
 
     test("verb: TURN ON {noun} (when the item is not switchable)") {
@@ -423,10 +461,10 @@ class AdventureControllerTest extends FunSuite {
 
         assert(newspaper.isOff)
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("You can't turn on the newspaper")
+        assertMessagesAreCorrect(List(
+            "You can't turn on the newspaper",
+            ""
+        ))
     }
 
     test("verb: TURN ON {noun} (when the item is not visible)") {
@@ -441,10 +479,10 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("Cannot find the remote")
+        assertMessagesAreCorrect(List(
+            "Cannot find the remote",
+            ""
+        ))
     }
 
     test("verb: TURN OFF {noun}") {
@@ -463,10 +501,10 @@ class AdventureControllerTest extends FunSuite {
 
         assert(lamp.isOff)
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("You turn off the lamp")
+        assertMessagesAreCorrect(List(
+            "You turn off the lamp",
+            ""
+        ))
     }
 
     test("verb: TURN OFF {noun} (when the item has a custom message defined for switching off") {
@@ -485,10 +523,10 @@ class AdventureControllerTest extends FunSuite {
 
         assert(tv.isOff)
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("the TV is now off")
+        assertMessagesAreCorrect(List(
+            "the TV is now off",
+            ""
+        ))
     }
 
     test("verb: TURN OFF {noun} (when the item is not switchable)") {
@@ -505,10 +543,10 @@ class AdventureControllerTest extends FunSuite {
 
         assert(newspaper.isOff)
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("You can't turn off the newspaper")
+        assertMessagesAreCorrect(List(
+            "You can't turn off the newspaper",
+            ""
+        ))
     }
 
     test("verb: TURN OFF {noun} (when the item is not visible)") {
@@ -523,10 +561,10 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("Cannot find the remote")
+        assertMessagesAreCorrect(List(
+            "Cannot find the remote",
+            ""
+        ))
     }
 
     test("custom verb: WATCH {noun}") {
@@ -534,10 +572,10 @@ class AdventureControllerTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent("watch tv"))
 
-        val messages:List[String] = this.mainWindow.getMessages
-
-        assert(messages.size == 1)
-        messages(0) should equal ("You watch the TV for a while.")
+        assertMessagesAreCorrect(List(
+            "You watch the TV for a while.",
+            ""
+        ))
     }
 
     test("additional words between verb and noun: GET THE {noun}") {
@@ -547,13 +585,22 @@ class AdventureControllerTest extends FunSuite {
     }
 
     test("Noun can be referenced by it's synonyms") {
+        mainWindow.clearMessages()
         mainWindow.fireCommand(new CommandEvent("examine newspaper"))
-        this.mainWindow.getLastMessage should equal (newspaper.getDescription)
+
+        assertMessagesAreCorrect(List(
+            newspaper.getDescription,
+            ""
+        ))
 
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("examine paper"))
-        this.mainWindow.getLastMessage should equal (newspaper.getDescription)
+
+        assertMessagesAreCorrect(List(
+            newspaper.getDescription,
+            ""
+        ))
     }
 
     // TODO Add a test for the script functions isSwitchedOn and isSwitchedOff

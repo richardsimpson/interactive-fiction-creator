@@ -48,7 +48,7 @@ class MainWindowView extends MainWindow {
     }
 
     private def submitCommand() : Unit = {
-        say(this.inputTextField.getText)
+        say("> " + this.inputTextField.getText)
         processCommand(this.inputTextField.getText)
         this.inputTextField.setText("")
     }

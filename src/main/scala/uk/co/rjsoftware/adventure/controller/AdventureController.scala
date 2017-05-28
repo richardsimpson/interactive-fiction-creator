@@ -194,6 +194,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         val verbNoun:VerbNoun = newDetermineVerb(words)
         if (verbNoun == null) {
             say("I don't understand what you are trying to do.")
+            say("")
             return
         }
 
@@ -214,11 +215,13 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
         if (!found) {
             say("Cannot find the " + item.getName)
+            say("")
             return
         }
 
         if (!item.getVerbs.contains(verb)) {
             say("You cannot do that with the " + item.getName)
+            say("")
             return
         }
 
@@ -231,6 +234,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             "function isSwitchedOff(itemName) { return controller.isSwitchedOff(itemName) }\n" +
             "\n" +
             script.get)
+
+        say("")
     }
 
     private def executeCommand(verb:String, item:Item): Unit = {
@@ -267,6 +272,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
                 }
             }
         }
+        say("")
     }
 
     private def exits() : Unit = {
@@ -277,6 +283,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         }
 
         say(outputText.toString())
+        say("")
     }
 
     private def move(direction: Direction) : Unit = {
@@ -284,6 +291,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
         if (newRoom.isEmpty) {
             say("You cannot go that way.")
+            say("")
         }
         else {
             this.currentRoom = newRoom.get
@@ -305,6 +313,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             this.player.addItem(item)
             say("You pick up the " + item.getName)
         }
+        say("")
     }
 
     private def drop(item:Item) : Unit = {
@@ -321,6 +330,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             this.currentRoom.addItem(item)
             say("You drop the " + item.getName)
         }
+        say("")
     }
 
     private def examine(item: Item): Unit = {
@@ -332,6 +342,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         else {
             say(item.getItemDescription)
         }
+        say("")
     }
 
     private def inventory() : Unit = {
@@ -344,6 +355,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
                 say(item.getName)
             }
         }
+        say("")
     }
 
     private def turnOn(item: Item) : Unit = {
@@ -364,6 +376,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
                 say(item.getSwitchOnMessage.getOrElse("You turn on the " + item.getName))
             }
         }
+        say("")
     }
 
     private def turnOff(item: Item) : Unit = {
@@ -384,6 +397,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
                 say(item.getSwitchOffMessage.getOrElse("You turn off the " + item.getName))
             }
         }
+        say("")
     }
 
     //

@@ -11,7 +11,7 @@ class MainWindowForTesting extends MainWindow {
     private var messages : List[String] = Nil
 
     override def say(outputText: String): Unit = {
-        this.messages ::= outputText
+        this.messages :+= outputText
     }
 
     override def addListener(listener: (CommandEvent) => Unit): Unit = {
