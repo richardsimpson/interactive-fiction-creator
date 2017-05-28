@@ -173,8 +173,18 @@ class AdventureControllerTest extends FunSuite {
     }
 
     private def testLook(command:String) {
+        this.mainWindow.clearMessages()
+
         mainWindow.fireCommand(new CommandEvent(command))
-        this.mainWindow.getLastMessage should equal (livingRoom.getDescription)
+
+        val messages:List[String] = this.mainWindow.getMessages
+
+        assert(messages.size == 5)
+        messages(4) should equal (livingRoom.getDescription)
+        messages(3) should equal ("You can also see:")
+        messages(2) should equal ("lamp")
+        messages(1) should equal ("TV")
+        messages(0) should equal ("newspaper")
     }
 
     test("verb: EXITS") {

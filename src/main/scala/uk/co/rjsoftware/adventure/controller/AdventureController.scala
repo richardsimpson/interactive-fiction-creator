@@ -43,7 +43,6 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     this.currentRoom = this.adventure.getStartRoom
 
     look()
-    exits()
 
     // FOR TESTING ONLY
     def getCurrentRoom : Room = {
@@ -260,6 +259,12 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     private def look() : Unit = {
         say(this.currentRoom.getDescription)
+        if (!this.currentRoom.getItems.isEmpty) {
+            say("You can also see:")
+            for (item <- this.currentRoom.getItems.values) {
+                say(item.getName)
+            }
+        }
     }
 
     private def exits() : Unit = {

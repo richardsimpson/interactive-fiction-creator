@@ -38,17 +38,13 @@ object StandardVerbs {
 
     // Add diagonal directions
 
-    // Items in a room should be shown like this:
-    //      You can also see:
-    //      item1
-    //      item2
-
     // add inventory limit (items have weight, and player can only carry so much).  worn items should not add to total weight
 
-    // TODO: Allow verbs to be associated with Rooms?  Like WEST, LOOK, etc?
     // TODO: Allow custom verb to override a standard one for a specific room or item.
 
     // *** TODO: Add two properties to Item, to indicate whether they can be picked up and dropped
+    // TODO: Add property to item, to indicate if it should be treated as scenery (not called out as being in the room)
+    // TODO: Add property to item, to indicate if it should be visible (invisible == not accessible)
 
     def getVerbs : List[Verb] = {
         this.verbs
