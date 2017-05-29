@@ -5,7 +5,7 @@ import java.net.URL
 
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
-import uk.co.rjsoftware.adventure.model.{Adventure, Direction, Room}
+import uk.co.rjsoftware.adventure.model.{Adventure, Direction, Item, Room}
 
 import scala.io.Source
 
@@ -57,5 +57,20 @@ class LoaderTest extends FunSuite {
         landing.getAfterEnterRoomFirstTimeScript should equal ("afterEnterRoomFirstTimeScript2")
         landing.getExits.size should equal (1)
         landing.getExit(Direction.WEST).get should equal (bedroom)
+
+        bedroom.getItems.size should equal (1)
+
+        val lamp:Item = bedroom.getItem("lamp")
+        lamp.getSynonyms should equal (List("lamp", "lampshade"))
+        lamp.getDescription should equal ("description")
+        lamp.isVisible should equal (true)
+        lamp.isScenery should equal (false)
+        lamp.isGettable should equal (true)
+        lamp.isDroppable should equal (true)
+        lamp.isSwitchable should equal (false)
+        lamp.getSwitchOnMessage should equal ("switchOnMessage")
+        lamp.getSwitchOffMessage should equal ("switchOffMessage")
+        lamp.getExtraMessageWhenSwitchedOn should equal ("extraMessageWhenSwitchedOn")
+        lamp.getExtraMessageWhenSwitchedOff should equal ("extraMessageWhenSwitchedOff")
     }
 }

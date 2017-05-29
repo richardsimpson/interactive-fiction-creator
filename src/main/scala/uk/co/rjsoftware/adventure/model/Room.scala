@@ -45,8 +45,8 @@ class Room(private val name:String, private var description:String,
         this.exits.get(direction)
     }
 
-    def getItem(itemName:String) : Option[Item] = {
-        this.items.get(itemName)
+    def getItem(itemName:String) : Item = {
+        this.items.get(itemName).orNull
     }
 
     def removeItem(item:Item) : Unit = {

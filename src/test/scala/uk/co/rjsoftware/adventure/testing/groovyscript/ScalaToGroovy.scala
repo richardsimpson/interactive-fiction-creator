@@ -41,7 +41,8 @@ class ScalaToGroovy extends FunSuite {
         executor.executeScript("say('hello')")
     }
 
-    test("call the GroovyShell: executeAfterTurns") {
+    // TODO: Put this test back when implement the WAIT command
+    ignore("call the GroovyShell: executeAfterTurns") {
         mainWindow.clearMessages()
 
         val executor:ScriptExecutor = new ScriptExecutor(controller)

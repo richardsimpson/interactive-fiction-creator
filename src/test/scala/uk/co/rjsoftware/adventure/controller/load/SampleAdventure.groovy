@@ -13,21 +13,21 @@ adventure {
             afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript"
 
             items {
-//                "lamp" {
-//                    synonyms: List[String]
-//                    description "description"
-//                    visible true
-//                    scenery false
-//                    gettable true
-//                    droppable true
-//                    switchable false
-//                    switchOnMessage "switchOnMessage"
-//                    switchOffMessage "switchOffMessage"
-//                    extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
-//                    extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
-//
-//                    // TODO: Verbs
-//                }
+                "lamp" {
+                    synonyms "lampshade"
+                    description "description"
+                    visible true
+                    scenery false
+                    gettable true
+                    droppable true
+                    switchable false
+                    switchOnMessage "switchOnMessage"
+                    switchOffMessage "switchOffMessage"
+                    extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
+                    extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
+
+                    // TODO: Verbs
+                }
             }
         }
 

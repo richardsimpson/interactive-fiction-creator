@@ -149,7 +149,7 @@ public class ItemsDelegate {
     }
 
     private void methodMissing(String itemName, args) {
-        Item item = this.room.getItem(itemName).orNull()
+        Item item = this.room.getItem(itemName)
         if (item == null) {
             item = new Item(itemName)
             this.room.addItem(item)
@@ -172,5 +172,53 @@ public class ItemDelegate {
         this.item = item
     }
 
+    private void methodMissing(String itemName, args) {
+        throw new RuntimeException("test")
+    }
 
+    private void synonyms(String... synonyms) {
+        for (String synonym : synonyms) {
+            this.item.addSynonym(synonym)
+        }
+    }
+
+    private void description(String description) {
+        this.item.setDescription(description)
+    }
+
+    private void visible(Boolean visible) {
+        this.item.setVisible(visible)
+    }
+
+    private void scenery(Boolean scenery) {
+        this.item.setScenery(scenery)
+    }
+
+    private void gettable(Boolean gettable) {
+        this.item.setGettable(gettable)
+    }
+
+    private void droppable(Boolean droppable) {
+        this.item.setDroppable(droppable)
+    }
+
+    private void switchable(Boolean switchable) {
+        this.item.setSwitchable(switchable)
+    }
+
+    private void switchOnMessage(String switchOnMessage) {
+        this.item.setSwitchOnMessage(switchOnMessage)
+    }
+
+    private void switchOffMessage(String switchOffMessage) {
+        this.item.setSwitchOffMessage(switchOffMessage)
+    }
+
+    private void extraMessageWhenSwitchedOn(String extraMessageWhenSwitchedOn) {
+        this.item.setExtraMessageWhenSwitchedOn(extraMessageWhenSwitchedOn)
+    }
+
+    private void extraMessageWhenSwitchedOff(String extraMessageWhenSwitchedOff) {
+        this.item.setExtraMessageWhenSwitchedOff(extraMessageWhenSwitchedOff)
+    }
 }

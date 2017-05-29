@@ -421,7 +421,11 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             }
             else {
                 item.switchOn()
-                say(item.getSwitchOnMessage.getOrElse("You turn on the " + item.getName))
+                var switchOnMessage:String = item.getSwitchOnMessage
+                if (switchOnMessage == null) {
+                    switchOnMessage = "You turn on the " + item.getName
+                }
+                say(switchOnMessage)
             }
         }
         say("")
@@ -442,7 +446,11 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             }
             else {
                 item.switchOff()
-                say(item.getSwitchOffMessage.getOrElse("You turn off the " + item.getName))
+                var switchOffMessage:String = item.getSwitchOffMessage
+                if (switchOffMessage == null) {
+                    switchOffMessage = "You turn off the " + item.getName
+                }
+                say(switchOffMessage)
             }
         }
         say("")

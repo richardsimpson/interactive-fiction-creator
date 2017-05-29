@@ -3,11 +3,11 @@ package uk.co.rjsoftware.adventure.model
 /**
   * Created by richardsimpson on 15/05/2017.
   */
-class Item(private val synonyms:List[String], private val description:String,
-           private val visible:Boolean = true, private val scenery:Boolean = false,
-           private val gettable:Boolean = true, private val droppable:Boolean = true,
-           private val switchable:Boolean = false, private val switchOnMessage:String=null, private val switchOffMessage:String=null,
-           private val extraMessageWhenSwitchedOn:String = null, private val extraMessageWhenSwitchedOff:String = null) {
+class Item(private var synonyms:List[String], private var description:String,
+           private var visible:Boolean = true, private var scenery:Boolean = false,
+           private var gettable:Boolean = true, private var droppable:Boolean = true,
+           private var switchable:Boolean = false, private var switchOnMessage:String=null, private var switchOffMessage:String=null,
+           private var extraMessageWhenSwitchedOn:String = null, private var extraMessageWhenSwitchedOff:String = null) {
 
     // TODO: To add:
     //          Edible flag, and message when eaten.
@@ -35,12 +35,40 @@ class Item(private val synonyms:List[String], private val description:String,
         this.synonyms
     }
 
+    def addSynonym(synonym : String) : Unit = {
+        this.synonyms = this.synonyms :+ synonym
+    }
+
     def getDescription : String = {
         this.description
     }
 
+    def setDescription(description:String) : Unit = {
+        this.description = description
+    }
+
     def isVisible : Boolean = {
         this.visible
+    }
+
+    def setVisible(visible:Boolean) : Unit = {
+        this.visible = visible
+    }
+
+    def setScenery(scenery:Boolean) : Unit = {
+        this.scenery = scenery
+    }
+
+    def setGettable(gettable:Boolean) : Unit = {
+        this.gettable = gettable
+    }
+
+    def setDroppable(droppable:Boolean) : Unit = {
+        this.droppable = droppable
+    }
+
+    def setSwitchable(switchable:Boolean) : Unit = {
+        this.switchable = switchable
     }
 
     def isScenery : Boolean = {
@@ -104,19 +132,36 @@ class Item(private val synonyms:List[String], private val description:String,
         this.on = false
     }
 
-    def getSwitchOnMessage : Option[String] = {
-        Option.apply(this.switchOnMessage)
+    def getSwitchOnMessage : String = {
+        this.switchOnMessage
     }
 
-    def getSwitchOffMessage : Option[String] = {
-        Option.apply(this.switchOffMessage)
+    def setSwitchOnMessage(switchOnMessage:String) : Unit = {
+        this.switchOnMessage = switchOnMessage
+    }
+
+    def getSwitchOffMessage : String = {
+        this.switchOffMessage
+    }
+
+    def setSwitchOffMessage(switchOffMessage:String) : Unit = {
+        this.switchOffMessage = switchOffMessage
     }
 
     def getExtraMessageWhenSwitchedOn : String = {
         this.extraMessageWhenSwitchedOn
     }
 
+    def setExtraMessageWhenSwitchedOn(extraMessageWhenSwitchedOn:String) : Unit = {
+        this.extraMessageWhenSwitchedOn = extraMessageWhenSwitchedOn
+    }
+
     def getExtraMessageWhenSwitchedOff : String = {
         this.extraMessageWhenSwitchedOff
     }
+
+    def setExtraMessageWhenSwitchedOff(extraMessageWhenSwitchedOff:String) : Unit = {
+        this.extraMessageWhenSwitchedOff = extraMessageWhenSwitchedOff
+    }
+
 }
