@@ -15,8 +15,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     private var currentRoom : Room = null
     private val player : Player = new Player()
-    private var turnCounter : Int = 0
     private var visitedRooms : List[Room] = Nil
+    private var scheduledScripts:List[ScheduledScript] = Nil
 
     private var verbs : List[Verb] = StandardVerbs.getVerbs
     // add in any custom verbs
@@ -181,29 +181,43 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     private def executeCommand(event:CommandEvent): Unit = {
         val words:Array[String] = event.getCommand.trim.replaceAll(" +", " ").toUpperCase.split(" ")
 
-        if (words.length < 1) {
-            say("There are no words...")
-            return
+        try {
+            if (words.length < 1) {
+                say("There are no words...")
+                return
+            }
+
+            // TODO: HELP
+            // TODO: GET ALL / TAKE ALL
+
+            val verbNoun:VerbNoun = newDetermineVerb(words)
+            if (verbNoun == null) {
+                say("I don't understand what you are trying to do.")
+                say("")
+                return
+            }
+
+            // TODO: if verb requires noun, and there is not one, say(verb + " what?")
+
+            verbNoun.verb match {
+                case customVerb: CustomVerb => executeCustomVerb(customVerb, verbNoun.noun)
+                case _ => executeCommand(verbNoun.verb.getVerb, verbNoun.noun)
+            }
         }
+        finally {
+            // execute any scripts which should be executed on this turn.
+            this.scheduledScripts.foreach((scheduledScript) => {
+                scheduledScript.decrementTurnCount
+                if (scheduledScript.getTurnCount <= 0) {
+                    scheduledScript.getScript().call()
+                }
+            })
 
-        // TODO: HELP
-        // TODO: GET ALL / TAKE ALL
-
-        val verbNoun:VerbNoun = newDetermineVerb(words)
-        if (verbNoun == null) {
-            say("I don't understand what you are trying to do.")
-            say("")
-            return
+            // and then remove them from the list
+            this.scheduledScripts = this.scheduledScripts.filter((scheduledScript) => {
+                scheduledScript.getTurnCount > 0
+            })
         }
-
-        // TODO: if verb requires noun, and there is not one, say(verb + " what?")
-
-        verbNoun.verb match {
-            case customVerb: CustomVerb => executeCustomVerb(customVerb, verbNoun.noun)
-            case _ => executeCommand(verbNoun.verb.getVerb, verbNoun.noun)
-        }
-
-        turnCounter += turnCounter
     }
 
     private def isItemInRoomOrPlayerInventory(item:Item) : Boolean = {
@@ -451,9 +465,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         item.isOn
     }
 
-    // TODO: Change this so tha the Closure does not get called immediately
     def executeAfterTurns(turns:Int, script:Closure[Unit]) : Unit = {
-        script.call()
+        this.scheduledScripts :+= new ScheduledScript(turns, script)
     }
 
     // TODO: add script functions for:
