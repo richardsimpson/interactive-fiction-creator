@@ -5,10 +5,14 @@ import scala.collection.immutable.ListMap
 /**
   * Created by richardsimpson on 15/05/2017.
   */
-class Room(private val name:String, private val description:String) {
+class Room(private val name:String, private val description:String,
+           private val beforeEnterRoomScript:String = null, private val afterEnterRoomScript:String = null,
+           private val afterLeaveRoomScript:String = null,
+           private val beforeEnterRoomFirstTimeScript:String = null, private val afterEnterRoomFirstTimeScript:String = null) {
 
     private var exits:ListMap[Direction, Room] = ListMap[Direction, Room]()
     private var items:Map[String, Item] = Map[String, Item]()
+
 
     def getDescription : String = {
         this.description
@@ -45,4 +49,25 @@ class Room(private val name:String, private val description:String) {
     def getItems : Map[String, Item] = {
         this.items
     }
+
+    def getBeforeEnterRoomScript : String = {
+        this.beforeEnterRoomScript
+    }
+
+    def getAfterEnterRoomScript : String = {
+        this.afterEnterRoomScript
+    }
+
+    def getAfterLeaveRoomScript : String = {
+        this.afterLeaveRoomScript
+    }
+
+    def getBeforeEnterRoomFirstTimeScript : String = {
+        this.beforeEnterRoomFirstTimeScript
+    }
+
+    def getAfterEnterRoomFirstTimeScript : String = {
+        this.afterEnterRoomFirstTimeScript
+    }
+
 }

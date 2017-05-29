@@ -18,7 +18,8 @@ class MainApp extends Application {
     private val adventure:Adventure = new Adventure("Welcome to the Adventure!")
 
     val bedroom:Room = new Room("bedroom", "This is your bedroom.  Clothes are strewn " +
-            "across the floor, there is a TV, and a lamp sits on the bedsite table.")
+            "across the floor, there is a TV, and a lamp sits on the bedsite table.",
+            afterEnterRoomFirstTimeScript = "executeAfterTurns(5, \"say('you decide you should tidy up')\")")
 
     val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch", switchable = true)
     bedroom.addItem(lamp)

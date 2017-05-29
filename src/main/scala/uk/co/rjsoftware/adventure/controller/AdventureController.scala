@@ -17,6 +17,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     private var currentRoom : Room = null
     private val player : Player = new Player()
+    private var turnCounter : Int = 0
+    private var visitedRooms : List[Room] = Nil
 
     private var verbs : List[Verb] = StandardVerbs.getVerbs
     // add in any custom verbs
@@ -40,9 +42,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     say(this.adventure.getIntroduction)
     say("")
 
-    this.currentRoom = this.adventure.getStartRoom
-
-    look()
+    move(this.adventure.getStartRoom)
 
     // FOR TESTING ONLY
     def getCurrentRoom : Room = {
@@ -204,6 +204,8 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             case customVerb: CustomVerb => executeCustomVerb(customVerb, verbNoun.noun)
             case _ => executeCommand(verbNoun.verb.getVerb, verbNoun.noun)
         }
+
+        turnCounter += turnCounter
     }
 
     private def isItemInRoomOrPlayerInventory(item:Item) : Boolean = {
@@ -227,14 +229,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
         var script:Option[String] = item.getVerbs.get(verb)
 
-        engine.put("controller", new AdventureControllerWrapper(this))
-        engine.eval(
-            "function say(message) { controller.say(message) }\n" +
-            "function isSwitchedOn(itemName) { return controller.isSwitchedOn(itemName) }\n" +
-            "function isSwitchedOff(itemName) { return controller.isSwitchedOff(itemName) }\n" +
-            "\n" +
-            script.get)
-
+        executeScript(script.get)
         say("")
     }
 
@@ -294,9 +289,49 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
             say("")
         }
         else {
-            this.currentRoom = newRoom.get
-            look()
+            move(newRoom.get)
         }
+    }
+
+    private def move(toRoom:Room) : Unit = {
+        // process leaving the previous room
+        if (this.currentRoom != null) {
+            if (this.currentRoom.getAfterLeaveRoomScript != null) {
+                executeScript(this.currentRoom.getAfterLeaveRoomScript)
+            }
+        }
+
+        // now deal with entering the new room
+        var firstVisit : Boolean = false
+        this.currentRoom = toRoom
+
+        if (!this.visitedRooms.contains(toRoom)) {
+            firstVisit = true
+            this.visitedRooms ::= this.currentRoom
+        }
+
+        if (firstVisit) {
+            if (this.currentRoom.getBeforeEnterRoomFirstTimeScript != null) {
+                executeScript(this.currentRoom.getBeforeEnterRoomFirstTimeScript)
+            }
+        }
+
+        if (this.currentRoom.getBeforeEnterRoomScript != null) {
+            executeScript(this.currentRoom.getBeforeEnterRoomScript)
+        }
+
+        look()
+
+        if (firstVisit) {
+            if (this.currentRoom.getAfterEnterRoomFirstTimeScript != null) {
+                executeScript(this.currentRoom.getAfterEnterRoomFirstTimeScript)
+            }
+        }
+
+        if (this.currentRoom.getAfterEnterRoomScript != null) {
+            executeScript(this.currentRoom.getAfterEnterRoomScript)
+        }
+
     }
 
     private def get(item:Item) : Unit = {
@@ -409,6 +444,18 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         def say(outputText:String) : Unit = controller.say(outputText)
         def isSwitchedOn(itemName:String) : Boolean = controller.isSwitchedOn(itemName)
         def isSwitchedOff(itemName:String) : Boolean = !controller.isSwitchedOn(itemName)
+        def executeAfterTurns(turns:Int, script:String) : Unit = controller.executeAfterTurns(turns, script)
+    }
+
+    private def executeScript(script:String): Unit = {
+        engine.put("controller", new AdventureControllerWrapper(this))
+        engine.eval(
+            "function say(message) { controller.say(message) }\n" +
+            "function isSwitchedOn(itemName) { return controller.isSwitchedOn(itemName) }\n" +
+            "function isSwitchedOff(itemName) { return controller.isSwitchedOff(itemName) }\n" +
+            "function executeAfterTurns(turns, script) { return controller.executeAfterTurns(turns, script) }\n" +
+            "\n" +
+            script)
     }
 
     //
@@ -423,6 +470,23 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         val item:Item = getItem(itemName)
         item.isOn
     }
+
+    // TODO: Change this so tha the caller doesn't have to pass the script as a string.
+    //  () => {
+    //  }()
+    private def executeAfterTurns(turns:Int, script:String) : Unit = {
+        // TODO
+    }
+
+    // TODO: add script functions for:
+    //      print a message (without carriage return)
+    //      clear the screen.
+    //      player is carrying object
+    //      player is NOT carrying object
+    //      player is in room
+    //      player is not in room
+    //      object is visible
+    //      object is not visible.
 
     //
     // private helper methods to support the methods that can be used by Scripts

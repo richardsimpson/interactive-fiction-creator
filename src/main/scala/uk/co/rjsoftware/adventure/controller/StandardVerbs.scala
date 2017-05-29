@@ -34,7 +34,15 @@ object StandardVerbs {
 
     // Add the concept of 'turns'.
     // Add verb 'WAIT'
+    // Provide script function to run a script after X turns
     // Allow a script to fire something in a number of turns.
+    //      - Add ability to attach a script to a room that is executed when you first enter the room.
+    //      - That script will then schedule a second script to be run in 'x' turns. (where is that script defined?)
+    //
+    // Preferred syntax:
+    //      executeAfterTurns(5) {
+    //          say("")
+    //      }
 
     // Add diagonal directions
 
