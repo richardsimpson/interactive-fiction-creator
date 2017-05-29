@@ -2,7 +2,8 @@ package uk.co.rjsoftware.adventure.testing.groovyscript
 
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
-import uk.co.rjsoftware.adventure.controller.{AdventureController, MainWindowForTesting, ScriptExecutor}
+import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
+import uk.co.rjsoftware.adventure.controller.{AdventureController, MainWindowForTesting}
 import uk.co.rjsoftware.adventure.model.{Adventure, Room}
 
 /**

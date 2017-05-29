@@ -1,6 +1,7 @@
-package uk.co.rjsoftware.adventure.controller
+package uk.co.rjsoftware.adventure.controller.customscripts
 
 import org.codehaus.groovy.control.CompilerConfiguration
+import uk.co.rjsoftware.adventure.controller.AdventureController
 
 /**
  * Created by richardsimpson on 29/05/2017.
@@ -19,7 +20,7 @@ class ScriptExecutor {
 
     public void executeScript(String scriptText) {
         def config = new CompilerConfiguration();
-        config.scriptBaseClass = 'uk.co.rjsoftware.adventure.controller.AdventureScript'
+        config.scriptBaseClass = 'uk.co.rjsoftware.adventure.controller.customscripts.AdventureScript'
 
         def shell = new GroovyShell(new Binding(), config)
         def script = shell.parse(scriptText)

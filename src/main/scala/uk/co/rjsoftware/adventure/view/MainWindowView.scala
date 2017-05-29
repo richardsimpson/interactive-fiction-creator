@@ -1,7 +1,7 @@
 package uk.co.rjsoftware.adventure.view
 
 import javafx.fxml.FXML
-import javafx.scene.control.{Button, TextArea, TextField}
+import javafx.scene.control.{Button, MenuItem, TextArea, TextField}
 import javafx.scene.input.{KeyCode, KeyEvent}
 
 import uk.co.rjsoftware.adventure.controller.AdventureController
@@ -19,6 +19,8 @@ class MainWindowView extends MainWindow {
     @FXML private var inputTextField:TextField = null
 
     @FXML private var enterButton:Button = null
+
+    @FXML private var loadMenuItem:MenuItem = null
 
     @FXML def initialize() = {
     }
@@ -41,6 +43,12 @@ class MainWindowView extends MainWindow {
             }
         })
         inputTextField.requestFocus()
+
+        loadMenuItem.setOnAction(new EventHandler[ActionEvent]() {
+            override def handle(event: ActionEvent): Unit = {
+                // TODO
+            }
+        })
     }
 
     def say(outputText:String) : Unit = {

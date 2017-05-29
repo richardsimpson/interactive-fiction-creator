@@ -23,6 +23,10 @@ class Item(private val synonyms:List[String], private val description:String,
         this(List(name), description)
     }
 
+    def this(name:String) {
+        this(name, "")
+    }
+
     def getName : String = {
         this.synonyms.head
     }

@@ -1,4 +1,6 @@
-package uk.co.rjsoftware.adventure.controller
+package uk.co.rjsoftware.adventure.controller.customscripts
+
+import uk.co.rjsoftware.adventure.controller.AdventureController
 
 public abstract class AdventureScript extends Script {
 

@@ -3,7 +3,7 @@ package uk.co.rjsoftware.adventure.model
 /**
   * Created by richardsimpson on 15/05/2017.
   */
-class Adventure(private val introduction:String) {
+class Adventure(private var introduction:String) {
 
     private var rooms:List[Room] = Nil
     private var startRoom:Room = null
@@ -24,7 +24,19 @@ class Adventure(private val introduction:String) {
         this.introduction
     }
 
+    def setIntroduction(introduction:String) : Unit = {
+        this.introduction = introduction
+    }
+
     def getRooms : List[Room] = {
         this.rooms
+    }
+
+    def findRoom(roomName : String) : Room = {
+        val roomOptional : Option[Room] = this.rooms.find((room) => {
+            room.getName.equals(roomName)
+        })
+
+        roomOptional.orNull
     }
 }

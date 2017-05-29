@@ -3,6 +3,7 @@ package uk.co.rjsoftware.adventure.controller
 import javax.script.ScriptEngineManager
 
 import groovy.lang.Closure
+import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.model._
 import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow}
 
