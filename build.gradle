@@ -9,6 +9,7 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'scala'
+apply plugin: 'groovy'
 apply plugin: 'idea'
 
 // In this section you declare where to find the dependencies of your project

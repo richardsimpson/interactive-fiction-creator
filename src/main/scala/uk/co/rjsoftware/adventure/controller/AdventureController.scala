@@ -2,6 +2,7 @@ package uk.co.rjsoftware.adventure.controller
 
 import javax.script.ScriptEngineManager
 
+import groovy.lang.Closure
 import uk.co.rjsoftware.adventure.model._
 import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow}
 
@@ -11,9 +12,6 @@ import scala.annotation.tailrec
   * Created by richardsimpson on 19/05/2017.
   */
 class AdventureController(private val adventure:Adventure, private val mainWindow: MainWindow) {
-
-    private val manager = new ScriptEngineManager
-    private val engine = manager.getEngineByName("nashorn")
 
     private var currentRoom : Room = null
     private val player : Player = new Player()
@@ -435,47 +433,27 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
         say("")
     }
 
-    //
-    // Wrapper for AdventureController.  This exists purely to expose the various methods that might be
-    // required by scripts.  The wrapper makes these public, to avoid Scala mangling their names
-    //
-
-    private class AdventureControllerWrapper(controller:AdventureController) {
-        def say(outputText:String) : Unit = controller.say(outputText)
-        def isSwitchedOn(itemName:String) : Boolean = controller.isSwitchedOn(itemName)
-        def isSwitchedOff(itemName:String) : Boolean = !controller.isSwitchedOn(itemName)
-        def executeAfterTurns(turns:Int, script:String) : Unit = controller.executeAfterTurns(turns, script)
-    }
-
     private def executeScript(script:String): Unit = {
-        engine.put("controller", new AdventureControllerWrapper(this))
-        engine.eval(
-            "function say(message) { controller.say(message) }\n" +
-            "function isSwitchedOn(itemName) { return controller.isSwitchedOn(itemName) }\n" +
-            "function isSwitchedOff(itemName) { return controller.isSwitchedOff(itemName) }\n" +
-            "function executeAfterTurns(turns, script) { return controller.executeAfterTurns(turns, script) }\n" +
-            "\n" +
-            script)
+        val executor : ScriptExecutor = new ScriptExecutor(this)
+        executor.executeScript(script)
     }
 
     //
     // Utility functions - can be used by Scripts.
     //
 
-    private def say(outputText:String) : Unit = {
+    def say(outputText:String) : Unit = {
         this.mainWindow.say(outputText)
     }
 
-    private def isSwitchedOn(itemName:String) : Boolean = {
+    def isSwitchedOn(itemName:String) : Boolean = {
         val item:Item = getItem(itemName)
         item.isOn
     }
 
-    // TODO: Change this so tha the caller doesn't have to pass the script as a string.
-    //  () => {
-    //  }()
-    private def executeAfterTurns(turns:Int, script:String) : Unit = {
-        // TODO
+    // TODO: Change this so tha the Closure does not get called immediately
+    def executeAfterTurns(turns:Int, script:Closure[Unit]) : Unit = {
+        script.call()
     }
 
     // TODO: add script functions for:

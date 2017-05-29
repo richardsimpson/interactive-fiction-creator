@@ -92,7 +92,7 @@ class AdventureControllerTest extends FunSuite {
 
         adventure.setStartRoom(livingRoom)
 
-        mainWindow = new MainWindowForTesting()
+        this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(adventure, mainWindow)
         this.player = this.classUnderTest.getPlayer
     }
