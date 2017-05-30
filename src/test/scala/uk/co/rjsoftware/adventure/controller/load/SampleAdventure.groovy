@@ -1,5 +1,3 @@
-package uk.co.rjsoftware.adventure.controller.load
-
 adventure {
     introduction "Welcome to the Adventure!"
 

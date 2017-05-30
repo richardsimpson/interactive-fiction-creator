@@ -15,7 +15,7 @@ import uk.co.rjsoftware.adventure.model.Room
 class Loader {
     static Adventure loadAdventure(File dsl) {
         def config = new CompilerConfiguration();
-        config.scriptBaseClass = 'AdventureLoaderScript'
+        config.scriptBaseClass = AdventureLoaderScript.getCanonicalName()
 
         def shell = new GroovyShell(new Binding(), config)
         def script = shell.parse(dsl.text)
