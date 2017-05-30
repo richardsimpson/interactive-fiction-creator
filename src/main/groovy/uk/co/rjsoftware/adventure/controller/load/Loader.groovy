@@ -4,6 +4,7 @@ import org.codehaus.groovy.control.CompilerConfiguration
 import scala.Option
 import scala.collection.immutable.List
 import uk.co.rjsoftware.adventure.model.Adventure
+import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.model.Direction
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
@@ -48,8 +49,28 @@ public class AdventureDelegate {
         this.adventure.setIntroduction(introduction)
     }
 
-    private void rooms(Closure closure) {
-        closure.delegate = new RoomsDelegate(adventure)
+    private void verb(String verbName, Closure closure) {
+        if (this.adventure.findCustomVerb(verbName) != null) {
+            throw new RuntimeException("Cannot declare custom verbs twice")
+        }
+
+        CustomVerb customVerb = new CustomVerb(verbName)
+        this.adventure.addCustomVerb(customVerb)
+
+        closure.delegate = new VerbDelegate(customVerb)
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
+    }
+
+    private void room(String roomName, Closure closure) {
+        Room room = this.adventure.findRoom(roomName)
+
+        if (room == null) {
+            room = new Room(roomName)
+            this.adventure.addRoom(room)
+        }
+
+        closure.delegate = new RoomDelegate(room, this.adventure)
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
     }
@@ -59,28 +80,20 @@ public class AdventureDelegate {
     }
 }
 
-public class RoomsDelegate {
+public class VerbDelegate {
 
-    private final Adventure adventure
+    private final CustomVerb customVerb
 
-    private RoomsDelegate(final Adventure adventure) {
-        this.adventure = adventure
+    private VerbDelegate(final CustomVerb customVerb) {
+        this.customVerb = customVerb
     }
 
-    private void methodMissing(String roomName, args) {
-        Room room = this.adventure.findRoom(roomName)
-
-        if (room == null) {
-            room = new Room(roomName)
-            this.adventure.addRoom(room)
+    private void synonyms(String... synonyms) {
+        for (String synonym : synonyms) {
+            this.customVerb.addSynonym(synonym)
         }
-
-        final Closure closure = (Closure) args[0]
-
-        closure.delegate = new RoomDelegate(room, this.adventure)
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure()
     }
+
 }
 
 public class RoomDelegate {
@@ -133,47 +146,27 @@ public class RoomDelegate {
         this.room.addExit(linkedHashMap.get("direction"), room)
     }
 
-    private void items(Closure closure) {
-        closure.delegate = new ItemsDelegate(this.room)
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure()
-    }
-}
-
-public class ItemsDelegate {
-
-    private Room room
-
-    private ItemsDelegate(Room room) {
-        this.room = room
-    }
-
-    private void methodMissing(String itemName, args) {
+    private void item(String itemName, Closure closure) {
         Item item = this.room.getItem(itemName)
         if (item == null) {
             item = new Item(itemName)
             this.room.addItem(item)
         }
 
-        final Closure closure = (Closure) args[0]
-
-        closure.delegate = new ItemDelegate(item)
+        closure.delegate = new ItemDelegate(this.adventure, item)
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
     }
-
 }
 
 public class ItemDelegate {
 
     private final Item item
+    private final Adventure adventure
 
-    private ItemDelegate(Item item) {
+    private ItemDelegate(Adventure adventure, Item item) {
+        this.adventure = adventure
         this.item = item
-    }
-
-    private void methodMissing(String itemName, args) {
-        throw new RuntimeException("test")
     }
 
     private void synonyms(String... synonyms) {
@@ -221,4 +214,34 @@ public class ItemDelegate {
     private void extraMessageWhenSwitchedOff(String extraMessageWhenSwitchedOff) {
         this.item.setExtraMessageWhenSwitchedOff(extraMessageWhenSwitchedOff)
     }
+
+    private void verb(String verbName, Closure closure) {
+        final CustomVerb customVerb = this.adventure.findCustomVerb(verbName)
+
+        if (customVerb == null) {
+            throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
+        }
+
+        final VerbItemDelegate delegate = new VerbItemDelegate()
+        closure.delegate = delegate
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
+
+        this.item.addVerb(customVerb, delegate.getScript())
+
+    }
 }
+
+public class VerbItemDelegate {
+
+    private String script
+
+    private void script(String script) {
+        this.script = script.trim()
+    }
+
+    private String getScript() {
+        this.script
+    }
+}
+

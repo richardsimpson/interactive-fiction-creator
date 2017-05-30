@@ -21,13 +21,7 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
 
     private var verbs : List[Verb] = StandardVerbs.getVerbs
     // add in any custom verbs
-    for (room <- adventure.getRooms) {
-        for (item <- room.getItems.values) {
-            for (customVerb <- item.getVerbs.keys) {
-                verbs ::= customVerb
-            }
-        }
-    }
+    verbs ++= this.adventure.getCustomVerbs
 
     private var nouns : Map[String, Item] = Map[String, Item]()
     for (room <- adventure.getRooms) {

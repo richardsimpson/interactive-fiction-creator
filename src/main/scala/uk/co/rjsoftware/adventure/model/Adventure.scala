@@ -7,6 +7,7 @@ class Adventure(private var introduction:String) {
 
     private var rooms:List[Room] = Nil
     private var startRoom:Room = null
+    private var customVerbs : List[CustomVerb] = Nil
 
     def addRoom(room:Room) : Unit = {
         this.rooms ::= room
@@ -39,4 +40,22 @@ class Adventure(private var introduction:String) {
 
         roomOptional.orNull
     }
+
+    def addCustomVerb(customVerb:CustomVerb) : Unit = {
+        this.customVerbs ::= customVerb
+    }
+
+    def getCustomVerbs : List[CustomVerb] = {
+        this.customVerbs
+    }
+
+    def findCustomVerb(verbName : String) : CustomVerb = {
+        val customVerbOptional : Option[CustomVerb] = this.customVerbs.find((verb) => {
+            verb.getVerb.equals(verbName)
+        })
+
+        customVerbOptional.orNull
+    }
+
+
 }

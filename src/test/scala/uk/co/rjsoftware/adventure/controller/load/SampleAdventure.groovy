@@ -3,47 +3,72 @@ package uk.co.rjsoftware.adventure.controller.load
 adventure {
     introduction "Welcome to the Adventure!"
 
-    rooms {
-        "bedroom" {
-            description "custom description"
-            beforeEnterRoomScript "beforeEnterRoomScript"
-            afterEnterRoomScript "afterEnterRoomScript"
-            afterLeaveRoomScript "afterLeaveRoomScript"
-            beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript"
-            afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript"
+    verb ("WATCH {noun}") {
+        synonyms "LOOK AT {noun}", "VIEW {noun}"
+    }
 
-            items {
-                "lamp" {
-                    synonyms "lampshade"
-                    description "description"
-                    visible true
-                    scenery false
-                    gettable true
-                    droppable true
-                    switchable false
-                    switchOnMessage "switchOnMessage"
-                    switchOffMessage "switchOffMessage"
-                    extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
-                    extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
+    room ("bedroom") {
+        description "custom description"
+        beforeEnterRoomScript "beforeEnterRoomScript"
+        afterEnterRoomScript "afterEnterRoomScript"
+        afterLeaveRoomScript "afterLeaveRoomScript"
+        beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript"
+        afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript"
 
-                    // TODO: Verbs
+        item ("lamp") {
+            synonyms "lampshade", "shade"
+            description "description"
+            visible true
+            scenery false
+            gettable true
+            droppable true
+            switchable false
+            switchOnMessage "switchOnMessage"
+            switchOffMessage "switchOffMessage"
+            extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
+            extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
+        }
+
+        item("TV") {
+            synonyms "television"
+            description "description"
+            visible true
+            scenery false
+            gettable false
+            droppable false
+            switchable true
+            switchOnMessage "switchOnMessage"
+            switchOffMessage "switchOffMessage"
+            extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
+            extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
+
+            // TODO: Improve the DSL for custom verb scripts
+            verb ("WATCH {noun}") {
+                script """
+                if (isSwitchedOn('tv')) {
+                    say('You watch the TV for a while.  It's showing a Western of some kind.')
                 }
+                else {
+                    say('You watch the TV for a while.  It's just a black screen.')
+                }
+                """
             }
         }
-
-        "landing" {
-            description "custom description2"
-            beforeEnterRoomScript "beforeEnterRoomScript2"
-            afterEnterRoomScript "afterEnterRoomScript2"
-            afterLeaveRoomScript "afterLeaveRoomScript2"
-            beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript2"
-            afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript2"
-
-            exit direction: WEST, room: "bedroom"
-        }
-
-        "bedroom" {
-            exit direction: EAST, room: "landing"
-        }
     }
+
+    room ("landing") {
+        description "custom description2"
+        beforeEnterRoomScript "beforeEnterRoomScript2"
+        afterEnterRoomScript "afterEnterRoomScript2"
+        afterLeaveRoomScript "afterLeaveRoomScript2"
+        beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript2"
+        afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript2"
+
+        exit direction: WEST, room: "bedroom"
+    }
+
+    room ("bedroom") {
+        exit direction: EAST, room: "landing"
+    }
+
 }

@@ -16,6 +16,8 @@ import uk.co.rjsoftware.adventure.view.MainWindowView
   */
 class MainApp extends Application {
     private val adventure:Adventure = new Adventure("Welcome to the Adventure!")
+    val watch:CustomVerb = new CustomVerb(List("WATCH {noun}"))
+    adventure.addCustomVerb(watch)
 
     val bedroom:Room = new Room("bedroom", "This is your bedroom.  Clothes are strewn " +
             "across the floor, there is a TV, and a lamp sits on the bedsite table.",
@@ -32,7 +34,7 @@ class MainApp extends Application {
         switchable = true,
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")
-    tv.addVerb(new CustomVerb(List("WATCH {noun}")),
+    tv.addVerb(watch,
                 "if (isSwitchedOn('tv')) {" +
                 "    say('You watch the TV for a while.  It\\'s showing a Western of some kind.');" +
                 "}" +

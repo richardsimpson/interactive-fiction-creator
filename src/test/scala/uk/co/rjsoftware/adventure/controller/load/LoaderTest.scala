@@ -5,7 +5,7 @@ import java.net.URL
 
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
-import uk.co.rjsoftware.adventure.model.{Adventure, Direction, Item, Room}
+import uk.co.rjsoftware.adventure.model._
 
 import scala.io.Source
 
@@ -35,6 +35,10 @@ class LoaderTest extends FunSuite {
 
         adventure.getRooms.size should equal (2)
 
+        adventure.getCustomVerbs.size should equal (1)
+        val watch:CustomVerb = adventure.getCustomVerbs(0)
+        watch.getSynonyms should equal (List("WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"))
+
         val bedroom:Room = adventure.findRoom("bedroom")
         val landing:Room = adventure.findRoom("landing")
 
@@ -58,10 +62,10 @@ class LoaderTest extends FunSuite {
         landing.getExits.size should equal (1)
         landing.getExit(Direction.WEST).get should equal (bedroom)
 
-        bedroom.getItems.size should equal (1)
+        bedroom.getItems.size should equal (2)
 
         val lamp:Item = bedroom.getItem("lamp")
-        lamp.getSynonyms should equal (List("lamp", "lampshade"))
+        lamp.getSynonyms should equal (List("lamp", "lampshade", "shade"))
         lamp.getDescription should equal ("description")
         lamp.isVisible should equal (true)
         lamp.isScenery should equal (false)
@@ -72,5 +76,27 @@ class LoaderTest extends FunSuite {
         lamp.getSwitchOffMessage should equal ("switchOffMessage")
         lamp.getExtraMessageWhenSwitchedOn should equal ("extraMessageWhenSwitchedOn")
         lamp.getExtraMessageWhenSwitchedOff should equal ("extraMessageWhenSwitchedOff")
+
+        val tv:Item = bedroom.getItem("TV")
+        tv.getSynonyms should equal (List("TV", "television"))
+        tv.getDescription should equal ("description")
+        tv.isVisible should equal (true)
+        tv.isScenery should equal (false)
+        tv.isGettable should equal (false)
+        tv.isDroppable should equal (false)
+        tv.isSwitchable should equal (true)
+        tv.getSwitchOnMessage should equal ("switchOnMessage")
+        tv.getSwitchOffMessage should equal ("switchOffMessage")
+        tv.getExtraMessageWhenSwitchedOn should equal ("extraMessageWhenSwitchedOn")
+        tv.getExtraMessageWhenSwitchedOff should equal ("extraMessageWhenSwitchedOff")
+
+        tv.getVerbs.size should equal (1)
+        tv.getVerbs.head._1.getVerb should equal ("WATCH {noun}")
+        tv.getVerbs.head._2 should equal ("""if (isSwitchedOn('tv')) {
+                    say('You watch the TV for a while.  It's showing a Western of some kind.')
+                }
+                else {
+                    say('You watch the TV for a while.  It's just a black screen.')
+                }""")
     }
 }
