@@ -15,48 +15,6 @@ import uk.co.rjsoftware.adventure.view.MainWindowView
   * Created by richardsimpson on 15/05/2017.
   */
 class MainApp extends Application {
-    private val adventure:Adventure = new Adventure("Welcome to the Adventure!")
-    val watch:CustomVerb = new CustomVerb(List("WATCH {noun}"))
-    adventure.addCustomVerb(watch)
-
-    val bedroom:Room = new Room("bedroom", "This is your bedroom.  Clothes are strewn " +
-            "across the floor, there is a TV, and a lamp sits on the bedsite table.",
-            afterEnterRoomFirstTimeScript =
-                    "executeAfterTurns(5) {" +
-                        "say('you decide you should tidy up')" +
-                    "}")
-
-    val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch", switchable = true)
-    bedroom.addItem(lamp)
-
-    val tv:Item = new Item(List("TV", "television"), "A 28\" TV.",
-        visible = true, scenery = false, gettable = false, droppable = false,
-        switchable = true,
-        extraMessageWhenSwitchedOn = "It is showing an old western.",
-        extraMessageWhenSwitchedOff = "It is currently switched off.")
-    tv.addVerb(watch,
-                "if (isSwitchedOn('tv')) {" +
-                "    say('You watch the TV for a while.  It\\'s showing a Western of some kind.');" +
-                "}" +
-                "else if (isSwitchedOff('tv')) {" +
-                "    say('You watch the TV for a while.  It\\'s just a black screen.');" +
-                "}" +
-                "else {" +
-                "    say('This is weird.  The TV is neither switched on or off!');" +
-                "}"
-    )
-    bedroom.addItem(tv)
-
-    val landing:Room = new Room("landing", "You are in the landing.  There is not much here, " +
-            "except for a coffee stained carpet")
-
-    bedroom.addExit(Direction.EAST, landing)
-    landing.addExit(Direction.WEST, bedroom)
-
-    this.adventure.addRoom(bedroom)
-    this.adventure.addRoom(landing)
-
-    this.adventure.setStartRoom(bedroom)
 
     override def start(primaryStage: Stage): Unit = {
         // Load root layout from fxml file
