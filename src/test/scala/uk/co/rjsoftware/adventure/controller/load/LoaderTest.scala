@@ -31,6 +31,7 @@ class LoaderTest extends FunSuite {
         val file:File = new File("/Users/richardsimpson/workspace/interactive-fiction-creator/src/test/scala/uk/co/rjsoftware/adventure/controller/load/SampleAdventure.groovy")
         val adventure:Adventure = Loader.loadAdventure(file)
 
+        adventure.getTitle should equal ("Adventure Game")
         adventure.getIntroduction should equal ("Welcome to the Adventure!")
 
         adventure.getRooms.size should equal (2)
@@ -98,5 +99,7 @@ class LoaderTest extends FunSuite {
                 else {
                     say('You watch the TV for a while.  It's just a black screen.')
                 }""")
+
+        adventure.getStartRoom.getName should equal ("bedroom")
     }
 }

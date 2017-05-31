@@ -5,9 +5,18 @@ package uk.co.rjsoftware.adventure.model
   */
 class Adventure(private var introduction:String) {
 
+    private var title:String = null
     private var rooms:List[Room] = Nil
     private var startRoom:Room = null
     private var customVerbs : List[CustomVerb] = Nil
+
+    def setTitle(title:String) : Unit = {
+        this.title = title
+    }
+
+    def getTitle : String = {
+        this.title
+    }
 
     def addRoom(room:Room) : Unit = {
         this.rooms ::= room

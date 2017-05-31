@@ -45,6 +45,10 @@ public abstract class AdventureLoaderScript extends Script {
 public class AdventureDelegate {
     private final Adventure adventure = new Adventure("");
 
+    private void title(String title) {
+        this.adventure.setTitle(title)
+    }
+
     private void introduction(String introduction) {
         this.adventure.setIntroduction(introduction)
     }
@@ -73,6 +77,16 @@ public class AdventureDelegate {
         closure.delegate = new RoomDelegate(room, this.adventure)
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
+    }
+
+    private void startRoom(String roomName) {
+        Room room = this.adventure.findRoom(roomName)
+
+        if (room == null) {
+            throw new RuntimeException(("Cannot locate room named '" + roomName + "'"))
+        }
+
+        this.adventure.setStartRoom(room)
     }
 
     private Adventure getAdventure() {

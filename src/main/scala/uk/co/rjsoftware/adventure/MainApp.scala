@@ -59,8 +59,6 @@ class MainApp extends Application {
     this.adventure.setStartRoom(bedroom)
 
     override def start(primaryStage: Stage): Unit = {
-        primaryStage.setTitle("Adventure Game")
-
         // Load root layout from fxml file
         val loader:FXMLLoader = new FXMLLoader()
         loader.setLocation(getClass.getResource("view/mainwindow.fxml"))
@@ -73,9 +71,7 @@ class MainApp extends Application {
 
         // initialise the view after showing the scene, as then the request to focus the input box will work
         val mainWindowView:MainWindowView = loader.getController()
-        mainWindowView.init(this.adventure)
-
-        val adventureController:AdventureController = new AdventureController(adventure, mainWindowView)
+        mainWindowView.init(primaryStage)
     }
 
 }

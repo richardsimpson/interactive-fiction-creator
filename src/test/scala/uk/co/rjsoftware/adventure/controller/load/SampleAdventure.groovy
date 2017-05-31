@@ -1,4 +1,5 @@
 adventure {
+    title "Adventure Game"
     introduction "Welcome to the Adventure!"
 
     verb ("WATCH {noun}") {
@@ -68,5 +69,7 @@ adventure {
     room ("bedroom") {
         exit direction: EAST, room: "landing"
     }
+
+    startRoom "bedroom"
 
 }
