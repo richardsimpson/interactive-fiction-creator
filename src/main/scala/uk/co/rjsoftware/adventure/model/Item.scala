@@ -3,6 +3,7 @@ package uk.co.rjsoftware.adventure.model
 /**
   * Created by richardsimpson on 15/05/2017.
   */
+// TODO: Do we need this long this of constructor params since we are now creating the Items (and the Rooms) via the DSL
 class Item(private var synonyms:List[String], private var description:String,
            private var visible:Boolean = true, private var scenery:Boolean = false,
            private var gettable:Boolean = true, private var droppable:Boolean = true,
