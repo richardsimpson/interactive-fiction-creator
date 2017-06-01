@@ -588,6 +588,24 @@ class AdventureControllerTest extends FunSuite {
         ))
     }
 
+    test("verb: WAIT") {
+        for (verbString <- this.verbs("WAIT").getSynonyms) {
+            setup()
+            testWait(verbString)
+        }
+    }
+
+    private def testWait(command:String) {
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        assertMessagesAreCorrect(List(
+            "time passes...",
+            ""
+        ))
+    }
+
     test("custom verb: WATCH {noun}") {
         mainWindow.clearMessages()
 
