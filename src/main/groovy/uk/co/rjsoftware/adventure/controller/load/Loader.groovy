@@ -8,6 +8,7 @@ import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.model.Direction
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
+import uk.co.rjsoftware.adventure.utils.StringUtils
 
 /**
  * Created by richardsimpson on 29/05/2017.
@@ -46,11 +47,11 @@ public class AdventureDelegate {
     private final Adventure adventure = new Adventure("");
 
     private void title(String title) {
-        this.adventure.setTitle(title)
+        this.adventure.setTitle(StringUtils.sanitiseString(title))
     }
 
     private void introduction(String introduction) {
-        this.adventure.setIntroduction(introduction)
+        this.adventure.setIntroduction(StringUtils.sanitiseString(introduction))
     }
 
     private void verb(String verbName, Closure closure) {
@@ -127,27 +128,27 @@ public class RoomDelegate {
     }
 
     private void description(String description) {
-        this.room.setDescription(description)
+        this.room.setDescription(StringUtils.sanitiseString(description))
     }
 
     private void beforeEnterRoomScript(String script) {
-        this.room.beforeEnterRoomScript = script
+        this.room.setBeforeEnterRoomScript(StringUtils.sanitiseString(script))
     }
 
     private void afterEnterRoomScript(String script) {
-        this.room.setAfterEnterRoomScript(script)
+        this.room.setAfterEnterRoomScript(StringUtils.sanitiseString(script))
     }
 
     private void afterLeaveRoomScript(String script) {
-        this.room.setAfterLeaveRoomScript(script)
+        this.room.setAfterLeaveRoomScript(StringUtils.sanitiseString(script))
     }
 
     private void beforeEnterRoomFirstTimeScript(String script) {
-        this.room.setBeforeEnterRoomFirstTimeScript(script)
+        this.room.setBeforeEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
     }
 
     private void afterEnterRoomFirstTimeScript(String script) {
-        this.room.setAfterEnterRoomFirstTimeScript(script)
+        this.room.setAfterEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
     }
 
     private void exit(LinkedHashMap linkedHashMap) {
@@ -190,7 +191,7 @@ public class ItemDelegate {
     }
 
     private void description(String description) {
-        this.item.setDescription(description)
+        this.item.setDescription(StringUtils.sanitiseString(description))
     }
 
     private void visible(Boolean visible) {
@@ -214,19 +215,19 @@ public class ItemDelegate {
     }
 
     private void switchOnMessage(String switchOnMessage) {
-        this.item.setSwitchOnMessage(switchOnMessage)
+        this.item.setSwitchOnMessage(StringUtils.sanitiseString(switchOnMessage))
     }
 
     private void switchOffMessage(String switchOffMessage) {
-        this.item.setSwitchOffMessage(switchOffMessage)
+        this.item.setSwitchOffMessage(StringUtils.sanitiseString(switchOffMessage))
     }
 
     private void extraMessageWhenSwitchedOn(String extraMessageWhenSwitchedOn) {
-        this.item.setExtraMessageWhenSwitchedOn(extraMessageWhenSwitchedOn)
+        this.item.setExtraMessageWhenSwitchedOn(StringUtils.sanitiseString(extraMessageWhenSwitchedOn))
     }
 
     private void extraMessageWhenSwitchedOff(String extraMessageWhenSwitchedOff) {
-        this.item.setExtraMessageWhenSwitchedOff(extraMessageWhenSwitchedOff)
+        this.item.setExtraMessageWhenSwitchedOff(StringUtils.sanitiseString(extraMessageWhenSwitchedOff))
     }
 
     private void verb(String verbName, Closure closure) {
@@ -251,7 +252,7 @@ public class VerbItemDelegate {
     private String script
 
     private void script(String script) {
-        this.script = script.trim()
+        this.script = StringUtils.sanitiseString(script)
     }
 
     private String getScript() {

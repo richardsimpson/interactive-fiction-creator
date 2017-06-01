@@ -111,8 +111,9 @@ class MainWindowView extends MainWindow {
         this.outputTextArea.setText("")
         this.primaryStage.setTitle(title)
 
-        say(introduction)
-        say("")
-
+        if (introduction.length > 0) {
+            say(introduction)
+            say("")
+        }
     }
 }

@@ -36,7 +36,7 @@ class MainApp extends Application {
 
         val controller:AdventureController = new AdventureController(mainWindowView)
 
-        val file:File = new File(Paths.get("").toAbsolutePath.toString + "/adventures/adventureA.groovy")
+        val file:File = new File(Paths.get("").toAbsolutePath.toString + "/adventures/TheBoggit.groovy")
         val adventure:Adventure = Loader.loadAdventure(file)
         controller.loadAdventure(adventure)
     }
