@@ -1,25 +1,36 @@
 package uk.co.rjsoftware.adventure.controller
 
-import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow}
+import uk.co.rjsoftware.adventure.view.{CommandEvent, LoadEvent, MainWindow}
 
 /**
   * Created by richardsimpson on 20/05/2017.
   */
 class MainWindowForTesting extends MainWindow {
 
-    private var listeners: List[CommandEvent => Unit] = Nil
+    private var commandListeners: List[CommandEvent => Unit] = Nil
+    private var loadListeners: List[LoadEvent => Unit] = Nil
     private var messages : List[String] = Nil
 
     override def say(outputText: String): Unit = {
         this.messages :+= outputText
     }
 
-    override def addListener(listener: (CommandEvent) => Unit): Unit = {
-        this.listeners ::= listener
+    override def addCommandListener(listener: (CommandEvent) => Unit): Unit = {
+        this.commandListeners ::= listener
     }
 
     def fireCommand(event: CommandEvent): Unit = {
-        for (listener <- this.listeners) {
+        for (listener <- this.commandListeners) {
+            listener(event)
+        }
+    }
+
+    override def addLoadListener(listener: (LoadEvent) => Unit): Unit = {
+        this.loadListeners ::= listener
+    }
+
+    def fireLoadCommand(event: LoadEvent): Unit = {
+        for (listener <- this.loadListeners) {
             listener(event)
         }
     }
@@ -36,4 +47,7 @@ class MainWindowForTesting extends MainWindow {
         this.messages = Nil
     }
 
+    override def loadAdventure(title: String, introduction: String): Unit = {
+
+    }
 }

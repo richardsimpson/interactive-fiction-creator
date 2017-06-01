@@ -32,7 +32,8 @@ class ScalaToGroovy extends FunSuite {
         adventure.setStartRoom(room)
 
         mainWindow = new MainWindowForTesting()
-        this.controller = new AdventureController(adventure, mainWindow)
+        this.controller = new AdventureController(mainWindow)
+        this.controller.loadAdventure(adventure)
     }
 
     test("call the GroovyShell: say") {

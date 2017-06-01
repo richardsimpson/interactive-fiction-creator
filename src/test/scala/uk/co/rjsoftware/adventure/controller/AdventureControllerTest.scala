@@ -34,9 +34,8 @@ class AdventureControllerTest extends FunSuite {
         gettable = true, droppable = false, switchable = false)
     private val remote:Item = new Item(List("remote"), "The TV remote", visible = false, scenery = false)
 
-    tv.addVerb(new CustomVerb(List("WATCH {noun}")),
-        "say('You watch the TV for a while.');"
-    )
+    private val watch = new CustomVerb(List("WATCH {noun}"))
+    tv.addVerb(watch, "say('You watch the TV for a while.');")
 
     //           kitchen    landing
     //                |      |
@@ -75,6 +74,7 @@ class AdventureControllerTest extends FunSuite {
 
     private def setup(): Unit = {
         val adventure:Adventure = new Adventure("Welcome to the Adventure!")
+        adventure.addCustomVerb(watch)
 
         livingRoom.addItem(lamp)
         livingRoom.addItem(tv)
@@ -93,7 +93,8 @@ class AdventureControllerTest extends FunSuite {
         adventure.setStartRoom(livingRoom)
 
         this.mainWindow = new MainWindowForTesting()
-        this.classUnderTest = new AdventureController(adventure, mainWindow)
+        this.classUnderTest = new AdventureController(mainWindow)
+        this.classUnderTest.loadAdventure(adventure)
         this.player = this.classUnderTest.getPlayer
     }
 

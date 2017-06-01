@@ -1,41 +1,35 @@
 package uk.co.rjsoftware.adventure.controller
 
+import java.io.File
+import java.nio.file.Paths
+import javafx.stage.{FileChooser, Stage}
+import javafx.stage.FileChooser.ExtensionFilter
 import javax.script.ScriptEngineManager
 
 import groovy.lang.Closure
 import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
+import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model._
-import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow}
+import uk.co.rjsoftware.adventure.view.{CommandEvent, LoadEvent, MainWindow}
 
 import scala.annotation.tailrec
 
 /**
   * Created by richardsimpson on 19/05/2017.
   */
-class AdventureController(private val adventure:Adventure, private val mainWindow: MainWindow) {
+class AdventureController(private val mainWindow: MainWindow) {
 
     private var currentRoom : Room = null
-    private val player : Player = new Player()
+    private var player : Player = null
     private var visitedRooms : List[Room] = Nil
     private var scheduledScripts:List[ScheduledScript] = Nil
 
-    private var verbs : List[Verb] = StandardVerbs.getVerbs
-    // add in any custom verbs
-    verbs ++= this.adventure.getCustomVerbs
+    private var verbs : List[Verb] = Nil
 
     private var nouns : Map[String, Item] = Map[String, Item]()
-    for (room <- adventure.getRooms) {
-        // TODO: Why does this work?
-        nouns ++= room.getItems.map({case (key, value) => (key.toUpperCase, value)})
-    }
 
-    mainWindow.addListener(executeCommand)
-
-    // initialise the view
-    say(this.adventure.getIntroduction)
-    say("")
-
-    move(this.adventure.getStartRoom)
+    mainWindow.addCommandListener(executeCommand)
+    mainWindow.addLoadListener(loadAdventure)
 
     // FOR TESTING ONLY
     def getCurrentRoom : Room = {
@@ -45,6 +39,34 @@ class AdventureController(private val adventure:Adventure, private val mainWindo
     // FOR TESTING ONLY
     def getPlayer : Player = {
         this.player
+    }
+
+    private def loadAdventure(event:LoadEvent) : Unit = {
+        if (event.getFile != null) {
+            val adventure:Adventure = Loader.loadAdventure(event.getFile)
+            loadAdventure(adventure)
+        }
+    }
+
+    def loadAdventure(adventure:Adventure) {
+        this.player = new Player()
+        this.visitedRooms = Nil
+        this.scheduledScripts = Nil
+
+        this.verbs = StandardVerbs.getVerbs
+        // add in any custom verbs
+        this.verbs ++= adventure.getCustomVerbs
+
+        this.nouns = Map[String, Item]()
+        for (room <- adventure.getRooms) {
+            // TODO: Why does this work?
+            nouns ++= room.getItems.map({case (key, value) => (key.toUpperCase, value)})
+        }
+
+        // initialise the view
+        this.mainWindow.loadAdventure(adventure.getTitle, adventure.getIntroduction)
+
+        move(adventure.getStartRoom)
     }
 
     // TODO: Extract the parser into another class

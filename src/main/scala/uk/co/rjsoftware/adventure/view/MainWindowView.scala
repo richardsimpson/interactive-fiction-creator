@@ -31,7 +31,9 @@ class MainWindowView extends MainWindow {
 
     private var primaryStage:Stage = null
 
-    private var listeners: List[CommandEvent => Unit] = Nil
+    private var commandListeners: List[CommandEvent => Unit] = Nil
+    private var loadListeners: List[LoadEvent => Unit] = Nil
+
 
     def init(primaryStage: Stage) : Unit = {
         this.primaryStage = primaryStage
@@ -56,28 +58,20 @@ class MainWindowView extends MainWindow {
                 loadAdventure()
             }
         })
-
-        loadAdventure(new File(Paths.get("").toAbsolutePath().toString() + "/adventures/adventureA.groovy"))
     }
 
-    private def loadAdventure() : Unit = {
+    private def loadAdventure(): Unit = {
         val fileChooser:FileChooser = new FileChooser()
         fileChooser.setTitle("Open Adventure")
         fileChooser.setInitialDirectory(new File(Paths.get("").toAbsolutePath().toString()))
         fileChooser.setSelectedExtensionFilter(new ExtensionFilter("Adventures", "*.groovy"))
 
-        val file:File = fileChooser.showOpenDialog(primaryStage)
-        loadAdventure(file)
-    }
-
-    private def loadAdventure(file:File) : Unit = {
+        val file:File = fileChooser.showOpenDialog(this.primaryStage)
         if (file != null) {
-            this.outputTextArea.setText("")
-            val adventure:Adventure = Loader.loadAdventure(file)
-            this.primaryStage.setTitle(adventure.getTitle)
-            val adventureController:AdventureController = new AdventureController(adventure, this)
+            fireLoadCommand(new LoadEvent(file))
         }
     }
+
 
     def say(outputText:String) : Unit = {
         this.outputTextArea.appendText(outputText + System.lineSeparator())
@@ -93,13 +87,32 @@ class MainWindowView extends MainWindow {
         fireCommand(new CommandEvent(command))
     }
 
-    def addListener(listener: CommandEvent => Unit) : Unit = {
-        this.listeners ::= listener
+    def addCommandListener(listener: CommandEvent => Unit) : Unit = {
+        this.commandListeners ::= listener
     }
 
     private def fireCommand(event: CommandEvent) : Unit = {
-        for (listener <- this.listeners) {
+        for (listener <- this.commandListeners) {
             listener(event)
         }
+    }
+
+    def addLoadListener(listener: LoadEvent => Unit) : Unit = {
+        this.loadListeners ::= listener
+    }
+
+    private def fireLoadCommand(event: LoadEvent) : Unit = {
+        for (listener <- this.loadListeners) {
+            listener(event)
+        }
+    }
+
+    def loadAdventure(title:String, introduction:String): Unit = {
+        this.outputTextArea.setText("")
+        this.primaryStage.setTitle(title)
+
+        say(introduction)
+        say("")
+
     }
 }
