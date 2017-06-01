@@ -289,9 +289,14 @@ class AdventureController(private val mainWindow: MainWindow) {
     private def look() : Unit = {
         say(this.currentRoom.getDescription)
         if (!this.currentRoom.getItems.isEmpty) {
-            say("You can also see:")
+            var firstItemOutput = false
+
             for (item <- this.currentRoom.getItems.values) {
                 if (item.isVisible && !item.isScenery) {
+                    if (!firstItemOutput) {
+                        firstItemOutput = true
+                        say("You can also see:")
+                    }
                     say(item.getName)
                 }
             }

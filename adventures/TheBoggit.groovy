@@ -22,11 +22,12 @@ adventure {
                 bore the words,
                 "Enter the correct combination."
                 """
-
+            scenery true
         }
 
         item ("window") {
             description "Bimbo couldn't reach the window"
+            scenery true
         }
 
         // AFTER 3 turns:
@@ -105,18 +106,22 @@ adventure {
 
         item ("toilet") {
             description "The toilet looked a bit dubious"
+            scenery true
         }
 
         item ("basin") {
             description "The basin contained some ancient mouthwash stains but little else"
+            scenery true
         }
 
         item ("cabinet") {
             description "The cabinet was a hefty, steel structure, securely welded shut"
+            scenery true
         }
 
         item ("tiles") {
             description "The tiles were a bit wet but otherwise uninteresting"
+            scenery true
         }
     }
 

@@ -191,6 +191,26 @@ class AdventureControllerTest extends FunSuite {
         ))
     }
 
+    test("verb: LOOK (when there are no items in the room") {
+        for (verbString <- this.verbs("LOOK").getSynonyms) {
+            setup()
+            testLook_WhenThereAreNoItemsInTheRoom(verbString)
+        }
+    }
+
+    private def testLook_WhenThereAreNoItemsInTheRoom(command:String) {
+        mainWindow.fireCommand(new CommandEvent("east"))
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        assertMessagesAreCorrect(List(
+            diningRoom.getDescription,
+            ""
+        ))
+    }
+
     private def assertMessagesAreCorrect(expectedMessages : List[String]): Unit = {
         val messages:List[String] = this.mainWindow.getMessages
         assert(messages.size == expectedMessages.size)
