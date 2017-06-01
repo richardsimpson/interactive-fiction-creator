@@ -23,6 +23,7 @@ class AdventureController(private val mainWindow: MainWindow) {
     private var player : Player = null
     private var visitedRooms : List[Room] = Nil
     private var scheduledScripts:List[ScheduledScript] = Nil
+    private var turnCounter : Int = 0
 
     private var verbs : List[Verb] = Nil
 
@@ -52,6 +53,7 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.player = new Player()
         this.visitedRooms = Nil
         this.scheduledScripts = Nil
+        this.turnCounter = 0
 
         this.verbs = StandardVerbs.getVerbs
         // add in any custom verbs
@@ -199,6 +201,8 @@ class AdventureController(private val mainWindow: MainWindow) {
         val words:Array[String] = event.getCommand.trim.replaceAll(" +", " ").toUpperCase.split(" ")
 
         try {
+            this.turnCounter = this.turnCounter + 1
+
             if (words.length < 1) {
                 say("There are no words...")
                 return
@@ -278,6 +282,7 @@ class AdventureController(private val mainWindow: MainWindow) {
             case "INVENTORY" => inventory()
             case "TURN ON {noun}" => turnOn(item)
             case "TURN OFF {noun}" => turnOff(item)
+            case "WAIT" => waitTurn()
             case _ => throw new RuntimeException("Unexpected verb")
         }
     }
@@ -474,6 +479,11 @@ class AdventureController(private val mainWindow: MainWindow) {
                 say(switchOffMessage)
             }
         }
+        say("")
+    }
+
+    private def waitTurn() : Unit = {
+        say("time passes...")
         say("")
     }
 

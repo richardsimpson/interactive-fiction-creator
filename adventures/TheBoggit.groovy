@@ -36,7 +36,7 @@ adventure {
         // He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully
         // on the carpet before scrambling out through the now broken window.
 
-        // WAIT
+        // TODO: WAIT
         // Bimbo waited
         // Time crawled slowly past
 

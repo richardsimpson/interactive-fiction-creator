@@ -23,6 +23,7 @@ object StandardVerbs {
     verbs ::= new Verb(List("INVENTORY", "INV", "I"))
     verbs ::= new Verb(List("TURN ON {noun}", "TURN {noun} ON", "SWITCH ON {noun}", "SWITCH {noun} ON"))
     verbs ::= new Verb(List("TURN OFF {noun}", "TURN {noun} OFF", "SWITCH OFF {noun}", "SWITCH {noun} OFF"))
+    verbs ::= new Verb(List("WAIT"))
 
     // TODO: Add verbs (or should these just be custom verbs):
     //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, EAT, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
