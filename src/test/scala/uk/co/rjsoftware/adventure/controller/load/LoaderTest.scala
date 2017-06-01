@@ -94,11 +94,11 @@ class LoaderTest extends FunSuite {
         tv.getVerbs.size should equal (1)
         tv.getVerbs.head._1.getVerb should equal ("WATCH {noun}")
         tv.getVerbs.head._2 should equal ("""if (isSwitchedOn('tv')) {
-                    say('You watch the TV for a while.  It's showing a Western of some kind.')
-                }
-                else {
-                    say('You watch the TV for a while.  It's just a black screen.')
-                }""")
+    say('You watch the TV for a while.  It's showing a Western of some kind.')
+}
+else {
+    say('You watch the TV for a while.  It's just a black screen.')
+}""")
 
         adventure.getStartRoom.getName should equal ("bedroom")
     }
