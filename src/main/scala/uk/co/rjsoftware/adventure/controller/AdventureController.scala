@@ -510,6 +510,11 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.scheduledScripts :+= new ScheduledScript(turns, script)
     }
 
+    def setVisible(itemName:String, visible:Boolean) : Unit = {
+        val item:Item = getItem(itemName)
+        item.setVisible(visible)
+    }
+
     // TODO: add script functions for:
     //      print a message (without carriage return)
     //      clear the screen.

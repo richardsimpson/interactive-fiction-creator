@@ -26,4 +26,12 @@ public abstract class AdventureScript extends Script {
         adventureController.executeAfterTurns(turns, scriptToExecute)
     }
 
+    public void setVisible(String itemName) {
+        adventureController.setVisible(itemName, true)
+    }
+
+    public void setInvisible(String itemName) {
+        adventureController.setVisible(itemName, false)
+    }
+
 }

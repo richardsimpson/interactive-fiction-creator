@@ -11,11 +11,12 @@ adventure {
         beforeEnterRoomFirstTimeScript '''
             executeAfterTurns(3) {
                 say("""
-                Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
-                elegantly on the floot beside  Bimbo.
-                He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully 
-                on the carpet before scrambling out through the now broken window.
-                """)
+                    Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
+                    elegantly on the floot beside  Bimbo.
+                    He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully 
+                    on the carpet before scrambling out through the now broken window.""")
+                setVisible("a small card")
+                setVisible("a box of expensive chocolates")
             }
 '''
         item ("a large, wooden chest") {
@@ -40,12 +41,6 @@ adventure {
             scenery true
         }
 
-        // AFTER 3 turns:
-        // Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
-        // elegantly on the floot beside  Bimbo.
-        // He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully
-        // on the carpet before scrambling out through the now broken window.
-
         // TODO: WAIT - allow the adventure to specify the text for the WAIT command.  Also extend to other feedback.
         // Bimbo waited
         // Time crawled slowly past
@@ -58,15 +53,16 @@ adventure {
                                          -GG-
                                          
                 P.S. These chocs will self destruct in 10 minutes"""
-
+            visible false
         }
 
-//        item ("a box of expensive chocolates") {
-//            synonyms "chocolates", "chocs"
-//            description """
-//                The chocolates were small and brown.  They probably contained milk chocolate, milk solids
-//                (20% minimum) and vegetable fat."""
-//        }
+        item ("a box of expensive chocolates") {
+            synonyms "chocolates", "chocs"
+            description """
+                The chocolates were small and brown.  They probably contained milk chocolate, milk solids
+                (20% minimum) and vegetable fat."""
+            visible false
+        }
 
         // WHEN eat the chocolates
         // Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
@@ -83,6 +79,7 @@ adventure {
             description """
                 Bimbo examined the chocolates.  "The cleaning elf is gonna kill that old wizard one day!" he
                 remarked to no one in particular"""
+            visible false
         }
     }
 
