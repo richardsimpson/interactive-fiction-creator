@@ -225,7 +225,7 @@ class AdventureControllerTest extends FunSuite {
         mainWindow.fireCommand(new CommandEvent("exits"))
 
         assertMessagesAreCorrect(List(
-            "From here you can go North, South, East, West, Up, Down, ",
+            "From here you can go North, South, East, West, Up, Down,",
             ""
         ))
     }

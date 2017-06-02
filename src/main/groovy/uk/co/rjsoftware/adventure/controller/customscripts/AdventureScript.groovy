@@ -34,4 +34,11 @@ public abstract class AdventureScript extends Script {
         adventureController.setVisible(itemName, false)
     }
 
+    public boolean playerInRoom(String roomName) {
+        adventureController.playerInRoom(roomName)
+    }
+
+    public boolean playerNotInRoom(String roomName) {
+        !adventureController.playerInRoom(roomName)
+    }
 }

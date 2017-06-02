@@ -1,11 +1,5 @@
 package uk.co.rjsoftware.adventure.controller
 
-import java.io.File
-import java.nio.file.Paths
-import javafx.stage.{FileChooser, Stage}
-import javafx.stage.FileChooser.ExtensionFilter
-import javax.script.ScriptEngineManager
-
 import groovy.lang.Closure
 import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.controller.load.Loader
@@ -513,6 +507,10 @@ class AdventureController(private val mainWindow: MainWindow) {
     def setVisible(itemName:String, visible:Boolean) : Unit = {
         val item:Item = getItem(itemName)
         item.setVisible(visible)
+    }
+
+    def playerInRoom(roomName:String) : Boolean = {
+        this.currentRoom.getName.equals(roomName)
     }
 
     // TODO: add script functions for:

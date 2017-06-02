@@ -8,22 +8,44 @@ adventure {
              window was set high into the wall.
              To the south, was the round green toilet."""
 
+        // TODO: Allow nouns to be referenced by an ID, rather than their actual description (e.g. chocolates rather than 'a box of expensive chocolates')
         beforeEnterRoomFirstTimeScript '''
             executeAfterTurns(3) {
-                say("""
-                    Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
-                    elegantly on the floot beside  Bimbo.
-                    He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully 
-                    on the carpet before scrambling out through the now broken window.""")
+                if (playerInRoom("tunnel like hall")) {
+                    say("""
+                        Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
+                        elegantly on the floor beside  Bimbo.
+                        He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully 
+                        on the carpet before scrambling out through the now broken window.""")
+                }
+                else {
+                    say('A muffled "thwump" eminates from the hall, followed by fumbling noises')
+                }
                 setVisible("a small card")
                 setVisible("a box of expensive chocolates")
+                executeAfterTurns(10) {
+                    if (playerInRoom("tunnel like hall")) {
+                        say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
+                    }
+                    else {
+                        say("A muffled report sounded as the chocolates exploded nearby")
+                    }
+                    setInvisible("a box of expensive chocolates")
+                    setVisible("a wrecked box of chocolates")
+                }
             }
 '''
+        // TODO: When the chocolates explode, need to 'finish' the game if in the same room
+
+        // TODO: WHEN eat the chocolates
+        // Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
+        // A few moments later, he exploded for no apparent reason.
+
         item ("a large, wooden chest") {
             synonyms "chest"
             description "The chest was both heavy and closed"
 
-            // OPEN CHEST:
+            // TODO: OPEN CHEST:
             // Bimbo opened the chest, but couldn't quite see inside
         }
 
@@ -64,16 +86,6 @@ adventure {
             visible false
         }
 
-        // WHEN eat the chocolates
-        // Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
-        // A few moments later, he exploded for no apparent reason.
-
-        // AFTER 10 turns:
-        // The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.
-        // OR, if in the toilet:
-        // A muffled report sounded as the chocolates exploded nearby
-
-
         item ("a wrecked box of chocolates") {
             synonyms "chocolates", "chocs"
             description """
@@ -83,7 +95,7 @@ adventure {
         }
     }
 
-    // climb into chest:
+    // TODO: climb into chest:
 
     room ("inside chest") {
         description "Bimbo was in the large wooden chest"
@@ -98,11 +110,11 @@ adventure {
                 Farmer Faggot: 4/7/31"""
         }
 
-        // GET <noun>: This magnificent act, to put it plainly, was done!
+        // TODO: GET <noun>: This magnificent act, to put it plainly, was done!
 
     }
 
-    // CLIMB OUT (of chest): Returns you to the 'tunnel like hall'
+    // TODO: CLIMB OUT (of chest): Returns you to the 'tunnel like hall'
 
 
     room ("round green toilet") {
@@ -137,6 +149,4 @@ adventure {
     }
 
     startRoom "tunnel like hall"
-
-    // end games...
 }
