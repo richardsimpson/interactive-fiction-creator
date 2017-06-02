@@ -10,6 +10,7 @@ import groovy.lang.Closure
 import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model._
+import uk.co.rjsoftware.adventure.utils.StringUtils
 import uk.co.rjsoftware.adventure.view.{CommandEvent, LoadEvent, MainWindow}
 
 import scala.annotation.tailrec
@@ -497,7 +498,7 @@ class AdventureController(private val mainWindow: MainWindow) {
     //
 
     def say(outputText:String) : Unit = {
-        this.mainWindow.say(outputText)
+        this.mainWindow.say(StringUtils.sanitiseString(outputText))
     }
 
     def isSwitchedOn(itemName:String) : Boolean = {

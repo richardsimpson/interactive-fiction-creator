@@ -47,11 +47,11 @@ public class AdventureDelegate {
     private final Adventure adventure = new Adventure("");
 
     private void title(String title) {
-        this.adventure.setTitle(StringUtils.sanitiseString(title))
+        this.adventure.setTitle(title)
     }
 
     private void introduction(String introduction) {
-        this.adventure.setIntroduction(StringUtils.sanitiseString(introduction))
+        this.adventure.setIntroduction(introduction)
     }
 
     private void verb(String verbName, Closure closure) {
@@ -90,7 +90,7 @@ public class AdventureDelegate {
         this.adventure.setStartRoom(room)
     }
 
-    private Adventure getAdventure() {
+    protected Adventure getAdventure() {
         return this.adventure
     }
 }
@@ -99,7 +99,7 @@ public class VerbDelegate {
 
     private final CustomVerb customVerb
 
-    private VerbDelegate(final CustomVerb customVerb) {
+    protected VerbDelegate(final CustomVerb customVerb) {
         this.customVerb = customVerb
     }
 
@@ -122,33 +122,33 @@ public class RoomDelegate {
     private Direction UP = Direction.UP
     private Direction DOWN = Direction.DOWN
 
-    private RoomDelegate(final Room room, final Adventure adventure) {
+    protected RoomDelegate(final Room room, final Adventure adventure) {
         this.adventure = adventure
         this.room = room
     }
 
     private void description(String description) {
-        this.room.setDescription(StringUtils.sanitiseString(description))
+        this.room.setDescription(description)
     }
 
     private void beforeEnterRoomScript(String script) {
-        this.room.setBeforeEnterRoomScript(StringUtils.sanitiseString(script))
+        this.room.setBeforeEnterRoomScript(script)
     }
 
     private void afterEnterRoomScript(String script) {
-        this.room.setAfterEnterRoomScript(StringUtils.sanitiseString(script))
+        this.room.setAfterEnterRoomScript(script)
     }
 
     private void afterLeaveRoomScript(String script) {
-        this.room.setAfterLeaveRoomScript(StringUtils.sanitiseString(script))
+        this.room.setAfterLeaveRoomScript(script)
     }
 
     private void beforeEnterRoomFirstTimeScript(String script) {
-        this.room.setBeforeEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
+        this.room.setBeforeEnterRoomFirstTimeScript(script)
     }
 
     private void afterEnterRoomFirstTimeScript(String script) {
-        this.room.setAfterEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
+        this.room.setAfterEnterRoomFirstTimeScript(script)
     }
 
     private void exit(LinkedHashMap linkedHashMap) {
@@ -179,7 +179,7 @@ public class ItemDelegate {
     private final Item item
     private final Adventure adventure
 
-    private ItemDelegate(Adventure adventure, Item item) {
+    protected ItemDelegate(Adventure adventure, Item item) {
         this.adventure = adventure
         this.item = item
     }
@@ -191,7 +191,7 @@ public class ItemDelegate {
     }
 
     private void description(String description) {
-        this.item.setDescription(StringUtils.sanitiseString(description))
+        this.item.setDescription(description)
     }
 
     private void visible(Boolean visible) {
@@ -215,19 +215,19 @@ public class ItemDelegate {
     }
 
     private void switchOnMessage(String switchOnMessage) {
-        this.item.setSwitchOnMessage(StringUtils.sanitiseString(switchOnMessage))
+        this.item.setSwitchOnMessage(switchOnMessage)
     }
 
     private void switchOffMessage(String switchOffMessage) {
-        this.item.setSwitchOffMessage(StringUtils.sanitiseString(switchOffMessage))
+        this.item.setSwitchOffMessage(switchOffMessage)
     }
 
     private void extraMessageWhenSwitchedOn(String extraMessageWhenSwitchedOn) {
-        this.item.setExtraMessageWhenSwitchedOn(StringUtils.sanitiseString(extraMessageWhenSwitchedOn))
+        this.item.setExtraMessageWhenSwitchedOn(extraMessageWhenSwitchedOn)
     }
 
     private void extraMessageWhenSwitchedOff(String extraMessageWhenSwitchedOff) {
-        this.item.setExtraMessageWhenSwitchedOff(StringUtils.sanitiseString(extraMessageWhenSwitchedOff))
+        this.item.setExtraMessageWhenSwitchedOff(extraMessageWhenSwitchedOff)
     }
 
     private void verb(String verbName, Closure closure) {
@@ -252,7 +252,7 @@ public class VerbItemDelegate {
     private String script
 
     private void script(String script) {
-        this.script = StringUtils.sanitiseString(script)
+        this.script = script
     }
 
     private String getScript() {
