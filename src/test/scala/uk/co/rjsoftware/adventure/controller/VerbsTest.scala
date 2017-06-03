@@ -299,7 +299,7 @@ class VerbsTest extends FunSuite {
         mainWindow.fireCommand(new CommandEvent(command))
 
         assertMessagesAreCorrect(List(
-            "Cannot find the remote",
+            "You cannot do that right now.",
             ""
         ))
     }
@@ -501,7 +501,7 @@ class VerbsTest extends FunSuite {
         mainWindow.fireCommand(new CommandEvent(command))
 
         assertMessagesAreCorrect(List(
-            "Cannot find the remote",
+            "You cannot do that right now.",
             ""
         ))
     }
@@ -583,7 +583,7 @@ class VerbsTest extends FunSuite {
         mainWindow.fireCommand(new CommandEvent(command))
 
         assertMessagesAreCorrect(List(
-            "Cannot find the remote",
+            "You cannot do that right now.",
             ""
         ))
     }

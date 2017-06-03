@@ -6,7 +6,7 @@ import scala.collection.mutable.Map
 /**
   * Created by richardsimpson on 16/05/2017.
   */
-class Player {
+class Player extends ItemContainer {
     private val items:Map[String, Item] = new HashMap[String, Item]
 
     def getItems : Map[String, Item] = {

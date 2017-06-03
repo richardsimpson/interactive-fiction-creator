@@ -84,33 +84,32 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
 
         @tailrec
-        def determineNoun(nouns:Iterable[Item], inputWord:String) : Item = {
+        def determineNouns(nouns:Iterable[Item], inputWord:String, validNouns:List[Item]) : List[Item] = {
             if (nouns == Nil) {
-                return null
+                return validNouns
             }
 
             val synonym:String = iterateNounSynonyms(nouns.head.getSynonyms, inputWord)
 
-            if (synonym != null) {
-                return nouns.head
+            if (synonym == null) {
+                determineNouns(nouns.tail, inputWord, validNouns)
             }
-
-            determineNoun(nouns.tail, inputWord)
+            else {
+                determineNouns(nouns.tail, inputWord, nouns.head :: validNouns)
+            }
         }
 
         @tailrec
-        def iterateInputToFindNoun(inputWords:Array[String]) : Item = {
+        def iterateInputToFindNouns(inputWords:Array[String], validNouns:List[Item]) : List[Item] = {
             if (inputWords.length == 0) {
-                return null
+                return validNouns
             }
 
-            val item:Item = determineNoun(this.nouns.values, inputWords.head)
+            val items:List[Item] = determineNouns(
+                this.nouns.values.filter((item) => isItemInRoomOrPlayerInventory(item)),
+                inputWords.head, validNouns)
 
-            if (item != null) {
-                return item
-            }
-
-            iterateInputToFindNoun(inputWords.tail)
+            iterateInputToFindNouns(inputWords.tail, validNouns ::: items)
         }
 
         def iterateVerbWords(inputWords:Array[String], verbWords:String, result:VerbNoun): VerbNoun = {
@@ -126,11 +125,11 @@ class AdventureController(private val mainWindow: MainWindow) {
                 }
 
                 if (verbWords.head.equals("{noun}")) {
-                    val noun = iterateInputToFindNoun(inputWords)
-                    if (noun == null) {
+                    val nouns = iterateInputToFindNouns(inputWords, Nil)
+                    if (nouns == null) {
                         return null
                     }
-                    else result.noun = noun
+                    else result.nouns = nouns
                 }
                 else if (!verbWords.head.equals(inputWords.head)) {
                     return null
@@ -216,8 +215,8 @@ class AdventureController(private val mainWindow: MainWindow) {
             // TODO: if verb requires noun, and there is not one, say(verb + " what?")
 
             verbNoun.verb match {
-                case customVerb: CustomVerb => executeCustomVerb(customVerb, verbNoun.noun)
-                case _ => executeCommand(verbNoun.verb.getVerb, verbNoun.noun)
+                case customVerb: CustomVerb => executeCustomVerb(customVerb, verbNoun.nouns)
+                case _ => executeCommand(verbNoun.verb.getVerb, verbNoun.nouns)
             }
         }
         finally {
@@ -240,11 +239,35 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.currentRoom.contains(item) || this.player.contains(item)
     }
 
-    private def executeCustomVerb(verb:CustomVerb, item:Item): Unit = {
-        var found:Boolean = isItemInRoomOrPlayerInventory(item)
+    private def determineIntendedNoun(items:List[Item]) : Item = {
+        // TODO: For now, just return the first visible item.  will need to disambiguate later
+        val filteredItems:List[Item] = items.filter((item) => item.isVisible)
 
-        if (!found) {
-            say("Cannot find the " + item.getName)
+        if (filteredItems.isEmpty) {
+            null
+        }
+        else {
+            filteredItems.head
+        }
+    }
+
+    private def determineIntendedNoun(container:ItemContainer, items:List[Item]) : Item = {
+        // TODO: For now, just return the first visible item that is in the container.  will need to disambiguate later
+        val filteredItems:List[Item] = items.filter((item) => item.isVisible && container.contains(item))
+
+        if (filteredItems.isEmpty) {
+            null
+        }
+        else {
+            filteredItems.head
+        }
+    }
+
+    private def executeCustomVerb(verb:CustomVerb, candidateItems:List[Item]): Unit = {
+        val item:Item = determineIntendedNoun(candidateItems)
+
+        if (item == null) {
+            say("You cannot do that right now.")
             say("")
             return
         }
@@ -261,7 +284,7 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def executeCommand(verb:String, item:Item): Unit = {
+    private def executeCommand(verb:String, items:List[Item]): Unit = {
         verb match {
             case "NORTH" => move(Direction.NORTH)
             case "SOUTH" => move(Direction.SOUTH)
@@ -271,12 +294,12 @@ class AdventureController(private val mainWindow: MainWindow) {
             case "DOWN" => move(Direction.DOWN)
             case "LOOK" => look()
             case "EXITS" => exits()
-            case "EXAMINE {noun}" => examine(item)
-            case "GET {noun}" => get(item)
-            case "DROP {noun}" => drop(item)
+            case "EXAMINE {noun}" => examine(items)
+            case "GET {noun}" => get(items)
+            case "DROP {noun}" => drop(items)
             case "INVENTORY" => inventory()
-            case "TURN ON {noun}" => turnOn(item)
-            case "TURN OFF {noun}" => turnOff(item)
+            case "TURN ON {noun}" => turnOn(items)
+            case "TURN OFF {noun}" => turnOff(items)
             case "WAIT" => waitTurn()
             case _ => throw new RuntimeException("Unexpected verb")
         }
@@ -368,13 +391,16 @@ class AdventureController(private val mainWindow: MainWindow) {
 
     }
 
-    private def get(item:Item) : Unit = {
-        val found:Boolean = this.currentRoom.contains(item)
+    private def get(items:List[Item]) : Unit = {
+        val item:Item = determineIntendedNoun(this.currentRoom, items)
 
-        if (!found || !item.isVisible) {
-            say("Cannot find the " + item.getName)
+        if (item == null) {
+            say("You cannot do that right now.")
+            say("")
+            return
         }
-        else if (!item.isGettable) {
+
+        if (!item.isGettable) {
             say("You cannot pick up the " + item.getName)
         }
         else {
@@ -385,13 +411,16 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def drop(item:Item) : Unit = {
-        val found:Boolean = this.player.contains(item)
+    private def drop(items:List[Item]) : Unit = {
+        val item:Item = determineIntendedNoun(this.player, items)
 
-        if (!found) {
-            say("You do not have the " + item.getName)
+        if (item == null) {
+            say("You cannot do that right now.")
+            say("")
+            return
         }
-        else if (!item.isDroppable) {
+
+        if (!item.isDroppable) {
             say("You cannot drop the " + item.getName)
         }
         else {
@@ -402,15 +431,16 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def examine(item: Item): Unit = {
-        var found:Boolean = isItemInRoomOrPlayerInventory(item)
+    private def examine(items: List[Item]): Unit = {
+        val item:Item = determineIntendedNoun(items)
 
-        if (!found || !item.isVisible) {
-            say("Cannot find the " + item.getName)
+        if (item == null) {
+            say("You cannot do that right now.")
+            say("")
+            return
         }
-        else {
-            say(item.getItemDescription)
-        }
+
+        say(item.getItemDescription)
         say("")
     }
 
@@ -427,13 +457,16 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def turnOn(item: Item) : Unit = {
-        var found:Boolean = isItemInRoomOrPlayerInventory(item)
+    private def turnOn(items: List[Item]) : Unit = {
+        val item:Item = determineIntendedNoun(items)
 
-        if (!found || !item.isVisible) {
-            say("Cannot find the " + item.getName)
+        if (item == null) {
+            say("You cannot do that right now.")
+            say("")
+            return
         }
-        else if (!item.isSwitchable) {
+
+        if (!item.isSwitchable) {
             say("You can't turn on the " + item.getName)
         }
         else {
@@ -452,13 +485,16 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def turnOff(item: Item) : Unit = {
-        var found:Boolean = isItemInRoomOrPlayerInventory(item)
+    private def turnOff(items: List[Item]) : Unit = {
+        val item:Item = determineIntendedNoun(items)
 
-        if (!found || !item.isVisible) {
-            say("Cannot find the " + item.getName)
+        if (item == null) {
+            say("You cannot do that right now.")
+            say("")
+            return
         }
-        else if (!item.isSwitchable) {
+
+        if (!item.isSwitchable) {
             say("You can't turn off the " + item.getName)
         }
         else {
@@ -540,5 +576,5 @@ class AdventureController(private val mainWindow: MainWindow) {
 
 }
 
-private class VerbNoun(var verb:Verb, var noun:Item)
+private class VerbNoun(var verb:Verb, var nouns:List[Item])
 

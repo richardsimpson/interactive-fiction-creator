@@ -8,7 +8,7 @@ import scala.collection.immutable.ListMap
 class Room(private val name:String, private var description:String,
            private var beforeEnterRoomScript:String = null, private var afterEnterRoomScript:String = null,
            private var afterLeaveRoomScript:String = null,
-           private var beforeEnterRoomFirstTimeScript:String = null, private var afterEnterRoomFirstTimeScript:String = null) {
+           private var beforeEnterRoomFirstTimeScript:String = null, private var afterEnterRoomFirstTimeScript:String = null) extends ItemContainer {
 
     private var exits:ListMap[Direction, Room] = ListMap[Direction, Room]()
     private var items:Map[String, Item] = Map[String, Item]()
