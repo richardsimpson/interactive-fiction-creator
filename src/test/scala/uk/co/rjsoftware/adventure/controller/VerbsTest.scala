@@ -27,7 +27,7 @@ class VerbsTest extends FunSuite {
         switchable = true)
     private val tv:Item = new Item(List("TV", "television"), "A 28\" TV",
         visible = true, scenery = true, gettable = false, droppable = false,
-        switchable = true, "the TV flickers into life", "the TV is now off",
+        switchable = true, switchOnMessage = "the TV flickers into life", switchOffMessage = "the TV is now off",
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")
     private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.",
@@ -212,8 +212,8 @@ class VerbsTest extends FunSuite {
     }
 
     private def assertMessagesAreCorrect(expectedMessages : List[String]): Unit = {
-        val messages:List[String] = this.mainWindow.getMessages
-        assert(messages.size == expectedMessages.size)
+        val messages:Array[String] = this.mainWindow.getMessages
+        assert(messages.length == expectedMessages.size)
 
         for (index <- expectedMessages.indices) {
             messages(index) should equal (expectedMessages(index))
@@ -422,8 +422,8 @@ class VerbsTest extends FunSuite {
 
         assertMessagesAreCorrect(List(
             "You are currently carrying:",
-            "newspaper",
             "lamp",
+            "newspaper",
             ""
         ))
     }
@@ -440,7 +440,7 @@ class VerbsTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(lamp.isOn)
+        assert(lamp.isSwitchedOn)
 
         assertMessagesAreCorrect(List(
             "You turn on the lamp",
@@ -460,7 +460,7 @@ class VerbsTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(tv.isOn)
+        assert(tv.isSwitchedOn)
 
         assertMessagesAreCorrect(List(
             "the TV flickers into life",
@@ -480,7 +480,7 @@ class VerbsTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(newspaper.isOff)
+        assert(newspaper.isSwitchedOff)
 
         assertMessagesAreCorrect(List(
             "You can't turn on the newspaper",
@@ -520,7 +520,7 @@ class VerbsTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(lamp.isOff)
+        assert(lamp.isSwitchedOff)
 
         assertMessagesAreCorrect(List(
             "You turn off the lamp",
@@ -542,7 +542,7 @@ class VerbsTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(tv.isOff)
+        assert(tv.isSwitchedOff)
 
         assertMessagesAreCorrect(List(
             "the TV is now off",
@@ -562,7 +562,7 @@ class VerbsTest extends FunSuite {
 
         mainWindow.fireCommand(new CommandEvent(command))
 
-        assert(newspaper.isOff)
+        assert(newspaper.isSwitchedOff)
 
         assertMessagesAreCorrect(List(
             "You can't turn off the newspaper",

@@ -245,6 +245,42 @@ public class ItemDelegate {
         this.item.addVerb(customVerb, delegate.getScript())
 
     }
+
+    private container(Boolean container) {
+        this.item.setContainer(container)
+    }
+
+    private openable(Boolean openable) {
+        this.item.setOpenable(openable)
+    }
+
+    private closeable(Boolean closeable) {
+        this.item.setCloseable(closeable)
+    }
+
+    private open(Boolean open) {
+        this.item.setOpen(open)
+    }
+
+    private openMessage(String openMessage) {
+        this.item.setOpenMessage(openMessage)
+    }
+
+    private closeMessage(String closeMessage) {
+        this.item.setCloseMessage(closeMessage)
+    }
+
+    private onOpenScript(String onOpenScript) {
+        this.item.setOnOpenScript(onOpenScript)
+    }
+
+    private onCloseScript(String onCloseScript) {
+        this.item.setOnCloseScript(onCloseScript)
+    }
+
+    private contentsInitiallyHidden(Boolean contentsInitiallyHidden) {
+        this.item.setContentsInitiallyHidden(contentsInitiallyHidden)
+    }
 }
 
 public class VerbItemDelegate {

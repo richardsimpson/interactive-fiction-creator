@@ -353,6 +353,8 @@ class AdventureController(private val mainWindow: MainWindow) {
             case "TURN ON {noun}" => turnOn(items)
             case "TURN OFF {noun}" => turnOff(items)
             case "WAIT" => waitTurn()
+            case "OPEN {noun}" => open(items)
+            case "CLOSE {noun}" => close(items)
             case _ => throw new RuntimeException("Unexpected verb")
         }
     }
@@ -372,7 +374,7 @@ class AdventureController(private val mainWindow: MainWindow) {
                         firstItemOutput = true
                         say("You can also see:")
                     }
-                    say(item.getName)
+                    say(item.getLookDescription)
                 }
             }
         }
@@ -512,6 +514,7 @@ class AdventureController(private val mainWindow: MainWindow) {
 
         say(item.getItemDescription)
         say("")
+        item.setItemPreviouslyExamined(true)
     }
 
     private def inventory() : Unit = {
@@ -546,7 +549,7 @@ class AdventureController(private val mainWindow: MainWindow) {
             say("You can't turn on the " + item.getName)
         }
         else {
-            if (item.isOn) {
+            if (item.isSwitchedOn) {
                 say(item.getName + " is already on")
             }
             else {
@@ -580,7 +583,7 @@ class AdventureController(private val mainWindow: MainWindow) {
             say("You can't turn off the " + item.getName)
         }
         else {
-            if (item.isOff) {
+            if (item.isSwitchedOff) {
                 say(item.getName + " is already off")
             }
             else {
@@ -600,6 +603,70 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
+    private def open(candidateItems: List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(candidateItems)
+
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.OPEN, items)
+            return
+        }
+        else if (items == Nil) {
+            say("You cannot do that right now.")
+            say("")
+            return
+        }
+
+        val item:Item = items.head
+
+        if (!item.isOpenable) {
+            say("You cannot open the " + item.getName)
+        }
+        else if (item.isOpen) {
+            say(item.getName + " is already open")
+        }
+        else {
+            item.setOpen(true)
+            var openMessage:String = item.getOpenMessage
+            if (openMessage == null) {
+                openMessage = "You open the " + item.getName
+            }
+            say(openMessage)
+        }
+        say("")
+    }
+
+    private def close(candidateItems: List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(candidateItems)
+
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.CLOSE, items)
+            return
+        }
+        else if (items == Nil) {
+            say("You cannot do that right now.")
+            say("")
+            return
+        }
+
+        val item:Item = items.head
+
+        if (!item.isCloseable) {
+            say("You cannot close the " + item.getName)
+        }
+        else if (!item.isOpen) {
+            say(item.getName + " is already closed")
+        }
+        else {
+            item.setOpen(false)
+            var closeMessage:String = item.getCloseMessage
+            if (closeMessage == null) {
+                closeMessage = "You close the " + item.getName
+            }
+            say(closeMessage)
+        }
+        say("")
+    }
+
     private def executeScript(script:String): Unit = {
         val executor : ScriptExecutor = new ScriptExecutor(this)
         executor.executeScript(script)
@@ -615,7 +682,7 @@ class AdventureController(private val mainWindow: MainWindow) {
 
     def isSwitchedOn(itemName:String) : Boolean = {
         val item:Item = getItem(itemName)
-        item.isOn
+        item.isSwitchedOn
     }
 
     def executeAfterTurns(turns:Int, script:Closure[Unit]) : Unit = {

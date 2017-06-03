@@ -46,11 +46,13 @@ adventure {
         item ("large, wooden chest") {
             synonyms "chest"
             description "The chest was both heavy and closed"
-
-            // TODO: OPEN CHEST:
-            // Bimbo opened the chest, but couldn't quite see inside
+            container true
+            openMessage "Bimbo opened the chest, but couldn't quite see inside"
+            closeMessage "Bimbo closed the chest, neatly avoiding trapping his thumb, and crunching all his fingers instead"
         }
 
+        // TODO: Stop saying that the chest contains nothing.  We shouldn't be able to see inside in this case.
+        
         item ("door") {
             description """
                 Examining the door, Bimbo saw that it had a combination lock.  A small plate below it

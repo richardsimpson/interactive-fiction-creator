@@ -59,8 +59,8 @@ class ScalaToGroovy extends FunSuite {
     }
 
     private def assertMessagesAreCorrect(expectedMessages : List[String]): Unit = {
-        val messages:List[String] = this.mainWindow.getMessages
-        assert(messages.size == expectedMessages.size)
+        val messages:Array[String] = this.mainWindow.getMessages
+        assert(messages.length == expectedMessages.size)
 
         for (index <- expectedMessages.indices) {
             messages(index) should equal (expectedMessages(index))

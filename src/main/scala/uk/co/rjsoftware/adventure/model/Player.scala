@@ -1,28 +1,25 @@
 package uk.co.rjsoftware.adventure.model
 
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.Map
-
 /**
   * Created by richardsimpson on 16/05/2017.
   */
 class Player extends ItemContainer {
-    private val items:Map[String, Item] = new HashMap[String, Item]
+    private var items:Map[String, Item] = Map[String, Item]()
 
     def getItems : Map[String, Item] = {
         this.items
     }
 
     def addItem(item:Item) : Unit = {
-        this.items.put(item.getName, item)
+        this.items += (item.getName -> item)
     }
 
-    def getItem(itemName: String): Option[Item] = {
-        this.items.get(itemName)
+    def getItem(itemName: String): Item = {
+        this.items.get(itemName).orNull
     }
 
     def removeItem(item:Item) : Unit = {
-        this.items.remove(item.getName)
+        this.items -= item.getName
     }
 
     def contains(item:Item) : Boolean = {

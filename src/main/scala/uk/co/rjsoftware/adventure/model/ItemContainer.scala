@@ -5,5 +5,13 @@ package uk.co.rjsoftware.adventure.model
   */
 trait ItemContainer {
 
+    def getItems : Map[String, Item]
+
+    def addItem(item:Item) : Unit
+
+    def getItem(itemName: String): Item
+
+    def removeItem(item:Item) : Unit
+
     def contains(item:Item) : Boolean
 }

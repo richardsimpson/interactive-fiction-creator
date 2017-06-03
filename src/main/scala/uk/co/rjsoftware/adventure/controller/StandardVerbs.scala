@@ -22,9 +22,11 @@ object StandardVerbs {
     val TURNON:Verb = new Verb("Turn on", List("TURN ON {noun}", "TURN {noun} ON", "SWITCH ON {noun}", "SWITCH {noun} ON"))
     val TURNOFF:Verb = new Verb("Turn off", List("TURN OFF {noun}", "TURN {noun} OFF", "SWITCH OFF {noun}", "SWITCH {noun} OFF"))
     val WAIT:Verb = new Verb("Wait", List("WAIT"))
+    val OPEN:Verb = new Verb("Open", List("OPEN {noun}"))
+    val CLOSE:Verb = new Verb("Close", List("CLOSE {noun}"))
 
     private val verbs:List[Verb] = NORTH :: SOUTH :: EAST :: WEST :: UP :: DOWN :: LOOK :: EXITS :: EXAMINE ::
-            GET :: DROP :: INVENTORY :: TURNON :: TURNOFF :: WAIT :: Nil
+            GET :: DROP :: INVENTORY :: TURNON :: TURNOFF :: WAIT :: OPEN :: CLOSE :: Nil
 
     // TODO: Add verbs (or should these just be custom verbs):
     //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, EAT, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
@@ -33,18 +35,6 @@ object StandardVerbs {
     //          SPEAK TO / SPEAK / TALK TO / TALK, LISTEN TO, MOVE, SMELL / SNIFF, KNOCK, SHOW, BUY,
     //
     //          INSERT
-
-    // Add the concept of 'turns'.
-    // Add verb 'WAIT'
-    // Provide script function to run a script after X turns
-    // Allow a script to fire something in a number of turns.
-    //      - Add ability to attach a script to a room that is executed when you first enter the room.
-    //      - That script will then schedule a second script to be run in 'x' turns. (where is that script defined?)
-    //
-    // Preferred syntax:
-    //      executeAfterTurns(5) {
-    //          say("")
-    //      }
 
     // Add diagonal directions
 

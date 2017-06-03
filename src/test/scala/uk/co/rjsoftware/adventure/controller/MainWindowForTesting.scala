@@ -9,10 +9,10 @@ class MainWindowForTesting extends MainWindow {
 
     private var commandListeners: List[CommandEvent => Unit] = Nil
     private var loadListeners: List[LoadEvent => Unit] = Nil
-    private var messages : List[String] = Nil
+    private var messages : String = ""
 
     override def say(outputText: String): Unit = {
-        this.messages :+= outputText
+        this.messages += outputText + System.lineSeparator()
     }
 
     override def addCommandListener(listener: (CommandEvent) => Unit): Unit = {
@@ -36,15 +36,15 @@ class MainWindowForTesting extends MainWindow {
     }
 
     def getLastMessage : String = {
-        this.messages.head
+        this.messages.split(System.lineSeparator()).reverse.head
     }
 
-    def getMessages : List[String] = {
-        this.messages
+    def getMessages : Array[String] = {
+        this.messages.split(System.lineSeparator(), -1).dropRight(1)
     }
 
     def clearMessages() = {
-        this.messages = Nil
+        this.messages = ""
     }
 
     override def loadAdventure(title: String, introduction: String): Unit = {
