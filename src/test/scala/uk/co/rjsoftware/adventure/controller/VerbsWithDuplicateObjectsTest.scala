@@ -17,11 +17,11 @@ class VerbsWithDuplicateObjectsTest extends FunSuite {
 
     private val livingRoom:Room = new Room("livingRoom", "This is the living room.")
 
-    private val chocolates:Item = new Item(List("a box of expensive chocolates", "chocolates"),
-        "The chocolates were small and brown.", visible = true)
+    private val redBox:Item = new Item(List("red box", "box"),
+        "This is the red box.", visible = true)
 
-    private val explodedChocolates:Item = new Item(List("a wrecked box of chocolates", "chocolates"),
-        "The exploded chocolates did not look very appetising.", visible = false)
+    private val blueBox:Item = new Item(List("blue box", "box"),
+        "This is the blue box.", visible = false)
 
     val verbs:Map[String, Verb] = StandardVerbs.getVerbs.map(
         verb => (verb.getVerb, verb)
@@ -40,11 +40,11 @@ class VerbsWithDuplicateObjectsTest extends FunSuite {
     private def setup(): Unit = {
         val adventure:Adventure = new Adventure("Welcome to the Adventure!")
 
-        livingRoom.addItem(chocolates)
-        livingRoom.addItem(explodedChocolates)
+        livingRoom.addItem(redBox)
+        livingRoom.addItem(blueBox)
 
-        chocolates.setVisible(true)
-        explodedChocolates.setVisible(false)
+        redBox.setVisible(true)
+        blueBox.setVisible(false)
 
         adventure.addRoom(livingRoom)
         adventure.setStartRoom(livingRoom)
@@ -64,57 +64,57 @@ class VerbsWithDuplicateObjectsTest extends FunSuite {
         }
     }
 
-    test("verb: EXAM chocolates (when non-exploded chocolates are visible)") {
+    test("verb: EXAM box (when red box is visible)") {
         for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
             setup()
 
             this.mainWindow.clearMessages()
 
-            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chocolates")))
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
 
             assertMessagesAreCorrect(List(
-                chocolates.getDescription,
+                redBox.getDescription,
                 ""
             ))
         }
     }
 
-    test("verb: EXAM chocolates (when exploded chocolates are visible)") {
+    test("verb: EXAM box (when blue box is visible)") {
         for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
             setup()
-            chocolates.setVisible(false)
-            explodedChocolates.setVisible(true)
+            redBox.setVisible(false)
+            blueBox.setVisible(true)
 
             this.mainWindow.clearMessages()
 
-            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chocolates")))
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
 
             assertMessagesAreCorrect(List(
-                explodedChocolates.getDescription,
+                blueBox.getDescription,
                 ""
             ))
         }
     }
 
-    test("verb: GET chocolates (when non-exploded chocolates are visible)") {
+    test("verb: GET box (when red box is visible)") {
         for (verbString <- this.verbs("GET {noun}").getSynonyms) {
             setup()
 
-            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chocolates")))
-            assert(!livingRoom.contains(chocolates))
-            assert(player.contains(chocolates))
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
+            assert(!livingRoom.contains(redBox))
+            assert(player.contains(redBox))
         }
     }
 
-    test("verb: GET chocolates (when exploded chocolates are visible)") {
+    test("verb: GET box (when blue box is visible)") {
         for (verbString <- this.verbs("GET {noun}").getSynonyms) {
             setup()
-            chocolates.setVisible(false)
-            explodedChocolates.setVisible(true)
+            redBox.setVisible(false)
+            blueBox.setVisible(true)
 
-            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chocolates")))
-            assert(!livingRoom.contains(explodedChocolates))
-            assert(player.contains(explodedChocolates))
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
+            assert(!livingRoom.contains(blueBox))
+            assert(player.contains(blueBox))
         }
     }
 
