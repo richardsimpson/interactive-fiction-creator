@@ -9,7 +9,7 @@ import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow, MainWindowView
   * Created by richardsimpson on 20/05/2017.
   * See http://www.scalatest.org/at_a_glance/FunSuite
   */
-class AdventureControllerTest extends FunSuite {
+class VerbsTest extends FunSuite {
 
     private var classUnderTest : AdventureController = _
     private var player : Player = _

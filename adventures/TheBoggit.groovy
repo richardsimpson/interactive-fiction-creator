@@ -9,6 +9,7 @@ adventure {
              To the south, was the round green toilet."""
 
         // TODO: Allow nouns to be referenced by an ID, rather than their actual description (e.g. chocolates rather than 'a box of expensive chocolates')
+        // TODO: Consider turning the scripts into closures. Will make defining them here easier.  But may make defining them in a (web?) gui more difficult
         beforeEnterRoomFirstTimeScript '''
             executeAfterTurns(3) {
                 if (playerInRoom("tunnel like hall")) {
@@ -35,6 +36,19 @@ adventure {
                 }
             }
 '''
+
+        // TODO: Resolve these issues.
+        // 1) There are two chocolate objects, and the wrong one is being chosen
+        // 2) 'Cannot find the a wrecked box of chocolates' is grammatically incorrect.
+
+//        Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
+//        elegantly on the floor beside  Bimbo.
+//                He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully
+//        on the carpet before scrambling out through the now broken window.
+//        > exam chocolates
+//        Cannot find the a wrecked box of chocolates
+//
+
         // TODO: When the chocolates explode, need to 'finish' the game if in the same room
 
         // TODO: WHEN eat the chocolates

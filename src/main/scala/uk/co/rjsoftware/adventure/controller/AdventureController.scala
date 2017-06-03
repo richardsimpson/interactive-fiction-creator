@@ -68,7 +68,7 @@ class AdventureController(private val mainWindow: MainWindow) {
 
     // TODO: Extract the parser into another class
 
-    private def newDetermineVerb(inputWords:Array[String]): VerbNoun = {
+    private def determineVerbNoun(inputWords:Array[String]): VerbNoun = {
 
         @tailrec
         def iterateNounSynonyms(synonyms:List[String], inputWord:String) : String = {
@@ -206,7 +206,7 @@ class AdventureController(private val mainWindow: MainWindow) {
             // TODO: HELP
             // TODO: GET ALL / TAKE ALL
 
-            val verbNoun:VerbNoun = newDetermineVerb(words)
+            val verbNoun:VerbNoun = determineVerbNoun(words)
             if (verbNoun == null) {
                 say("I don't understand what you are trying to do.")
                 say("")
