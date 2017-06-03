@@ -2,7 +2,7 @@ adventure {
     title "Adventure Game"
     introduction "Welcome to the Adventure!"
 
-    verb ("WATCH {noun}") {}
+    verb ("Watch", "WATCH {noun}") {}
 
     room ("bedroom") {
         description "This is your bedroom.  Clothes are strewn across the floor, there is a TV, and a lamp sits on the bedsite table."

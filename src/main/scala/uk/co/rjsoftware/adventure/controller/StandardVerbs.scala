@@ -7,23 +7,24 @@ import uk.co.rjsoftware.adventure.model.Verb
   */
 object StandardVerbs {
 
-    var verbs:List[Verb] = Nil
+    val NORTH:Verb = new Verb("North", List("NORTH", "N"))
+    val SOUTH:Verb = new Verb("South", List("SOUTH", "S"))
+    val EAST:Verb = new Verb("East", List("EAST", "E"))
+    val WEST:Verb = new Verb("West", List("WEST", "W"))
+    val UP:Verb = new Verb("Up", List("UP", "U"))
+    val DOWN:Verb = new Verb("Down", List("DOWN", "D"))
+    val LOOK:Verb = new Verb("Look", List("LOOK", "L"))
+    val EXITS:Verb = new Verb("Exits", List("EXITS"))
+    val EXAMINE:Verb = new Verb("Examine", List("EXAMINE {noun}", "EXAM {noun}", "X {noun}"))
+    val GET:Verb = new Verb("Get", List("GET {noun}", "TAKE {noun}"))
+    val DROP:Verb = new Verb("Drop", List("DROP {noun}"))
+    val INVENTORY:Verb = new Verb("Inventory", List("INVENTORY", "INV", "I"))
+    val TURNON:Verb = new Verb("Turn on", List("TURN ON {noun}", "TURN {noun} ON", "SWITCH ON {noun}", "SWITCH {noun} ON"))
+    val TURNOFF:Verb = new Verb("Turn off", List("TURN OFF {noun}", "TURN {noun} OFF", "SWITCH OFF {noun}", "SWITCH {noun} OFF"))
+    val WAIT:Verb = new Verb("Wait", List("WAIT"))
 
-    verbs ::= new Verb(List("NORTH", "N"))
-    verbs ::= new Verb(List("SOUTH", "S"))
-    verbs ::= new Verb(List("EAST", "E"))
-    verbs ::= new Verb(List("WEST", "W"))
-    verbs ::= new Verb(List("UP", "U"))
-    verbs ::= new Verb(List("DOWN", "D"))
-    verbs ::= new Verb(List("LOOK", "L"))
-    verbs ::= new Verb(List("EXITS"))
-    verbs ::= new Verb(List("EXAMINE {noun}", "EXAM {noun}", "X {noun}"))
-    verbs ::= new Verb(List("GET {noun}", "TAKE {noun}"))
-    verbs ::= new Verb(List("DROP {noun}"))
-    verbs ::= new Verb(List("INVENTORY", "INV", "I"))
-    verbs ::= new Verb(List("TURN ON {noun}", "TURN {noun} ON", "SWITCH ON {noun}", "SWITCH {noun} ON"))
-    verbs ::= new Verb(List("TURN OFF {noun}", "TURN {noun} OFF", "SWITCH OFF {noun}", "SWITCH {noun} OFF"))
-    verbs ::= new Verb(List("WAIT"))
+    private val verbs:List[Verb] = NORTH :: SOUTH :: EAST :: WEST :: UP :: DOWN :: LOOK :: EXITS :: EXAMINE ::
+            GET :: DROP :: INVENTORY :: TURNON :: TURNOFF :: WAIT :: Nil
 
     // TODO: Add verbs (or should these just be custom verbs):
     //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, EAT, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON

@@ -96,6 +96,110 @@ class VerbsWithDuplicateObjectsTest extends FunSuite {
         }
     }
 
+    test("verb: EXAM box (when both boxes are visible and select the red box)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            redBox.setVisible(true)
+            blueBox.setVisible(true)
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
+
+            assertMessagesAreCorrect(List(
+                "Examine what?",
+                "1) red box",
+                "2) blue box",
+                ""
+            ))
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent("1"))
+
+            assertMessagesAreCorrect(List(
+                "This is the red box.",
+                ""
+            ))
+        }
+    }
+
+    test("verb: EXAM box (when both boxes are visible and select the blue box)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            redBox.setVisible(true)
+            blueBox.setVisible(true)
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
+
+            assertMessagesAreCorrect(List(
+                "Examine what?",
+                "1) red box",
+                "2) blue box",
+                ""
+            ))
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent("2"))
+
+            assertMessagesAreCorrect(List(
+                "This is the blue box.",
+                ""
+            ))
+        }
+    }
+
+    test("verb: EXAM box (when both boxes are visible and select an option that doesn't exist)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            redBox.setVisible(true)
+            blueBox.setVisible(true)
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
+
+            assertMessagesAreCorrect(List(
+                "Examine what?",
+                "1) red box",
+                "2) blue box",
+                ""
+            ))
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent("3"))
+
+            assertMessagesAreCorrect(List(
+                "I'm sorry, I don't understand",
+                ""
+            ))
+        }
+    }
+
+    test("verb: EXAM box (when both boxes are visible and select an invalid option)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            redBox.setVisible(true)
+            blueBox.setVisible(true)
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "box")))
+
+            assertMessagesAreCorrect(List(
+                "Examine what?",
+                "1) red box",
+                "2) blue box",
+                ""
+            ))
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent("A"))
+
+            assertMessagesAreCorrect(List(
+                "I'm sorry, I don't understand",
+                ""
+            ))
+        }
+    }
+
     test("verb: GET box (when red box is visible)") {
         for (verbString <- this.verbs("GET {noun}").getSynonyms) {
             setup()

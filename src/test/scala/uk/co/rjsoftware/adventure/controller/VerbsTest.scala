@@ -34,7 +34,7 @@ class VerbsTest extends FunSuite {
         gettable = true, droppable = false, switchable = false)
     private val remote:Item = new Item(List("remote"), "The TV remote", visible = false, scenery = false)
 
-    private val watch = new CustomVerb(List("WATCH {noun}"))
+    private val watch = new CustomVerb("Watch", List("WATCH {noun}"))
     tv.addVerb(watch, "say('You watch the TV for a while.');")
 
     //           kitchen    landing

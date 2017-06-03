@@ -54,12 +54,12 @@ public class AdventureDelegate {
         this.adventure.setIntroduction(StringUtils.sanitiseString(introduction))
     }
 
-    private void verb(String verbName, Closure closure) {
+    private void verb(String friendlyName, String verbName, Closure closure) {
         if (this.adventure.findCustomVerb(verbName) != null) {
             throw new RuntimeException("Cannot declare custom verbs twice")
         }
 
-        CustomVerb customVerb = new CustomVerb(verbName)
+        CustomVerb customVerb = new CustomVerb(friendlyName, verbName)
         this.adventure.addCustomVerb(customVerb)
 
         closure.delegate = new VerbDelegate(customVerb)

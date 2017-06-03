@@ -22,8 +22,8 @@ adventure {
                 else {
                     say('A muffled "thwump" eminates from the hall, followed by fumbling noises')
                 }
-                setVisible("a small card")
-                setVisible("a box of expensive chocolates")
+                setVisible("small card")
+                setVisible("box of expensive chocolates")
                 executeAfterTurns(10) {
                     if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
@@ -31,23 +31,11 @@ adventure {
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
                     }
-                    setInvisible("a box of expensive chocolates")
-                    setVisible("a wrecked box of chocolates")
+                    setInvisible("box of expensive chocolates")
+                    setVisible("wrecked box of chocolates")
                 }
             }
 '''
-
-        // TODO: Resolve these issues.
-        // 1) There are two chocolate objects, and the wrong one is being chosen
-        // 2) 'Cannot find the a wrecked box of chocolates' is grammatically incorrect.
-
-//        Suddenly, there was a resounding crash, and Grandalf tarzaned in through the window, collapsing
-//        elegantly on the floor beside  Bimbo.
-//                He hastily fumbled about in his robes for something, then placed a box of chocolates and a card carefully
-//        on the carpet before scrambling out through the now broken window.
-//        > exam chocolates
-//        Cannot find the a wrecked box of chocolates
-//
 
         // TODO: When the chocolates explode, need to 'finish' the game if in the same room
 
@@ -55,7 +43,7 @@ adventure {
         // Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
         // A few moments later, he exploded for no apparent reason.
 
-        item ("a large, wooden chest") {
+        item ("large, wooden chest") {
             synonyms "chest"
             description "The chest was both heavy and closed"
 
@@ -81,7 +69,7 @@ adventure {
         // Bimbo waited
         // Time crawled slowly past
 
-        item ("a small card") {
+        item ("small card") {
             synonyms "card"
             description """
                 On the card, in large, type-writer runes, were the words,
@@ -92,7 +80,7 @@ adventure {
             visible false
         }
 
-        item ("a box of expensive chocolates") {
+        item ("box of expensive chocolates") {
             synonyms "chocolates", "chocs"
             description """
                 The chocolates were small and brown.  They probably contained milk chocolate, milk solids
@@ -100,7 +88,7 @@ adventure {
             visible false
         }
 
-        item ("a wrecked box of chocolates") {
+        item ("wrecked box of chocolates") {
             synonyms "chocolates", "chocs"
             description """
                 Bimbo examined the chocolates.  "The cleaning elf is gonna kill that old wizard one day!" he
@@ -114,7 +102,7 @@ adventure {
     room ("inside chest") {
         description "Bimbo was in the large wooden chest"
 
-        item ("an old, dusty diary") {
+        item ("old, dusty diary") {
             synonyms "diary"
             description """
                 The diary was blank, save for some birthdays

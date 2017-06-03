@@ -2,7 +2,7 @@ adventure {
     title "Adventure Game"
     introduction "Welcome to the Adventure!"
 
-    verb ("WATCH {noun}") {
+    verb ("Watch", "WATCH {noun}") {
         synonyms "LOOK AT {noun}", "VIEW {noun}"
     }
 

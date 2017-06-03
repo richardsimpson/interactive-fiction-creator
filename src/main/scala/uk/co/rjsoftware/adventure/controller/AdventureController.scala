@@ -19,6 +19,9 @@ class AdventureController(private val mainWindow: MainWindow) {
     private var visitedRooms : List[Room] = Nil
     private var scheduledScripts:List[ScheduledScript] = Nil
     private var turnCounter : Int = 0
+    private var disambiguating : Boolean = false
+    private var disambiguatingVerb : Verb = null
+    private var disambiguatingNouns : List[Item] = Nil
 
     private var verbs : List[Verb] = Nil
 
@@ -84,7 +87,7 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
 
         @tailrec
-        def determineNouns(nouns:Iterable[Item], inputWord:String, validNouns:List[Item]) : List[Item] = {
+        def determineNouns(nouns:Iterable[Item], inputWord:String, validNouns:Set[Item]) : Set[Item] = {
             if (nouns == Nil) {
                 return validNouns
             }
@@ -95,21 +98,21 @@ class AdventureController(private val mainWindow: MainWindow) {
                 determineNouns(nouns.tail, inputWord, validNouns)
             }
             else {
-                determineNouns(nouns.tail, inputWord, nouns.head :: validNouns)
+                determineNouns(nouns.tail, inputWord, validNouns + nouns.head)
             }
         }
 
         @tailrec
-        def iterateInputToFindNouns(inputWords:Array[String], validNouns:List[Item]) : List[Item] = {
+        def iterateInputToFindNouns(inputWords:Array[String], validNouns:Set[Item]) : Set[Item] = {
             if (inputWords.length == 0) {
                 return validNouns
             }
 
-            val items:List[Item] = determineNouns(
+            val items:Set[Item] = determineNouns(
                 this.nouns.values.filter((item) => isItemInRoomOrPlayerInventory(item)),
-                inputWords.head, validNouns)
+                inputWords.head, Set.empty)
 
-            iterateInputToFindNouns(inputWords.tail, validNouns ::: items)
+            iterateInputToFindNouns(inputWords.tail, validNouns ++ items)
         }
 
         def iterateVerbWords(inputWords:Array[String], verbWords:String, result:VerbNoun): VerbNoun = {
@@ -125,11 +128,11 @@ class AdventureController(private val mainWindow: MainWindow) {
                 }
 
                 if (verbWords.head.equals("{noun}")) {
-                    val nouns = iterateInputToFindNouns(inputWords, Nil)
+                    val nouns:Set[Item] = iterateInputToFindNouns(inputWords, Set.empty)
                     if (nouns == null) {
                         return null
                     }
-                    else result.nouns = nouns
+                    else result.nouns = nouns.toList
                 }
                 else if (!verbWords.head.equals(inputWords.head)) {
                     return null
@@ -192,6 +195,15 @@ class AdventureController(private val mainWindow: MainWindow) {
     }
 
     private def executeCommand(event:CommandEvent): Unit = {
+        if (this.disambiguating) {
+            doDisambiguateCommand(event)
+        }
+        else {
+            doExecuteCommand(event)
+        }
+    }
+
+    private def doExecuteCommand(event:CommandEvent): Unit = {
         val words:Array[String] = event.getCommand.trim.replaceAll(" +", " ").toUpperCase.split(" ")
 
         try {
@@ -220,18 +232,54 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
         }
         finally {
-            // execute any scripts which should be executed on this turn.
-            this.scheduledScripts.foreach((scheduledScript) => {
-                scheduledScript.decrementTurnCount
-                if (scheduledScript.getTurnCount <= 0) {
-                    scheduledScript.getScript().call()
-                }
-            })
+            if (!this.disambiguating) {
+                doPostCommandActions()
+            }
+        }
+    }
 
-            // and then remove them from the list
-            this.scheduledScripts = this.scheduledScripts.filter((scheduledScript) => {
-                scheduledScript.getTurnCount > 0
-            })
+    private def doPostCommandActions() : Unit = {
+        // execute any scripts which should be executed on this turn.
+        this.scheduledScripts.foreach((scheduledScript) => {
+            scheduledScript.decrementTurnCount
+            if (scheduledScript.getTurnCount <= 0) {
+                scheduledScript.getScript().call()
+            }
+        })
+
+        // and then remove them from the list
+        this.scheduledScripts = this.scheduledScripts.filter((scheduledScript) => {
+            scheduledScript.getTurnCount > 0
+        })
+    }
+
+    private def doDisambiguateCommand(event:CommandEvent) : Unit = {
+        try {
+            val selection:String = event.getCommand.trim
+            val selectionAsInt : Int = selection.toInt
+            if ((selectionAsInt < 1) || (selectionAsInt > this.disambiguatingNouns.size)) {
+                say("I'm sorry, I don't understand")
+                say("")
+                return
+            }
+            val noun = this.disambiguatingNouns(selectionAsInt-1)
+
+            this.disambiguatingVerb match {
+                case customVerb: CustomVerb => executeCustomVerb(customVerb, List(noun))
+                case _ => executeCommand(this.disambiguatingVerb.getVerb, List(noun))
+            }
+        }
+        catch {
+            case e:NumberFormatException => {
+                say("I'm sorry, I don't understand")
+                say("")
+            }
+        }
+        finally {
+            this.disambiguating = false
+            this.disambiguatingNouns = Nil
+            this.disambiguatingVerb = null
+            doPostCommandActions()
         }
     }
 
@@ -239,38 +287,42 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.currentRoom.contains(item) || this.player.contains(item)
     }
 
-    private def determineIntendedNoun(items:List[Item]) : Item = {
+    private def determineIntendedNoun(items:List[Item]) : List[Item] = {
         // TODO: For now, just return the first visible item.  will need to disambiguate later
-        val filteredItems:List[Item] = items.filter((item) => item.isVisible)
-
-        if (filteredItems.isEmpty) {
-            null
-        }
-        else {
-            filteredItems.head
-        }
+        return items.filter((item) => item.isVisible)
     }
 
-    private def determineIntendedNoun(container:ItemContainer, items:List[Item]) : Item = {
+    private def determineIntendedNoun(container:ItemContainer, items:List[Item]) : List[Item] = {
         // TODO: For now, just return the first visible item that is in the container.  will need to disambiguate later
-        val filteredItems:List[Item] = items.filter((item) => item.isVisible && container.contains(item))
+        return items.filter((item) => item.isVisible && container.contains(item))
+    }
 
-        if (filteredItems.isEmpty) {
-            null
+    private def askUserToDisambiguate(verb:Verb, items:List[Item]): Unit = {
+        this.disambiguating = true
+        this.disambiguatingVerb = verb
+        this.disambiguatingNouns = items
+
+        say(verb.getFriendlyName + " what?")
+        for (index:Int <- 0 until items.size) {
+            say((index+1).toString + ") " + items(index).getName)
         }
-        else {
-            filteredItems.head
-        }
+        say("")
     }
 
     private def executeCustomVerb(verb:CustomVerb, candidateItems:List[Item]): Unit = {
-        val item:Item = determineIntendedNoun(candidateItems)
+        val items:List[Item] = determineIntendedNoun(candidateItems)
 
-        if (item == null) {
+        if (items.size > 1) {
+            askUserToDisambiguate(verb, items)
+            return
+        }
+        else if (items == Nil) {
             say("You cannot do that right now.")
             say("")
             return
         }
+
+        val item:Item = items.head
 
         if (!item.getVerbs.contains(verb)) {
             say("You cannot do that with the " + item.getName)
@@ -391,14 +443,20 @@ class AdventureController(private val mainWindow: MainWindow) {
 
     }
 
-    private def get(items:List[Item]) : Unit = {
-        val item:Item = determineIntendedNoun(this.currentRoom, items)
+    private def get(candidateItems:List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(this.currentRoom, candidateItems)
 
-        if (item == null) {
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.GET, items)
+            return
+        }
+        else if (items == Nil) {
             say("You cannot do that right now.")
             say("")
             return
         }
+
+        val item:Item = items.head
 
         if (!item.isGettable) {
             say("You cannot pick up the " + item.getName)
@@ -411,14 +469,20 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def drop(items:List[Item]) : Unit = {
-        val item:Item = determineIntendedNoun(this.player, items)
+    private def drop(candidateItems:List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(this.player, candidateItems)
 
-        if (item == null) {
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.DROP, items)
+            return
+        }
+        else if (items == Nil) {
             say("You cannot do that right now.")
             say("")
             return
         }
+
+        val item:Item = items.head
 
         if (!item.isDroppable) {
             say("You cannot drop the " + item.getName)
@@ -431,14 +495,20 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def examine(items: List[Item]): Unit = {
-        val item:Item = determineIntendedNoun(items)
+    private def examine(candidateItems: List[Item]): Unit = {
+        val items:List[Item] = determineIntendedNoun(candidateItems)
 
-        if (item == null) {
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.EXAMINE, items)
+            return
+        }
+        else if (items == Nil) {
             say("You cannot do that right now.")
             say("")
             return
         }
+
+        val item:Item = items.head
 
         say(item.getItemDescription)
         say("")
@@ -457,14 +527,20 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def turnOn(items: List[Item]) : Unit = {
-        val item:Item = determineIntendedNoun(items)
+    private def turnOn(candidateItems: List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(candidateItems)
 
-        if (item == null) {
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.TURNON, items)
+            return
+        }
+        else if (items == Nil) {
             say("You cannot do that right now.")
             say("")
             return
         }
+
+        val item:Item = items.head
 
         if (!item.isSwitchable) {
             say("You can't turn on the " + item.getName)
@@ -485,14 +561,20 @@ class AdventureController(private val mainWindow: MainWindow) {
         say("")
     }
 
-    private def turnOff(items: List[Item]) : Unit = {
-        val item:Item = determineIntendedNoun(items)
+    private def turnOff(candidateItems: List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(candidateItems)
 
-        if (item == null) {
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.TURNOFF, items)
+            return
+        }
+        else if (items == Nil) {
             say("You cannot do that right now.")
             say("")
             return
         }
+
+        val item:Item = items.head
 
         if (!item.isSwitchable) {
             say("You can't turn off the " + item.getName)
