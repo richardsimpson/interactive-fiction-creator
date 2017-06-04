@@ -68,6 +68,7 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.mainWindow.loadAdventure(adventure.getTitle, adventure.getIntroduction)
 
         move(adventure.getStartRoom)
+        say("")
     }
 
     // TODO: Extract the parser into another class
@@ -232,10 +233,10 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
         }
         finally {
-            say("")
             if (!this.disambiguating) {
                 doPostCommandActions()
             }
+            say("")
         }
     }
 
@@ -274,11 +275,11 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
         }
         finally {
-            say("")
             this.disambiguating = false
             this.disambiguatingNouns = Nil
             this.disambiguatingVerb = null
             doPostCommandActions()
+            say("")
         }
     }
 

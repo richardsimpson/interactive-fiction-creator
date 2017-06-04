@@ -253,8 +253,8 @@ class ScriptingTest extends FunSuite {
             "time passes...", "",
             "time passes...", "",
             "time passes...", "",
-            "time passes...", "",
-            "hello from closure"
+            "time passes...", "hello from closure",
+            ""
         ))
     }
 
