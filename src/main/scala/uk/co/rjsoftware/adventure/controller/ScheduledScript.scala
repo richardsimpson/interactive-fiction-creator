@@ -5,14 +5,10 @@ import groovy.lang.Closure
 /**
   * Created by richardsimpson on 29/05/2017.
   */
-class ScheduledScript(private var turnCount:Int, private val script:Closure[Unit]) {
+class ScheduledScript(private var turnToExecuteOn:Int, private val script:Closure[Unit]) {
 
-    def getTurnCount : Int = {
-        this.turnCount
-    }
-
-    def decrementTurnCount : Unit = {
-        this.turnCount -= 1
+    def getTurnToExecuteOn : Int = {
+        this.turnToExecuteOn
     }
 
     def getScript() : Closure[Unit] = {

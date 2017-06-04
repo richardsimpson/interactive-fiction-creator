@@ -242,15 +242,14 @@ class AdventureController(private val mainWindow: MainWindow) {
     private def doPostCommandActions() : Unit = {
         // execute any scripts which should be executed on this turn.
         this.scheduledScripts.foreach((scheduledScript) => {
-            scheduledScript.decrementTurnCount
-            if (scheduledScript.getTurnCount <= 0) {
+            if (scheduledScript.getTurnToExecuteOn <= this.turnCounter) {
                 scheduledScript.getScript().call()
             }
         })
 
         // and then remove them from the list
         this.scheduledScripts = this.scheduledScripts.filter((scheduledScript) => {
-            scheduledScript.getTurnCount > 0
+            scheduledScript.getTurnToExecuteOn > this.turnCounter
         })
     }
 
@@ -710,7 +709,7 @@ class AdventureController(private val mainWindow: MainWindow) {
     }
 
     def executeAfterTurns(turns:Int, script:Closure[Unit]) : Unit = {
-        this.scheduledScripts :+= new ScheduledScript(turns, script)
+        this.scheduledScripts :+= new ScheduledScript(this.turnCounter + turns, script)
     }
 
     def setVisible(itemName:String, visible:Boolean) : Unit = {

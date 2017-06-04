@@ -611,7 +611,7 @@ class VerbsTest extends FunSuite {
         ))
     }
 
-    test("custom verb: WATCH {noun}") {
+    test("custom verb with noun: WATCH {noun}") {
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("watch tv"))
@@ -622,7 +622,7 @@ class VerbsTest extends FunSuite {
         ))
     }
 
-    test("custom verb: RELAX (in the living room") {
+    test("custom verb without noun: RELAX (in the living room") {
         mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("relax"))
@@ -633,7 +633,7 @@ class VerbsTest extends FunSuite {
         ))
     }
 
-    test("custom verb: RELAX (in the garden") {
+    test("custom verb without noun: RELAX (in the garden") {
         mainWindow.fireCommand(new CommandEvent("south"))
 
         mainWindow.clearMessages()
