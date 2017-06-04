@@ -5,6 +5,7 @@ import org.scalatest.Matchers._
 import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.controller.{AdventureController, MainWindowForTesting}
 import uk.co.rjsoftware.adventure.model.{Adventure, Room}
+import uk.co.rjsoftware.adventure.view.CommandEvent
 
 /**
   * Created by richardsimpson on 29/05/2017.
@@ -42,8 +43,7 @@ class ScalaToGroovy extends FunSuite {
         executor.executeScript("say('hello')")
     }
 
-    // TODO: Put this test back when implement the WAIT command
-    ignore("call the GroovyShell: executeAfterTurns") {
+    test("call the GroovyShell: executeAfterTurns") {
         mainWindow.clearMessages()
 
         val executor:ScriptExecutor = new ScriptExecutor(controller)
@@ -53,7 +53,26 @@ class ScalaToGroovy extends FunSuite {
                 "say('hello from closure')" +
             "}")
 
+        mainWindow.fireCommand(new CommandEvent("wait"))
+        mainWindow.fireCommand(new CommandEvent("wait"))
+        mainWindow.fireCommand(new CommandEvent("wait"))
+        mainWindow.fireCommand(new CommandEvent("wait"))
+
         assertMessagesAreCorrect(List(
+            "time passes...", "",
+            "time passes...", "",
+            "time passes...", "",
+            "time passes...", ""
+        ))
+
+        mainWindow.fireCommand(new CommandEvent("wait"))
+
+        assertMessagesAreCorrect(List(
+            "time passes...", "",
+            "time passes...", "",
+            "time passes...", "",
+            "time passes...", "",
+            "time passes...", "",
             "hello from closure"
         ))
     }
