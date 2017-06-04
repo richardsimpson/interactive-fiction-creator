@@ -50,8 +50,7 @@ public abstract class AdventureScript extends Script {
         !adventureController.playerInRoom(roomName)
     }
 
-    // TODO: Rename to moveTo
-    public boolean move(String roomName) {
-        adventureController.move(roomName)
+    public boolean moveTo(String roomName) {
+        adventureController.moveTo(roomName)
     }
 }

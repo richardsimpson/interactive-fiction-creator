@@ -30,7 +30,7 @@ adventure {
                 executeAfterTurns(10) {
                     if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
-                        move('game over')
+                        moveTo('game over')
                     }
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
@@ -52,7 +52,7 @@ adventure {
             verb ("CLIMB INTO {noun}") {
                 script """
                 if (isOpen('large, wooden chest')) {
-                    move("inside chest")
+                    moveTo("inside chest")
                 }
                 else {
                     say("Bimbo could not climb into the chest at this time.")
@@ -101,7 +101,7 @@ adventure {
                 Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
                 A few moments later, he exploded for no apparent reason.
                 """
-            onEatScript "move('game over')"
+            onEatScript "moveTo('game over')"
         }
 
         item ("wrecked box of chocolates") {
@@ -128,7 +128,7 @@ adventure {
 
         verb ("CLIMB OUT") {
             script """
-                move("tunnel like hall")
+                moveTo("tunnel like hall")
                 """
         }
 

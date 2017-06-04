@@ -67,7 +67,7 @@ class AdventureController(private val mainWindow: MainWindow) {
         // initialise the view
         this.mainWindow.loadAdventure(adventure.getTitle, adventure.getIntroduction)
 
-        move(adventure.getStartRoom)
+        moveTo(adventure.getStartRoom)
         say("")
     }
 
@@ -400,11 +400,11 @@ class AdventureController(private val mainWindow: MainWindow) {
             say("You cannot go that way.")
         }
         else {
-            move(newRoom.get)
+            moveTo(newRoom.get)
         }
     }
 
-    private def move(toRoom:Room) : Unit = {
+    private def moveTo(room:Room) : Unit = {
         // process leaving the previous room
         if (this.currentRoom != null) {
             if (this.currentRoom.getAfterLeaveRoomScript != null) {
@@ -414,9 +414,9 @@ class AdventureController(private val mainWindow: MainWindow) {
 
         // now deal with entering the new room
         var firstVisit : Boolean = false
-        this.currentRoom = toRoom
+        this.currentRoom = room
 
-        if (!this.visitedRooms.contains(toRoom)) {
+        if (!this.visitedRooms.contains(room)) {
             firstVisit = true
             this.visitedRooms ::= this.currentRoom
         }
@@ -731,9 +731,9 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.currentRoom.getName.equals(roomName)
     }
 
-    def move(roomName:String) : Unit = {
+    def moveTo(roomName:String) : Unit = {
         val room:Room = getRoom(roomName)
-        move(room)
+        moveTo(room)
     }
 
     // TODO: add script functions for:
@@ -741,8 +741,6 @@ class AdventureController(private val mainWindow: MainWindow) {
     //      clear the screen.
     //      player is carrying object
     //      player is NOT carrying object
-    //      player is in room
-    //      player is not in room
     //      object is visible
     //      object is not visible.
 

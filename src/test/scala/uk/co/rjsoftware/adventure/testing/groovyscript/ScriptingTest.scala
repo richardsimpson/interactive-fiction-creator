@@ -351,7 +351,7 @@ class ScriptingTest extends FunSuite {
     }
 
     test("function: move") {
-        dummy.setOnOpenScript("move('study')")
+        dummy.setOnOpenScript("moveTo('study')")
 
         assert(this.controller.getCurrentRoom == livingRoom)
 
