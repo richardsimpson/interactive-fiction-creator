@@ -221,7 +221,6 @@ class AdventureController(private val mainWindow: MainWindow) {
             val verbNoun:VerbNoun = determineVerbNoun(words)
             if (verbNoun == null) {
                 say("I don't understand what you are trying to do.")
-                say("")
                 return
             }
 
@@ -233,6 +232,7 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
         }
         finally {
+            say("")
             if (!this.disambiguating) {
                 doPostCommandActions()
             }
@@ -259,7 +259,6 @@ class AdventureController(private val mainWindow: MainWindow) {
             val selectionAsInt : Int = selection.toInt
             if ((selectionAsInt < 1) || (selectionAsInt > this.disambiguatingNouns.size)) {
                 say("I'm sorry, I don't understand")
-                say("")
                 return
             }
             val noun = this.disambiguatingNouns(selectionAsInt-1)
@@ -272,10 +271,10 @@ class AdventureController(private val mainWindow: MainWindow) {
         catch {
             case e:NumberFormatException => {
                 say("I'm sorry, I don't understand")
-                say("")
             }
         }
         finally {
+            say("")
             this.disambiguating = false
             this.disambiguatingNouns = Nil
             this.disambiguatingVerb = null
@@ -304,12 +303,9 @@ class AdventureController(private val mainWindow: MainWindow) {
         for (index:Int <- 0 until items.size) {
             say((index+1).toString + ") " + items(index).getName)
         }
-        say("")
     }
 
     private def executeCustomVerb(verb:CustomVerb, candidateItems:List[Item]): Unit = {
-        // TODO: Allow custom verbs to NOT specify a noun, e.g. CLIMB OUT.  Would need to check that the
-        //       verb is attached to the current room
         val items:List[Item] = determineIntendedNoun(candidateItems)
 
         // first, determine the verb container
@@ -327,21 +323,18 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
         // then check that the item / room that was referred to by the user actually contains this verb
         if (!verbContainer.getVerbs.contains(verb)) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
         var script:Option[String] = verbContainer.getVerbs.get(verb)
 
         executeScript(script.get)
-        say("")
     }
 
     private def executeCommand(verb:String, items:List[Item]): Unit = {
@@ -386,7 +379,6 @@ class AdventureController(private val mainWindow: MainWindow) {
                 }
             }
         }
-        say("")
     }
 
     private def exits() : Unit = {
@@ -397,7 +389,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
 
         say(outputText.toString())
-        say("")
     }
 
     private def move(direction: Direction) : Unit = {
@@ -405,7 +396,6 @@ class AdventureController(private val mainWindow: MainWindow) {
 
         if (newRoom.isEmpty) {
             say("You cannot go that way.")
-            say("")
         }
         else {
             move(newRoom.get)
@@ -462,7 +452,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
@@ -476,7 +465,6 @@ class AdventureController(private val mainWindow: MainWindow) {
             this.player.addItem(item)
             say("You pick up the " + item.getName)
         }
-        say("")
     }
 
     private def drop(candidateItems:List[Item]) : Unit = {
@@ -488,7 +476,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
@@ -502,7 +489,6 @@ class AdventureController(private val mainWindow: MainWindow) {
             this.currentRoom.addItem(item)
             say("You drop the " + item.getName)
         }
-        say("")
     }
 
     private def examine(candidateItems: List[Item]): Unit = {
@@ -514,14 +500,12 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
         val item:Item = items.head
 
         say(item.getItemDescription)
-        say("")
         item.setItemPreviouslyExamined(true)
     }
 
@@ -535,7 +519,6 @@ class AdventureController(private val mainWindow: MainWindow) {
                 say(item.getName)
             }
         }
-        say("")
     }
 
     private def turnOn(candidateItems: List[Item]) : Unit = {
@@ -547,7 +530,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
@@ -569,7 +551,6 @@ class AdventureController(private val mainWindow: MainWindow) {
                 say(switchOnMessage)
             }
         }
-        say("")
     }
 
     private def turnOff(candidateItems: List[Item]) : Unit = {
@@ -581,7 +562,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
@@ -603,12 +583,10 @@ class AdventureController(private val mainWindow: MainWindow) {
                 say(switchOffMessage)
             }
         }
-        say("")
     }
 
     private def waitTurn() : Unit = {
         say("time passes...")
-        say("")
     }
 
     private def open(candidateItems: List[Item]) : Unit = {
@@ -620,7 +598,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
@@ -645,7 +622,6 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
 
         }
-        say("")
     }
 
     private def close(candidateItems: List[Item]) : Unit = {
@@ -657,7 +633,6 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else if (items == Nil) {
             say("You cannot do that right now.")
-            say("")
             return
         }
 
@@ -682,7 +657,6 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
 
         }
-        say("")
     }
 
     private def executeScript(script:String): Unit = {

@@ -290,6 +290,7 @@ class ScriptingTest extends FunSuite {
               |    say('player is not in the living room')
               |}
             """.stripMargin)
+        dummy2.setOnOpenScript(dummy.getOnOpenScript)
 
         this.mainWindow.clearMessages()
 
@@ -305,10 +306,10 @@ class ScriptingTest extends FunSuite {
         dummy.setOpen(false)
         this.mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        mainWindow.fireCommand(new CommandEvent("open dummy2"))
 
         assertMessagesAreCorrect(List(
-            "You open the dummy",
+            "You open the dummy2",
             "player is not in the living room",
             ""
         ))
@@ -324,6 +325,7 @@ class ScriptingTest extends FunSuite {
               |    say('player is in the living room')
               |}
             """.stripMargin)
+        dummy2.setOnOpenScript(dummy.getOnOpenScript)
 
         this.mainWindow.clearMessages()
 
@@ -339,10 +341,10 @@ class ScriptingTest extends FunSuite {
         dummy.setOpen(false)
         this.mainWindow.clearMessages()
 
-        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        mainWindow.fireCommand(new CommandEvent("open dummy2"))
 
         assertMessagesAreCorrect(List(
-            "You open the dummy",
+            "You open the dummy2",
             "player is not in the living room",
             ""
         ))
@@ -362,7 +364,7 @@ class ScriptingTest extends FunSuite {
         assertMessagesAreCorrect(List(
             "You open the dummy",
             "This is your study.",
-            "You can also see",
+            "You can also see:",
             "dummy2",
             ""
         ))
