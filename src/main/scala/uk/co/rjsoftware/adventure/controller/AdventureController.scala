@@ -288,12 +288,10 @@ class AdventureController(private val mainWindow: MainWindow) {
     }
 
     private def determineIntendedNoun(items:List[Item]) : List[Item] = {
-        // TODO: For now, just return the first visible item.  will need to disambiguate later
         return items.filter((item) => item.isVisible)
     }
 
     private def determineIntendedNoun(container:ItemContainer, items:List[Item]) : List[Item] = {
-        // TODO: For now, just return the first visible item that is in the container.  will need to disambiguate later
         return items.filter((item) => item.isVisible && container.contains(item))
     }
 
