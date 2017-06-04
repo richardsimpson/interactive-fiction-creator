@@ -506,8 +506,8 @@ class AdventureController(private val mainWindow: MainWindow) {
 
         val item:Item = items.head
 
-        say(item.getItemDescription)
         item.setItemPreviouslyExamined(true)
+        say(item.getItemDescription)
     }
 
     private def inventory() : Unit = {

@@ -2,6 +2,7 @@ package uk.co.rjsoftware.adventure.controller.load
 
 import org.codehaus.groovy.control.CompilerConfiguration
 import uk.co.rjsoftware.adventure.model.Adventure
+import uk.co.rjsoftware.adventure.model.ContentVisibility
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.model.Direction
 import uk.co.rjsoftware.adventure.model.Item
@@ -194,6 +195,10 @@ public class ItemDelegate {
     private final Item item
     private final Adventure adventure
 
+    private ContentVisibility ALWAYS = ContentVisibility.ALWAYS
+    private ContentVisibility ÅFTER_EXAMINE = ContentVisibility.AFTER_EXAMINE
+    private ContentVisibility NEVER = ContentVisibility.NEVER
+
     private ItemDelegate(Adventure adventure, Item item) {
         this.adventure = adventure
         this.item = item
@@ -293,8 +298,8 @@ public class ItemDelegate {
         this.item.setOnCloseScript(onCloseScript)
     }
 
-    private contentsInitiallyHidden(Boolean contentsInitiallyHidden) {
-        this.item.setContentsInitiallyHidden(contentsInitiallyHidden)
+    private contentVisibility(ContentVisibility contentVisibility) {
+        this.item.setContentVisibility(contentVisibility)
     }
 }
 

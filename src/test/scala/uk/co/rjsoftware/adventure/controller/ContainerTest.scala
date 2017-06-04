@@ -48,7 +48,7 @@ class ContainerTest extends FunSuite {
         livingRoom.addItem(chest)
 
         chest.setOpen(false)
-        chest.setContentsInitiallyHidden(true)
+        chest.setContentVisibility(ContentVisibility.AFTER_EXAMINE)
         chest.setItemPreviouslyExamined(false)
         chest.setOpenable(true)
         chest.setCloseable(true)
@@ -179,7 +179,7 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK when container closed and contents initially hidden") {
+    test("LOOK when container closed (contents initially hidden)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
 
@@ -196,7 +196,7 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK when container open and contents initially hidden") {
+    test("LOOK when container open (contents initially hidden)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
 
@@ -215,10 +215,10 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK when container closed and contents are NOT initially hidden") {
+    test("LOOK when container closed (contents always visible)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
-            this.chest.setContentsInitiallyHidden(false)
+            this.chest.setContentVisibility(ContentVisibility.ALWAYS)
 
             this.mainWindow.clearMessages()
 
@@ -233,10 +233,10 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK when container open and contents are NOT initially hidden") {
+    test("LOOK when container open (contents always visible)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
-            this.chest.setContentsInitiallyHidden(false)
+            this.chest.setContentVisibility(ContentVisibility.ALWAYS)
 
             mainWindow.fireCommand(new CommandEvent("open chest"))
 
@@ -255,7 +255,45 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("EXAM a closed container") {
+    test("LOOK when container closed (contents never visible)") {
+        for (verbString <- this.verbs("LOOK").getSynonyms) {
+            setup()
+            this.chest.setContentVisibility(ContentVisibility.NEVER)
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect(List(
+                "This is the living room.",
+                "You can also see:",
+                chest.getName,
+                ""
+            ))
+        }
+    }
+
+    test("LOOK when container open (contents never visible)") {
+        for (verbString <- this.verbs("LOOK").getSynonyms) {
+            setup()
+            this.chest.setContentVisibility(ContentVisibility.NEVER)
+
+            mainWindow.fireCommand(new CommandEvent("open chest"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect(List(
+                "This is the living room.",
+                "You can also see:",
+                chest.getName,
+                ""
+            ))
+        }
+    }
+
+    test("EXAM when container closed (contents initially hidden)") {
         for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
             setup()
 
@@ -270,7 +308,7 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("EXAM an open container") {
+    test("EXAM when container open (contents initially hidden)") {
         for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
             setup()
 
@@ -289,7 +327,77 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("EXAM a closed container, which was previously examined when open") {
+    test("EXAM when container closed (contents always visible)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            this.chest.setContentVisibility(ContentVisibility.ALWAYS)
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "This is the chest.",
+                ""
+            ))
+        }
+    }
+
+    test("EXAM when container open (contents always visible)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            this.chest.setContentVisibility(ContentVisibility.ALWAYS)
+
+            mainWindow.fireCommand(new CommandEvent("open chest"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "This is the chest.  It contains:",
+                goldCoin.getName,
+                notepad.getName,
+                ""
+            ))
+        }
+    }
+
+    test("EXAM when container closed (contents never visible)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            this.chest.setContentVisibility(ContentVisibility.NEVER)
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "This is the chest.",
+                ""
+            ))
+        }
+    }
+
+    test("EXAM when container open (contents never visible)") {
+        for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
+            setup()
+            this.chest.setContentVisibility(ContentVisibility.NEVER)
+
+            mainWindow.fireCommand(new CommandEvent("open chest"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "This is the chest.",
+                ""
+            ))
+        }
+    }
+
+    test("EXAM when container closed, which was previously examined when open (contents initially hidden)") {
         for (verbString <- this.verbs("EXAMINE {noun}").getSynonyms) {
             setup()
 
@@ -308,7 +416,7 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK after examining an open container") {
+    test("LOOK after examining an open container (contents initially hidden)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
 
@@ -330,7 +438,7 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK after examining a closed container") {
+    test("LOOK after examining a closed container (contents initially hidden)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
 
@@ -349,7 +457,7 @@ class ContainerTest extends FunSuite {
         }
     }
 
-    test("LOOK when the contained was closed after being examined.") {
+    test("LOOK when the contained was closed after being examined (contents initially hidden)") {
         for (verbString <- this.verbs("LOOK").getSynonyms) {
             setup()
 

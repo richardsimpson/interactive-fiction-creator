@@ -52,6 +52,7 @@ adventure {
             container true
             openMessage "Bimbo opened the chest, but couldn't quite see inside"
             closeMessage "Bimbo closed the chest, neatly avoiding trapping his thumb, and crunching all his fingers instead"
+            contentVisibility NEVER
 
             verb ("CLIMB INTO {noun}") {
                 script """

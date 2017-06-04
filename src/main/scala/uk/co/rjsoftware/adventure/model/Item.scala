@@ -13,7 +13,7 @@ class Item(private var synonyms:List[String], private var description:String,
            private var container:Boolean = false, private var openable:Boolean = true, private var closeable:Boolean = true,
            private var open:Boolean = false, private var openMessage:String = null, private var closeMessage:String = null,
            private var onOpenScript:String = null, private var onCloseScript:String = null,
-           private var contentsInitiallyHidden:Boolean = true) extends ItemContainer with VerbContainer
+           private var contentVisibility:ContentVisibility = ContentVisibility.AFTER_EXAMINE) extends ItemContainer with VerbContainer
 {
 
     // TODO: To add:
@@ -60,6 +60,30 @@ class Item(private var synonyms:List[String], private var description:String,
     def isDroppable : Boolean = this.droppable
     def setDroppable(droppable:Boolean) : Unit = this.droppable = droppable
 
+    private def shouldShowContents() : Boolean = {
+        if (!this.container) {
+            return false
+        }
+
+        if (!this.open) {
+            return false
+        }
+
+        if (this.contentVisibility == ContentVisibility.ALWAYS) {
+            return true
+        }
+
+        if (this.contentVisibility == ContentVisibility.NEVER) {
+            return false
+        }
+
+        if (this.contentVisibility == ContentVisibility.AFTER_EXAMINE) {
+            return this.itemPreviouslyExamined
+        }
+
+        throw new RuntimeException("Unexpected value for ContentVisibility")
+    }
+
     def getItemDescription : String = {
         var result : String = this.description
 
@@ -80,7 +104,7 @@ class Item(private var synonyms:List[String], private var description:String,
             }
         }
 
-        if (this.container && this.open) {
+        if (shouldShowContents()) {
             result += "  It contains:" + System.lineSeparator()
 
             if (this.items.isEmpty) {
@@ -98,7 +122,7 @@ class Item(private var synonyms:List[String], private var description:String,
     def getLookDescription : String = {
         var result : String = this.getName
 
-        if (this.container && this.open && (!this.contentsInitiallyHidden || this.itemPreviouslyExamined)) {
+        if (shouldShowContents()) {
             result += ", containing:" + System.lineSeparator()
 
             if (this.items.isEmpty) {
@@ -174,8 +198,8 @@ class Item(private var synonyms:List[String], private var description:String,
     def getOnCloseScript:String = this.onCloseScript
     def setOnCloseScript(onCloseScript:String) : Unit = this.onCloseScript = onCloseScript
 
-    def isContentsInitiallyHidden:Boolean = this.contentsInitiallyHidden
-    def setContentsInitiallyHidden(contentsInitiallyHidden:Boolean) : Unit = this.contentsInitiallyHidden = contentsInitiallyHidden
+    def getContentVisibility:ContentVisibility = this.contentVisibility
+    def setContentVisibility(contentVisibility:ContentVisibility) : Unit = this.contentVisibility = contentVisibility
 
     def getItems : Map[String, Item] = {
         this.items
