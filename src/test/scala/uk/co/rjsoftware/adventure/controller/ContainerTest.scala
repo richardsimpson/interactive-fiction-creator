@@ -50,6 +50,7 @@ class ContainerTest extends FunSuite {
 
         livingRoom.addItem(chest)
         chest.setOpen(false)
+        chest.setContentsInitiallyHidden(true)
         chest.setItemPreviouslyExamined(false)
 
         adventure.addRoom(livingRoom)
@@ -204,8 +205,7 @@ class ContainerTest extends FunSuite {
             setup()
 
             mainWindow.fireCommand(new CommandEvent("open chest"))
-            // TODO: THis doesn't seem right.  Surely if we don't examine the chest, we shouldn't see the contents?
-//            mainWindow.fireCommand(new CommandEvent("examine chest"))
+            mainWindow.fireCommand(new CommandEvent("examine chest"))
 
             this.mainWindow.clearMessages()
 
