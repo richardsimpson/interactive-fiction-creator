@@ -66,8 +66,6 @@ adventure {
             }
         }
 
-        // TODO: Stop saying that the chest contains nothing.  We shouldn't be able to see inside in this case.
-
         item ("door") {
             description """
                 Examining the door, Bimbo saw that it had a combination lock.  A small plate below it
