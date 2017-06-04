@@ -22,6 +22,14 @@ public abstract class AdventureScript extends Script {
         !adventureController.isSwitchedOn(itemName);
     }
 
+    public boolean isOpen(String itemName) {
+        adventureController.isOpen(itemName)
+    }
+
+    public boolean isClosed(String itemName) {
+        !adventureController.isOpen(itemName)
+    }
+
     public void executeAfterTurns(int turns, Closure scriptToExecute) {
         adventureController.executeAfterTurns(turns, scriptToExecute)
     }
@@ -40,5 +48,9 @@ public abstract class AdventureScript extends Script {
 
     public boolean playerNotInRoom(String roomName) {
         !adventureController.playerInRoom(roomName)
+    }
+
+    public boolean move(String roomName) {
+        adventureController.move(roomName)
     }
 }

@@ -14,18 +14,18 @@ import scala.annotation.tailrec
   */
 class AdventureController(private val mainWindow: MainWindow) {
 
-    private var currentRoom : Room = null
-    private var player : Player = null
+    private var currentRoom : Room = _
+    private var player : Player = _
     private var visitedRooms : List[Room] = Nil
     private var scheduledScripts:List[ScheduledScript] = Nil
     private var turnCounter : Int = 0
     private var disambiguating : Boolean = false
-    private var disambiguatingVerb : Verb = null
+    private var disambiguatingVerb : Verb = _
     private var disambiguatingNouns : List[Item] = Nil
 
     private var verbs : List[Verb] = Nil
-
     private var nouns : Map[String, Item] = Map[String, Item]()
+    private var rooms : Map[String, Room] = Map[String, Room]()
 
     mainWindow.addCommandListener(executeCommand)
     mainWindow.addLoadListener(loadAdventure)
@@ -58,9 +58,10 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.verbs ++= adventure.getCustomVerbs
 
         this.nouns = Map[String, Item]()
-        for (room <- adventure.getRooms) {
-            // TODO: Why does this work?
+        this.rooms = Map[String, Room]()
+        for (room:Room <- adventure.getRooms) {
             nouns ++= room.getItems.map({case (key, value) => (key.toUpperCase, value)})
+            rooms += (room.getName.toUpperCase -> room)
         }
 
         // initialise the view
@@ -308,6 +309,8 @@ class AdventureController(private val mainWindow: MainWindow) {
     }
 
     private def executeCustomVerb(verb:CustomVerb, candidateItems:List[Item]): Unit = {
+        // TODO: Allow custom verbs to NOT specify a noun, e.g. CLIMB OUT.  Would need to check that the
+        //       verb is attached to the current room
         val items:List[Item] = determineIntendedNoun(candidateItems)
 
         if (items.size > 1) {
@@ -693,6 +696,11 @@ class AdventureController(private val mainWindow: MainWindow) {
         item.isSwitchedOn
     }
 
+    def isOpen(itemName:String) : Boolean = {
+        val item:Item = getItem(itemName)
+        item.isOpen
+    }
+
     def executeAfterTurns(turns:Int, script:Closure[Unit]) : Unit = {
         this.scheduledScripts :+= new ScheduledScript(turns, script)
     }
@@ -704,6 +712,11 @@ class AdventureController(private val mainWindow: MainWindow) {
 
     def playerInRoom(roomName:String) : Boolean = {
         this.currentRoom.getName.equals(roomName)
+    }
+
+    def move(roomName:String) : Unit = {
+        val room:Room = getRoom(roomName)
+        move(room)
     }
 
     // TODO: add script functions for:
@@ -730,6 +743,16 @@ class AdventureController(private val mainWindow: MainWindow) {
         item.get
     }
 
+    private def getRoom(roomName:String) : Room = {
+        val room:Option[Room] = this.rooms.get(roomName.toUpperCase)
+
+        if (room.isEmpty) {
+            say("ERROR: Specified room does not exist.")
+            throw new RuntimeException("Specified room does not exist.")
+        }
+
+        room.get
+    }
 
 }
 

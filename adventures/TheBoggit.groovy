@@ -2,6 +2,9 @@ adventure {
     title "The Boggit"
     introduction ""
 
+    verb ("Climb into", "CLIMB INTO {noun}") {}
+    verb ("Climb into", "CLIMB OUT") {}
+
     room ("tunnel like hall") {
         description """
              Bimbo stood in his comfortable tunnel like hall.  To the east was the round green door and a small
@@ -49,6 +52,23 @@ adventure {
             container true
             openMessage "Bimbo opened the chest, but couldn't quite see inside"
             closeMessage "Bimbo closed the chest, neatly avoiding trapping his thumb, and crunching all his fingers instead"
+
+            verb ("CLIMB INTO {noun}") {
+                script """
+                if (isOpen('large, wooden chest')) {
+                    move("inside chest")
+                }
+                else {
+                    say("Bimbo could not climb into the chest at this time.")
+                }
+                """
+            }
+
+            verb ("CLIMB OUT") {
+                script """
+                move("tunnel like hall")
+                """
+            }
         }
 
         // TODO: Stop saying that the chest contains nothing.  We shouldn't be able to see inside in this case.
