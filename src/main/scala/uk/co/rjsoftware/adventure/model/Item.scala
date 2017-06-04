@@ -13,7 +13,9 @@ class Item(private var synonyms:List[String], private var description:String,
            private var container:Boolean = false, private var openable:Boolean = true, private var closeable:Boolean = true,
            private var open:Boolean = false, private var openMessage:String = null, private var closeMessage:String = null,
            private var onOpenScript:String = null, private var onCloseScript:String = null,
-           private var contentVisibility:ContentVisibility = ContentVisibility.AFTER_EXAMINE) extends ItemContainer with VerbContainer
+           private var contentVisibility:ContentVisibility = ContentVisibility.AFTER_EXAMINE,
+           private var edible:Boolean = false, private var eatMessage:String = null, private var onEatScript:String = null)
+        extends ItemContainer with VerbContainer
 {
 
     // TODO: To add:
@@ -224,4 +226,17 @@ class Item(private var synonyms:List[String], private var description:String,
     def setItemPreviouslyExamined(itemPreviouslyExamined:Boolean) : Unit = {
         this.itemPreviouslyExamined = itemPreviouslyExamined
     }
+
+    //
+    // Edible
+    //
+
+    def isEdible : Boolean = this.edible
+    def setEdible(edible:Boolean) : Unit = this.edible = edible
+
+    def getEatMessage : String = this.eatMessage
+    def setEatMessage(eatMessage:String) : Unit = this.eatMessage = eatMessage
+
+    def getOnEatScript : String = this.onEatScript
+    def setOnEatScript(onEatScript:String) : Unit = this.onEatScript = onEatScript
 }

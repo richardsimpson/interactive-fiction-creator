@@ -357,6 +357,7 @@ class AdventureController(private val mainWindow: MainWindow) {
             case "WAIT" => waitTurn()
             case "OPEN {noun}" => open(items)
             case "CLOSE {noun}" => close(items)
+            case "EAT {noun}" => eat(items)
             case _ => throw new RuntimeException("Unexpected verb")
         }
     }
@@ -545,11 +546,11 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
             else {
                 item.switchOn()
-                var switchOnMessage:String = item.getSwitchOnMessage
-                if (switchOnMessage == null) {
-                    switchOnMessage = "You turn on the " + item.getName
+                var message:String = item.getSwitchOnMessage
+                if (message == null) {
+                    message = "You turn on the " + item.getName
                 }
-                say(switchOnMessage)
+                say(message)
             }
         }
     }
@@ -577,11 +578,11 @@ class AdventureController(private val mainWindow: MainWindow) {
             }
             else {
                 item.switchOff()
-                var switchOffMessage:String = item.getSwitchOffMessage
-                if (switchOffMessage == null) {
-                    switchOffMessage = "You turn off the " + item.getName
+                var message:String = item.getSwitchOffMessage
+                if (message == null) {
+                    message = "You turn off the " + item.getName
                 }
-                say(switchOffMessage)
+                say(message)
             }
         }
     }
@@ -612,11 +613,11 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else {
             item.setOpen(true)
-            var openMessage:String = item.getOpenMessage
-            if (openMessage == null) {
-                openMessage = "You open the " + item.getName
+            var message:String = item.getOpenMessage
+            if (message == null) {
+                message = "You open the " + item.getName
             }
-            say(openMessage)
+            say(message)
 
             if (item.getOnOpenScript != null) {
                 executeScript(item.getOnOpenScript)
@@ -647,14 +648,48 @@ class AdventureController(private val mainWindow: MainWindow) {
         }
         else {
             item.setOpen(false)
-            var closeMessage:String = item.getCloseMessage
-            if (closeMessage == null) {
-                closeMessage = "You close the " + item.getName
+            var message:String = item.getCloseMessage
+            if (message == null) {
+                message = "You close the " + item.getName
             }
-            say(closeMessage)
+            say(message)
 
             if (item.getOnCloseScript != null) {
                 executeScript(item.getOnCloseScript)
+            }
+
+        }
+    }
+
+    private def eat(candidateItems: List[Item]) : Unit = {
+        val items:List[Item] = determineIntendedNoun(candidateItems)
+
+        if (items.size > 1) {
+            askUserToDisambiguate(StandardVerbs.EAT, items)
+            return
+        }
+        else if (items == Nil) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        val item:Item = items.head
+
+        if (!item.isEdible) {
+            say("You cannot eat the " + item.getName)
+        }
+        else {
+            this.player.removeItem(item)
+            this.currentRoom.removeItem(item)
+
+            var message:String = item.getEatMessage
+            if (message == null) {
+                message = "You eat the " + item.getName
+            }
+            say(message)
+
+            if (item.getOnEatScript != null) {
+                executeScript(item.getOnEatScript)
             }
 
         }

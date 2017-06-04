@@ -24,12 +24,13 @@ object StandardVerbs {
     val WAIT:Verb = new Verb("Wait", List("WAIT"))
     val OPEN:Verb = new Verb("Open", List("OPEN {noun}"))
     val CLOSE:Verb = new Verb("Close", List("CLOSE {noun}"))
+    val EAT:Verb = new Verb("Eat", List("EAT {noun}"))
 
     private val verbs:List[Verb] = NORTH :: SOUTH :: EAST :: WEST :: UP :: DOWN :: LOOK :: EXITS :: EXAMINE ::
-            GET :: DROP :: INVENTORY :: TURNON :: TURNOFF :: WAIT :: OPEN :: CLOSE :: Nil
+            GET :: DROP :: INVENTORY :: TURNON :: TURNOFF :: WAIT :: OPEN :: CLOSE :: EAT :: Nil
 
     // TODO: Add verbs (or should these just be custom verbs):
-    //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, EAT, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
+    //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
     //          SIT ON / SIT UPON / SIT DOWN ON / SIT DOWN UPON, HIT, PUSH, PULL, THROW, TOUCH, KILL, TIE, UNTIE,
     //          CLIMB INTO / CLIMB OUT,
     //          SPEAK TO / SPEAK / TALK TO / TALK, LISTEN TO, MOVE, SMELL / SNIFF, KNOCK, SHOW, BUY,

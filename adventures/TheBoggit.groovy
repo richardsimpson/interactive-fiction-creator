@@ -41,10 +41,6 @@ adventure {
             }
 '''
 
-        // TODO: WHEN eat the chocolates
-        // Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
-        // A few moments later, he exploded for no apparent reason.
-
         item ("large, wooden chest") {
             synonyms "chest"
             description "The chest was both heavy and closed"
@@ -100,6 +96,12 @@ adventure {
                 The chocolates were small and brown.  They probably contained milk chocolate, milk solids
                 (20% minimum) and vegetable fat."""
             visible false
+            edible true
+            eatMessage """
+                Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
+                A few moments later, he exploded for no apparent reason.
+                """
+            onEatScript "move('game over')"
         }
 
         item ("wrecked box of chocolates") {

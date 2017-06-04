@@ -33,6 +33,9 @@ class VerbsTest extends FunSuite {
     private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.",
         gettable = true, droppable = false, switchable = false)
     private val remote:Item = new Item(List("remote"), "The TV remote", visible = false, scenery = false)
+    private val sandwich:Item = new Item(List("sandwich"), "A crusty old sandwich", edible = true)
+    private val donut:Item = new Item(List("donut"), "A delicious looking donut", edible = true,
+        eatMessage = "eating donut", onEatScript = "say('onEatScript')")
 
     private val watch = new CustomVerb("Watch", List("WATCH {noun}"))
     private val relax = new CustomVerb("Relax", List("RELAX"))
@@ -85,6 +88,9 @@ class VerbsTest extends FunSuite {
         livingRoom.addItem(tv)
         livingRoom.addItem(newspaper)
         livingRoom.addItem(remote)
+
+        diningRoom.addItem(donut)
+        diningRoom.addItem(sandwich)
 
         lamp.switchOff()
         tv.switchOff()
@@ -204,14 +210,14 @@ class VerbsTest extends FunSuite {
     }
 
     private def testLook_WhenThereAreNoItemsInTheRoom(command:String) {
-        mainWindow.fireCommand(new CommandEvent("east"))
+        mainWindow.fireCommand(new CommandEvent("west"))
 
         this.mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent(command))
 
         assertMessagesAreCorrect(List(
-            diningRoom.getDescription,
+            study.getDescription,
             ""
         ))
     }
@@ -607,6 +613,72 @@ class VerbsTest extends FunSuite {
 
         assertMessagesAreCorrect(List(
             "time passes...",
+            ""
+        ))
+    }
+
+    test("verb: EAT {noun}") {
+        for (verbString <- this.verbs("EAT {noun}").getSynonyms) {
+            setup()
+            testEatNoun(verbString.replaceAll("\\{noun\\}", "sandwich"))
+        }
+    }
+
+    private def testEatNoun(command:String): Unit = {
+        assert(diningRoom.contains(sandwich))
+
+
+        mainWindow.fireCommand(new CommandEvent("east"))
+        mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        assert(!diningRoom.contains(sandwich))
+
+        assertMessagesAreCorrect(List(
+            "You eat the sandwich",
+            ""
+        ))
+    }
+
+    test("verb: EAT {noun} (with custom message and script") {
+        for (verbString <- this.verbs("EAT {noun}").getSynonyms) {
+            setup()
+            testEatNounWithCustomMessageAndScript(verbString.replaceAll("\\{noun\\}", "donut"))
+        }
+    }
+
+    private def testEatNounWithCustomMessageAndScript(command:String): Unit = {
+        assert(diningRoom.contains(donut))
+
+
+        mainWindow.fireCommand(new CommandEvent("east"))
+        mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        assert(!diningRoom.contains(donut))
+
+        assertMessagesAreCorrect(List(
+            "eating donut",
+            "onEatScript",
+            ""
+        ))
+    }
+
+    test("verb: EAT {noun} (when item not edible)") {
+        for (verbString <- this.verbs("EAT {noun}").getSynonyms) {
+            setup()
+            testEatNounWhenItemNotEdible(verbString.replaceAll("\\{noun\\}", "tv"))
+        }
+    }
+
+    private def testEatNounWhenItemNotEdible(command:String): Unit = {
+        assert(diningRoom.contains(donut))
+
+        mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent(command))
+
+        assertMessagesAreCorrect(List(
+            "You cannot eat the TV",
             ""
         ))
     }

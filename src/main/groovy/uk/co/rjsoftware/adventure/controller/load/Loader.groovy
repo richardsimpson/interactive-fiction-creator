@@ -301,6 +301,18 @@ public class ItemDelegate {
     private contentVisibility(ContentVisibility contentVisibility) {
         this.item.setContentVisibility(contentVisibility)
     }
+
+    private edible(Boolean edible) {
+        this.item.setEdible(edible)
+    }
+
+    private eatMessage(String eatMessage) {
+        this.item.setEatMessage(eatMessage)
+    }
+
+    private onEatScript(String onEatScript) {
+        this.item.setOnEatScript(onEatScript)
+    }
 }
 
 public class VerbInstanceDelegate {
