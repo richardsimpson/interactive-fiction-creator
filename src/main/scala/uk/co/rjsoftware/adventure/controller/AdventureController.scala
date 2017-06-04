@@ -631,6 +631,11 @@ class AdventureController(private val mainWindow: MainWindow) {
                 openMessage = "You open the " + item.getName
             }
             say(openMessage)
+
+            if (item.getOnOpenScript != null) {
+                executeScript(item.getOnOpenScript)
+            }
+
         }
         say("")
     }
@@ -663,6 +668,11 @@ class AdventureController(private val mainWindow: MainWindow) {
                 closeMessage = "You close the " + item.getName
             }
             say(closeMessage)
+
+            if (item.getOnCloseScript != null) {
+                executeScript(item.getOnCloseScript)
+            }
+
         }
         say("")
     }

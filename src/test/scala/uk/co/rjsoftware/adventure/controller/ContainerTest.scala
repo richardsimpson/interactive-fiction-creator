@@ -22,9 +22,6 @@ class ContainerTest extends FunSuite {
         onOpenScript = "say('onOpenScript')", onCloseScript = "say('onCloseScript')"
     )
 
-    // contentsInitiallyHidden = true
-    // contentsListedWhenExamined = true
-
     private val goldCoin :Item = new Item(List("gold coin", "coin"), "This coin is gold.")
     private val notepad :Item = new Item(List("notepad"), "A notebook with strange writing on it.")
 
@@ -49,9 +46,12 @@ class ContainerTest extends FunSuite {
         val adventure:Adventure = new Adventure("Welcome to the Adventure!")
 
         livingRoom.addItem(chest)
+
         chest.setOpen(false)
         chest.setContentsInitiallyHidden(true)
         chest.setItemPreviouslyExamined(false)
+        chest.setOpenable(true)
+        chest.setCloseable(true)
 
         adventure.addRoom(livingRoom)
         adventure.setStartRoom(livingRoom)
@@ -68,6 +68,114 @@ class ContainerTest extends FunSuite {
 
         for (index <- expectedMessages.indices) {
             messages(index) should equal (expectedMessages(index))
+        }
+    }
+
+    test("OPEN chest") {
+        for (verbString <- this.verbs("OPEN {noun}").getSynonyms) {
+            setup()
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "The chest is now open",
+                "onOpenScript",
+                ""
+            ))
+
+            assert(this.chest.isOpen)
+        }
+    }
+
+    test("CLOSE chest") {
+        for (verbString <- this.verbs("CLOSE {noun}").getSynonyms) {
+            setup()
+
+            mainWindow.fireCommand(new CommandEvent("open chest"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "The chest is now closed",
+                "onCloseScript",
+                ""
+            ))
+
+            assert(!this.chest.isOpen)
+        }
+    }
+
+    test("OPEN chest when it is already open") {
+        for (verbString <- this.verbs("OPEN {noun}").getSynonyms) {
+            setup()
+
+            mainWindow.fireCommand(new CommandEvent("open chest"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "chest is already open",
+                ""
+            ))
+        }
+    }
+
+    test("CLOSE chest when it is already closed") {
+        for (verbString <- this.verbs("CLOSE {noun}").getSynonyms) {
+            setup()
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "chest is already closed",
+                ""
+            ))
+        }
+    }
+
+    test("OPEN chest when chest cannot be opened") {
+        for (verbString <- this.verbs("OPEN {noun}").getSynonyms) {
+            setup()
+            this.chest.setOpenable(false)
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "You cannot open the chest",
+                ""
+            ))
+
+            assert(!this.chest.isOpen)
+        }
+    }
+
+    test("CLOSE chest when chest cannot be closed") {
+        for (verbString <- this.verbs("CLOSE {noun}").getSynonyms) {
+            setup()
+            this.chest.setCloseable(false)
+
+            mainWindow.fireCommand(new CommandEvent("open chest"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun\\}", "chest")))
+
+            assertMessagesAreCorrect(List(
+                "You cannot close the chest",
+                ""
+            ))
+
+            assert(this.chest.isOpen)
         }
     }
 
