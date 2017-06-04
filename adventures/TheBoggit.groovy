@@ -30,6 +30,7 @@ adventure {
                 executeAfterTurns(10) {
                     if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
+                        move('game over')
                     }
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
@@ -39,8 +40,6 @@ adventure {
                 }
             }
 '''
-
-        // TODO: When the chocolates explode, need to 'finish' the game if in the same room
 
         // TODO: WHEN eat the chocolates
         // Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
@@ -161,6 +160,40 @@ adventure {
             scenery true
         }
     }
+
+    room ("game over") {
+        description """
+             Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
+             The end had come.
+    
+             And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
+             chapter in Muddle Earth's sordid history....
+"""
+    }
+
+    // <WAIT FOR KEY>
+    // <MOVE ROOM>
+    //
+    // Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
+    // The end had come.
+    //
+    // <WAIT FOR KEY>
+    //
+    // For you attempts you are worth N lenslok devices.
+    // You have entered 13 profound utterances
+    //
+    // And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
+    // chapter in Muddle Earth's sordid history....
+    //
+    // Are you going to try again or can we go home now?
+    //
+    // <WAIT FOR USER INPUT>
+    //
+    // Yes - restart the game.
+    // No - All right, be like that!
+    //      This magnificent act, to put it plainly, was done!
+    //      <reset game>
+
 
     room ("tunnel like hall") {
         exit direction: SOUTH, room: "round green toilet"
