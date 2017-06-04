@@ -3,7 +3,7 @@ adventure {
     introduction ""
 
     verb ("Climb into", "CLIMB INTO {noun}") {}
-    verb ("Climb into", "CLIMB OUT") {}
+    verb ("Climb out", "CLIMB OUT") {}
 
     room ("tunnel like hall") {
         description """
