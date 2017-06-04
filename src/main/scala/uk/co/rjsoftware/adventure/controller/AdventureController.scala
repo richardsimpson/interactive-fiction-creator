@@ -167,7 +167,7 @@ class AdventureController(private val mainWindow: MainWindow) {
                 return null
             }
 
-            val verbNoun:VerbNoun = iterateVerbSynonymns(inputWords, verbs.head.getSynonyms, new VerbNoun(verbs.head, null))
+            val verbNoun:VerbNoun = iterateVerbSynonymns(inputWords, verbs.head.getSynonyms, new VerbNoun(verbs.head, Nil))
 
             if (verbNoun != null) {
                 return verbNoun
@@ -313,25 +313,33 @@ class AdventureController(private val mainWindow: MainWindow) {
         //       verb is attached to the current room
         val items:List[Item] = determineIntendedNoun(candidateItems)
 
+        // first, determine the verb container
+        var verbContainer:VerbContainer = null
         if (items.size > 1) {
             askUserToDisambiguate(verb, items)
             return
         }
-        else if (items == Nil) {
+        else if (items.size == 1) {
+            verbContainer = items.head
+        }
+        else if (this.currentRoom.getVerbs.contains(verb)) {
+            // user did not specify a noun, so imply the current room is the noun
+            verbContainer = this.currentRoom
+        }
+        else {
             say("You cannot do that right now.")
             say("")
             return
         }
 
-        val item:Item = items.head
-
-        if (!item.getVerbs.contains(verb)) {
-            say("You cannot do that with the " + item.getName)
+        // then check that the item / room that was referred to by the user actually contains this verb
+        if (!verbContainer.getVerbs.contains(verb)) {
+            say("You cannot do that right now.")
             say("")
             return
         }
 
-        var script:Option[String] = item.getVerbs.get(verb)
+        var script:Option[String] = verbContainer.getVerbs.get(verb)
 
         executeScript(script.get)
         say("")

@@ -13,7 +13,7 @@ class Item(private var synonyms:List[String], private var description:String,
            private var container:Boolean = false, private var openable:Boolean = true, private var closeable:Boolean = true,
            private var open:Boolean = false, private var openMessage:String = null, private var closeMessage:String = null,
            private var onOpenScript:String = null, private var onCloseScript:String = null,
-           private var contentsInitiallyHidden:Boolean = true) extends ItemContainer
+           private var contentsInitiallyHidden:Boolean = true) extends ItemContainer with VerbContainer
 {
 
     // TODO: To add:

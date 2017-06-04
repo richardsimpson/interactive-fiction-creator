@@ -63,12 +63,6 @@ adventure {
                 }
                 """
             }
-
-            verb ("CLIMB OUT") {
-                script """
-                move("tunnel like hall")
-                """
-            }
         }
 
         // TODO: Stop saying that the chest contains nothing.  We shouldn't be able to see inside in this case.
@@ -119,8 +113,6 @@ adventure {
         }
     }
 
-    // TODO: climb into chest:
-
     room ("inside chest") {
         description "Bimbo was in the large wooden chest"
 
@@ -134,12 +126,15 @@ adventure {
                 Farmer Faggot: 4/7/31"""
         }
 
+        verb ("CLIMB OUT") {
+            script """
+                move("tunnel like hall")
+                """
+        }
+
         // TODO: GET <noun>: This magnificent act, to put it plainly, was done!
 
     }
-
-    // TODO: CLIMB OUT (of chest): Returns you to the 'tunnel like hall'
-
 
     room ("round green toilet") {
         description """

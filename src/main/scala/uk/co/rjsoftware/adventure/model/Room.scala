@@ -8,9 +8,11 @@ import scala.collection.immutable.ListMap
 class Room(private val name:String, private var description:String,
            private var beforeEnterRoomScript:String = null, private var afterEnterRoomScript:String = null,
            private var afterLeaveRoomScript:String = null,
-           private var beforeEnterRoomFirstTimeScript:String = null, private var afterEnterRoomFirstTimeScript:String = null) extends ItemContainer {
+           private var beforeEnterRoomFirstTimeScript:String = null, private var afterEnterRoomFirstTimeScript:String = null)
+        extends ItemContainer with VerbContainer {
 
     private var exits:ListMap[Direction, Room] = ListMap[Direction, Room]()
+    private var customVerbs:Map[CustomVerb, String] = Map[CustomVerb, String]()
     private var items:Map[String, Item] = Map[String, Item]()
 
     def this(name:String) {
@@ -59,6 +61,14 @@ class Room(private val name:String, private var description:String,
 
     def getItems : Map[String, Item] = {
         this.items
+    }
+
+    def getVerbs : Map[CustomVerb, String] = {
+        this.customVerbs
+    }
+
+    def addVerb(verb:CustomVerb, script:String) : Unit = {
+        this.customVerbs += (verb -> script)
     }
 
     def getBeforeEnterRoomScript : String = {

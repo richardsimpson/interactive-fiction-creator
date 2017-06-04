@@ -35,7 +35,11 @@ class VerbsTest extends FunSuite {
     private val remote:Item = new Item(List("remote"), "The TV remote", visible = false, scenery = false)
 
     private val watch = new CustomVerb("Watch", List("WATCH {noun}"))
-    tv.addVerb(watch, "say('You watch the TV for a while.');")
+    private val relax = new CustomVerb("Relax", List("RELAX"))
+
+    tv.addVerb(watch, "say('You watch the TV for a while.')")
+    livingRoom.addVerb(relax , "say('You sit on the floor, and veg out in fron of the TV.')")
+    garden.addVerb(relax , "say('You sunbathe for a while.  Difficult without anything to sit on though.')")
 
     //           kitchen    landing
     //                |      |
@@ -75,6 +79,7 @@ class VerbsTest extends FunSuite {
     private def setup(): Unit = {
         val adventure:Adventure = new Adventure("Welcome to the Adventure!")
         adventure.addCustomVerb(watch)
+        adventure.addCustomVerb(relax)
 
         livingRoom.addItem(lamp)
         livingRoom.addItem(tv)
@@ -613,6 +618,30 @@ class VerbsTest extends FunSuite {
 
         assertMessagesAreCorrect(List(
             "You watch the TV for a while.",
+            ""
+        ))
+    }
+
+    test("custom verb: RELAX (in the living room") {
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("relax"))
+
+        assertMessagesAreCorrect(List(
+            "You sit on the floor, and veg out in fron of the TV.",
+            ""
+        ))
+    }
+
+    test("custom verb: RELAX (in the garden") {
+        mainWindow.fireCommand(new CommandEvent("south"))
+
+        mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("relax"))
+
+        assertMessagesAreCorrect(List(
+            "You sunbathe for a while.  Difficult without anything to sit on though.",
             ""
         ))
     }

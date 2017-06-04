@@ -1,8 +1,6 @@
 package uk.co.rjsoftware.adventure.controller.load
 
 import org.codehaus.groovy.control.CompilerConfiguration
-import scala.Option
-import scala.collection.immutable.List
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.model.Direction
@@ -172,6 +170,23 @@ public class RoomDelegate {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
     }
+
+    private void verb(String verbName, Closure closure) {
+        final CustomVerb customVerb = this.adventure.findCustomVerb(verbName)
+
+        if (customVerb == null) {
+            throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
+        }
+
+        final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
+        closure.delegate = delegate
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure()
+
+        this.room.addVerb(customVerb, delegate.getScript())
+
+    }
+
 }
 
 public class ItemDelegate {
@@ -237,7 +252,7 @@ public class ItemDelegate {
             throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
         }
 
-        final VerbItemDelegate delegate = new VerbItemDelegate()
+        final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
         closure.delegate = delegate
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
@@ -283,7 +298,7 @@ public class ItemDelegate {
     }
 }
 
-public class VerbItemDelegate {
+public class VerbInstanceDelegate {
 
     private String script
 
