@@ -11,7 +11,6 @@ adventure {
              window was set high into the wall.
              To the south, was the round green toilet."""
 
-        // TODO: Allow nouns to be referenced by an ID, rather than their actual description (e.g. chocolates rather than 'a box of expensive chocolates')
         // TODO: Consider turning the scripts into closures. Will make defining them here easier.  But may make defining them in a (web?) gui more difficult
         beforeEnterRoomFirstTimeScript '''
             executeAfterTurns(3) {
