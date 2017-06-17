@@ -17,7 +17,7 @@ adventure {
         }
 
         item("TV") {
-            synonyms "television"
+            synonyms "television", "tv"
             description "A 28\" TV."
             visible true
             scenery false
