@@ -17,10 +17,10 @@ class VerbsWithDuplicateObjectsTest extends FunSuite {
 
     private val livingRoom:Room = new Room("livingRoom", "This is the living room.")
 
-    private val redBox:Item = new Item(List("red box", "box"),
+    private val redBox:Item = new Item("redbox", List("red box", "box"),
         "This is the red box.", visible = true)
 
-    private val blueBox:Item = new Item(List("blue box", "box"),
+    private val blueBox:Item = new Item("bluebox", List("blue box", "box"),
         "This is the blue box.", visible = false)
 
     val verbs:Map[String, Verb] = StandardVerbs.getVerbs.map(

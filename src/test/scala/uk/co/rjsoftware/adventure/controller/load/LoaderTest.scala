@@ -66,7 +66,7 @@ class LoaderTest extends FunSuite {
         bedroom.getItems.size should equal (2)
 
         val lamp:Item = bedroom.getItem("lamp")
-        lamp.getSynonyms should equal (List("lamp", "lampshade", "shade"))
+        lamp.getSynonyms should equal (List("lampshade", "lamp", "shade"))
         lamp.getDescription should equal ("description")
         lamp.isVisible should equal (true)
         lamp.isScenery should equal (false)
@@ -79,7 +79,7 @@ class LoaderTest extends FunSuite {
         lamp.getExtraMessageWhenSwitchedOff should equal ("extraMessageWhenSwitchedOff")
 
         val tv:Item = bedroom.getItem("TV")
-        tv.getSynonyms should equal (List("TV", "television"))
+        tv.getSynonyms should equal (List("television", "tv"))
         tv.getDescription should equal ("description")
         tv.isVisible should equal (true)
         tv.isScenery should equal (false)

@@ -23,18 +23,18 @@ class VerbsTest extends FunSuite {
     private val landing:Room = new Room("landing", "This is the landing.")
     private val cellar:Room = new Room("cellar", "This is the cellar.")
 
-    private val lamp:Item = new Item(List("lamp"), "A bedside lamp. with a simple on/off switch.",
+    private val lamp:Item = new Item("lamp", List("lamp"), "A bedside lamp. with a simple on/off switch.",
         switchable = true)
-    private val tv:Item = new Item(List("TV", "television"), "A 28\" TV",
+    private val tv:Item = new Item("tv", List("TV", "television"), "A 28\" TV",
         visible = true, scenery = true, gettable = false, droppable = false,
         switchable = true, switchOnMessage = "the TV flickers into life", switchOffMessage = "the TV is now off",
         extraMessageWhenSwitchedOn = "It is showing an old western.",
         extraMessageWhenSwitchedOff = "It is currently switched off.")
-    private val newspaper:Item = new Item(List("newspaper", "paper"), "The Daily Bugle.",
+    private val newspaper:Item = new Item("paper", List("newspaper", "paper"), "The Daily Bugle.",
         gettable = true, droppable = false, switchable = false)
-    private val remote:Item = new Item(List("remote"), "The TV remote", visible = false, scenery = false)
-    private val sandwich:Item = new Item(List("sandwich"), "A crusty old sandwich", edible = true)
-    private val donut:Item = new Item(List("donut"), "A delicious looking donut", edible = true,
+    private val remote:Item = new Item("remote", List("remote"), "The TV remote", visible = false, scenery = false)
+    private val sandwich:Item = new Item("sandwich", List("sandwich"), "A crusty old sandwich", edible = true)
+    private val donut:Item = new Item("donut", List("donut"), "A delicious looking donut", edible = true,
         eatMessage = "eating donut", onEatScript = "say('onEatScript')")
 
     private val watch = new CustomVerb("Watch", List("WATCH {noun}"))

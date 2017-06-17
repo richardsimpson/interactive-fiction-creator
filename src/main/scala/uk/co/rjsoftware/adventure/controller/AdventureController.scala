@@ -708,13 +708,13 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.mainWindow.say(StringUtils.sanitiseString(outputText))
     }
 
-    def isSwitchedOn(itemName:String) : Boolean = {
-        val item:Item = getItem(itemName)
+    def isSwitchedOn(itemId:String) : Boolean = {
+        val item:Item = getItem(itemId)
         item.isSwitchedOn
     }
 
-    def isOpen(itemName:String) : Boolean = {
-        val item:Item = getItem(itemName)
+    def isOpen(itemId:String) : Boolean = {
+        val item:Item = getItem(itemId)
         item.isOpen
     }
 
@@ -722,8 +722,8 @@ class AdventureController(private val mainWindow: MainWindow) {
         this.scheduledScripts :+= new ScheduledScript(this.turnCounter + turns, script)
     }
 
-    def setVisible(itemName:String, visible:Boolean) : Unit = {
-        val item:Item = getItem(itemName)
+    def setVisible(itemId:String, visible:Boolean) : Unit = {
+        val item:Item = getItem(itemId)
         item.setVisible(visible)
     }
 
@@ -747,8 +747,8 @@ class AdventureController(private val mainWindow: MainWindow) {
     //
     // private helper methods to support the methods that can be used by Scripts
     //
-    private def getItem(itemName:String) : Item = {
-        val item:Option[Item] = this.nouns.get(itemName.toUpperCase)
+    private def getItem(itemId:String) : Item = {
+        val item:Option[Item] = this.nouns.get(itemId.toUpperCase)
 
         if (item.isEmpty) {
             say("ERROR: Specified item does not exist.")

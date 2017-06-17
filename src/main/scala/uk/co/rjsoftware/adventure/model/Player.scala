@@ -11,18 +11,18 @@ class Player extends ItemContainer {
     }
 
     def addItem(item:Item) : Unit = {
-        this.items += (item.getName -> item)
+        this.items += (item.getId.toUpperCase -> item)
     }
 
-    def getItem(itemName: String): Item = {
-        this.items.get(itemName).orNull
+    def getItem(itemId: String): Item = {
+        this.items.get(itemId.toUpperCase).orNull
     }
 
     def removeItem(item:Item) : Unit = {
-        this.items -= item.getName
+        this.items -= item.getId.toUpperCase
     }
 
     def contains(item:Item) : Boolean = {
-        this.items.contains(item.getName)
+        this.items.contains(item.getId.toUpperCase)
     }
 }

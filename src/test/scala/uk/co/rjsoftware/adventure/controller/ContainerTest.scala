@@ -17,13 +17,13 @@ class ContainerTest extends FunSuite {
 
     private val livingRoom:Room = new Room("livingRoom", "This is the living room.")
 
-    private val chest:Item = new Item(List("chest"), "This is the chest.",
+    private val chest:Item = new Item("chest", List("chest"), "This is the chest.",
         container = true, openMessage = "The chest is now open", closeMessage = "The chest is now closed",
         onOpenScript = "say('onOpenScript')", onCloseScript = "say('onCloseScript')"
     )
 
-    private val goldCoin :Item = new Item(List("gold coin", "coin"), "This coin is gold.")
-    private val notepad :Item = new Item(List("notepad"), "A notebook with strange writing on it.")
+    private val goldCoin :Item = new Item("coin", List("gold coin", "coin"), "This coin is gold.")
+    private val notepad :Item = new Item("notepad", List("notepad"), "A notebook with strange writing on it.")
 
     chest.addItem(goldCoin)
     chest.addItem(notepad)

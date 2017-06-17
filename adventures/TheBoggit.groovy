@@ -25,8 +25,8 @@ adventure {
                 else {
                     say('A muffled "thwump" eminates from the hall, followed by fumbling noises')
                 }
-                setVisible("small card")
-                setVisible("box of expensive chocolates")
+                setVisible("card")
+                setVisible("expensiveChocolates")
                 executeAfterTurns(10) {
                     if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
@@ -35,14 +35,14 @@ adventure {
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
                     }
-                    setInvisible("box of expensive chocolates")
-                    setVisible("wrecked box of chocolates")
+                    setInvisible("expensiveChocolates")
+                    setVisible("wreckedChocolates")
                 }
             }
 '''
 
-        item ("large, wooden chest") {
-            synonyms "chest"
+        item ("chest") {
+            synonyms "large, wooden chest", "chest"
             description "The chest was both heavy and closed"
             container true
             openMessage "Bimbo opened the chest, but couldn't quite see inside"
@@ -51,7 +51,7 @@ adventure {
 
             verb ("CLIMB INTO {noun}") {
                 script """
-                if (isOpen('large, wooden chest')) {
+                if (isOpen('chest')) {
                     moveTo("inside chest")
                 }
                 else {
@@ -79,8 +79,8 @@ adventure {
         // Bimbo waited
         // Time crawled slowly past
 
-        item ("small card") {
-            synonyms "card"
+        item ("card") {
+            synonyms "small card", "card"
             description """
                 On the card, in large, type-writer runes, were the words,
                 I wish thee to accompany some er, 'friends' on an adventure.  See you soon.
@@ -90,8 +90,8 @@ adventure {
             visible false
         }
 
-        item ("box of expensive chocolates") {
-            synonyms "chocolates", "chocs"
+        item ("expensiveChocolates") {
+            synonyms "box of expensive chocolates", "chocolates", "chocs"
             description """
                 The chocolates were small and brown.  They probably contained milk chocolate, milk solids
                 (20% minimum) and vegetable fat."""
@@ -104,8 +104,8 @@ adventure {
             onEatScript "moveTo('game over')"
         }
 
-        item ("wrecked box of chocolates") {
-            synonyms "chocolates", "chocs"
+        item ("wreckedChocolates") {
+            synonyms "wrecked box of chocolates", "chocolates", "chocs"
             description """
                 Bimbo examined the chocolates.  "The cleaning elf is gonna kill that old wizard one day!" he
                 remarked to no one in particular"""
@@ -116,8 +116,8 @@ adventure {
     room ("inside chest") {
         description "Bimbo was in the large wooden chest"
 
-        item ("old, dusty diary") {
-            synonyms "diary"
+        item ("diary") {
+            synonyms "old, dusty diary", "diary"
             description """
                 The diary was blank, save for some birthdays
                 

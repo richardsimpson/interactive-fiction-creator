@@ -18,10 +18,10 @@ class ScriptingTest extends FunSuite {
     private val study:Room = new Room("study", "This is your study.")
     private val livingRoom:Room = new Room("livingRoom", "This is the living room.")
 
-    private val tv:Item = new Item(List("TV", "television"), "A 28\" TV", visible = true, switchable = true)
-    private val chest:Item = new Item(List("chest"), "This is the chest.", container = true)
-    private val dummy:Item = new Item(List("dummy"), "This is the dummy item.", container = true)
-    private val dummy2:Item = new Item(List("dummy2"), "This is the second dummy item.", container = true)
+    private val tv:Item = new Item("tv", List("TV", "television"), "A 28\" TV", visible = true, switchable = true)
+    private val chest:Item = new Item("chest", List("chest"), "This is the chest.", container = true)
+    private val dummy:Item = new Item("dummy", List("dummy"), "This is the dummy item.", container = true)
+    private val dummy2:Item = new Item("dummy2", List("dummy2"), "This is the second dummy item.", container = true)
 
     //
     // study -------- livingRoom

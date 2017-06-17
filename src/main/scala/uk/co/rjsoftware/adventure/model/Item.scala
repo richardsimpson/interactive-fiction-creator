@@ -4,7 +4,7 @@ package uk.co.rjsoftware.adventure.model
   * Created by richardsimpson on 15/05/2017.
   */
 // TODO: Do we need this long this of constructor params since we are now creating the Items (and the Rooms) via the DSL
-class Item(private var synonyms:List[String], private var description:String,
+class Item(private val id:String, private var synonyms:List[String], private var description:String,
            private var visible:Boolean = true, private var scenery:Boolean = false,
            private var gettable:Boolean = true, private var droppable:Boolean = true,
            private var switchable:Boolean = false, private var switchedOn:Boolean = false,
@@ -27,12 +27,20 @@ class Item(private var synonyms:List[String], private var description:String,
     private var items:Map[String, Item] = Map[String, Item]()
     private var itemPreviouslyExamined : Boolean = false
 
-    def this(name:String, description:String) {
-        this(List(name), description)
+    def this(id:String, name:String, description:String) {
+        this(id, List(name), description)
     }
 
-    def this(name:String) {
-        this(name, "")
+    def this(id:String, name:String) {
+        this(id, name, "")
+    }
+
+    def this(id:String) {
+        this(id, id)
+    }
+
+    def getId : String = {
+        this.id
     }
 
     def getName : String = {
@@ -41,6 +49,10 @@ class Item(private var synonyms:List[String], private var description:String,
 
     def getSynonyms : List[String] = {
         this.synonyms
+    }
+
+    def clearSynonyms() : Unit = {
+        this.synonyms = Nil
     }
 
     def addSynonym(synonym : String) : Unit = {
@@ -208,19 +220,19 @@ class Item(private var synonyms:List[String], private var description:String,
     }
 
     def addItem(item:Item) : Unit = {
-        this.items += (item.getName -> item)
+        this.items += (item.getId.toUpperCase -> item)
     }
 
-    def getItem(itemName: String): Item = {
-        this.items.get(itemName).orNull
+    def getItem(itemId: String): Item = {
+        this.items.get(itemId.toUpperCase).orNull
     }
 
     def removeItem(item:Item) : Unit = {
-        this.items -= item.getName
+        this.items -= item.getId.toUpperCase
     }
 
     def contains(item:Item) : Boolean = {
-        this.items.contains(item.getName)
+        this.items.contains(item.getId.toUpperCase)
     }
 
     def setItemPreviouslyExamined(itemPreviouslyExamined:Boolean) : Unit = {

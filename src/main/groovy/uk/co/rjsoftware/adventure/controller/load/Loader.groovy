@@ -160,10 +160,10 @@ public class RoomDelegate {
         this.room.addExit(linkedHashMap.get("direction"), room)
     }
 
-    private void item(String itemName, Closure closure) {
-        Item item = this.room.getItem(itemName)
+    private void item(String itemId, Closure closure) {
+        Item item = this.room.getItem(itemId)
         if (item == null) {
-            item = new Item(itemName)
+            item = new Item(itemId)
             this.room.addItem(item)
         }
 
@@ -205,6 +205,7 @@ public class ItemDelegate {
     }
 
     private void synonyms(String... synonyms) {
+        this.item.clearSynonyms()
         for (String synonym : synonyms) {
             this.item.addSynonym(synonym)
         }

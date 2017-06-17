@@ -15,7 +15,7 @@ adventure {
         afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript"
 
         item ("lamp") {
-            synonyms "lampshade", "shade"
+            synonyms "lampshade", "lamp", "shade"
             description "description"
             visible true
             scenery false
@@ -28,8 +28,8 @@ adventure {
             extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
         }
 
-        item("TV") {
-            synonyms "television"
+        item("tv") {
+            synonyms "television", "tv"
             description "description"
             visible true
             scenery false
