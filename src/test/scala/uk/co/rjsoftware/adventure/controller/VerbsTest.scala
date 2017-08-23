@@ -11,7 +11,7 @@ import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow, MainWindowView
   */
 class VerbsTest extends FunSuite {
 
-    var adventure:Adventure = _
+    private var adventure:Adventure = _
 
     private var classUnderTest : AdventureController = _
     private var player : Player = _
