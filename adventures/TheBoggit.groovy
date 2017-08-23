@@ -1,6 +1,9 @@
 adventure {
     title "The Boggit"
     introduction ""
+    waitText """
+        Bimbo waited.
+        Time crawled slowly past."""
 
     verb ("Climb into", "CLIMB INTO {noun}") {}
     verb ("Climb out", "CLIMB OUT") {}
@@ -73,10 +76,6 @@ adventure {
             description "Bimbo couldn't reach the window"
             scenery true
         }
-
-        // TODO: WAIT - allow the adventure to specify the text for the WAIT command.  Also extend to other feedback.
-        // Bimbo waited
-        // Time crawled slowly past
 
         item ("card") {
             synonyms "small card", "card"

@@ -53,6 +53,10 @@ public class AdventureDelegate {
         this.adventure.setIntroduction(StringUtils.sanitiseString(introduction))
     }
 
+    private void waitText(String waitText) {
+        this.adventure.setWaitText(StringUtils.sanitiseString(waitText))
+    }
+
     private void verb(String friendlyName, String verbName, Closure closure) {
         if (this.adventure.findCustomVerb(verbName) != null) {
             throw new RuntimeException("Cannot declare custom verbs twice")

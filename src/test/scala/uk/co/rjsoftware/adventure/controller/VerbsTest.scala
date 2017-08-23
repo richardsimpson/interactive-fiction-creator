@@ -11,6 +11,8 @@ import uk.co.rjsoftware.adventure.view.{CommandEvent, MainWindow, MainWindowView
   */
 class VerbsTest extends FunSuite {
 
+    var adventure:Adventure = _
+
     private var classUnderTest : AdventureController = _
     private var player : Player = _
     private var mainWindow : MainWindowForTesting = _
@@ -80,9 +82,11 @@ class VerbsTest extends FunSuite {
     }
 
     private def setup(): Unit = {
-        val adventure:Adventure = new Adventure("Welcome to the Adventure!")
-        adventure.addCustomVerb(watch)
-        adventure.addCustomVerb(relax)
+        this.adventure = new Adventure("Welcome to the Adventure!")
+        this.adventure.setWaitText("This is the wait text")
+
+        this.adventure.addCustomVerb(watch)
+        this.adventure.addCustomVerb(relax)
 
         livingRoom.addItem(lamp)
         livingRoom.addItem(tv)
@@ -95,17 +99,17 @@ class VerbsTest extends FunSuite {
         lamp.switchOff()
         tv.switchOff()
 
-        adventure.addRoom(study)
-        adventure.addRoom(livingRoom)
-        adventure.addRoom(garden)
-        adventure.addRoom(kitchen)
-        adventure.addRoom(diningRoom)
+        this.adventure.addRoom(study)
+        this.adventure.addRoom(livingRoom)
+        this.adventure.addRoom(garden)
+        this.adventure.addRoom(kitchen)
+        this.adventure.addRoom(diningRoom)
 
-        adventure.setStartRoom(livingRoom)
+        this.adventure.setStartRoom(livingRoom)
 
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
-        this.classUnderTest.loadAdventure(adventure)
+        this.classUnderTest.loadAdventure(this.adventure)
         this.player = this.classUnderTest.getPlayer
     }
 
@@ -599,20 +603,28 @@ class VerbsTest extends FunSuite {
         ))
     }
 
-    test("verb: WAIT") {
+    test("verb: WAIT (with default wait text)") {
         for (verbString <- this.verbs("WAIT").getSynonyms) {
             setup()
-            testWait(verbString)
+            this.adventure.setWaitText(null)
+            testWait(verbString, "time passes...")
         }
     }
 
-    private def testWait(command:String) {
+    test("verb: WAIT (with custom wait text)") {
+        for (verbString <- this.verbs("WAIT").getSynonyms) {
+            setup()
+            testWait(verbString, "This is the wait text")
+        }
+    }
+
+    private def testWait(command:String, waitText:String) {
         this.mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent(command))
 
         assertMessagesAreCorrect(List(
-            "time passes...",
+            waitText,
             ""
         ))
     }

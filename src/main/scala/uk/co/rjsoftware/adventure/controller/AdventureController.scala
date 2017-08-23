@@ -14,6 +14,7 @@ import scala.annotation.tailrec
   */
 class AdventureController(private val mainWindow: MainWindow) {
 
+    private var adventure : Adventure = _
     private var currentRoom : Room = _
     private var player : Player = _
     private var visitedRooms : List[Room] = Nil
@@ -66,6 +67,8 @@ class AdventureController(private val mainWindow: MainWindow) {
 
         // initialise the view
         this.mainWindow.loadAdventure(adventure.getTitle, adventure.getIntroduction)
+
+        this.adventure = adventure
 
         moveTo(adventure.getStartRoom)
         say("")
@@ -588,7 +591,13 @@ class AdventureController(private val mainWindow: MainWindow) {
     }
 
     private def waitTurn() : Unit = {
-        say("time passes...")
+        val waitText:String = this.adventure.getWaitText
+        if (waitText == null) {
+            say("time passes...")
+        }
+        else {
+            say(waitText)
+        }
     }
 
     private def open(candidateItems: List[Item]) : Unit = {

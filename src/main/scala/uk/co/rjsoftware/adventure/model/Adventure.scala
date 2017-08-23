@@ -10,6 +10,8 @@ class Adventure(private var introduction:String) {
     private var startRoom:Room = null
     private var customVerbs : List[CustomVerb] = Nil
 
+    private var waitText:String = null;
+
     def setTitle(title:String) : Unit = {
         this.title = title
     }
@@ -66,5 +68,12 @@ class Adventure(private var introduction:String) {
         customVerbOptional.orNull
     }
 
+    def getWaitText : String = {
+        this.waitText
+    }
+
+    def setWaitText(waitText:String) : Unit = {
+        this.waitText = waitText
+    }
 
 }
