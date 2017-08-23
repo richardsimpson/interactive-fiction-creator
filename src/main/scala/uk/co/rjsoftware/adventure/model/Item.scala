@@ -19,7 +19,6 @@ class Item(private val id:String, private var synonyms:List[String], private var
 {
 
     // TODO: To add:
-    //          Edible flag, and message when eaten.
     //          Use/Give...
     //          Player...
 
