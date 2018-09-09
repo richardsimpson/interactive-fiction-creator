@@ -1,6 +1,6 @@
 package uk.co.rjsoftware.adventure.model
 
-public enum Direction {
+enum Direction {
     NORTH("North"),
     SOUTH("South"),
     EAST("East"),
@@ -14,7 +14,7 @@ public enum Direction {
         this.description = description;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 }

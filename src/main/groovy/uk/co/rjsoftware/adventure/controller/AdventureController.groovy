@@ -6,12 +6,10 @@ import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
 import uk.co.rjsoftware.adventure.utils.StringUtils
 import uk.co.rjsoftware.adventure.view.CommandEvent
-import uk.co.rjsoftware.adventure.view.CommandListener
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.MainWindow
 
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.function.Predicate
 
 class AdventureController {
 
@@ -110,8 +108,7 @@ class AdventureController {
         if (verbs.isEmpty()) {
             return null
         }
-
-        VerbNoun verbNoun = iterateVerbSynonymns(inputWords, verbs.get(0).getSynonyms(), new VerbNoun(verbs.get(0), new ArrayList()))
+        VerbNoun verbNoun = iterateVerbSynonyms(inputWords, verbs.get(0).getSynonyms(), new VerbNoun(verbs.get(0), new ArrayList()))
 
         if (verbNoun != null) {
             return verbNoun
@@ -122,18 +119,18 @@ class AdventureController {
     }
 
     @TailRecursive
-    private VerbNoun iterateVerbSynonymns(String[] inputWords, List<String> verbSynonymns, VerbNoun result) {
-        if (verbSynonymns.isEmpty()) {
+    private VerbNoun iterateVerbSynonyms(String[] inputWords, List<String> verbSynonyms, VerbNoun result) {
+        if (verbSynonyms.isEmpty()) {
             return null
         }
 
-        VerbNoun verbNoun = iterateVerbWords(inputWords, verbSynonymns.get(0), result)
+        VerbNoun verbNoun = iterateVerbWords(inputWords, verbSynonyms.get(0), result)
 
         if (verbNoun != null) {
             return verbNoun
         }
         else {
-            iterateVerbSynonymns(inputWords, verbSynonymns.tail(), result)
+            iterateVerbSynonyms(inputWords, verbSynonyms.tail(), result)
         }
     }
 
@@ -359,24 +356,24 @@ class AdventureController {
 
     private void executeCommand(String verb, List<Item> items) {
         switch (verb) {
-            case "NORTH" : move(Direction.NORTH); break;
-            case "SOUTH" : move(Direction.SOUTH); break;
-            case "EAST" : move(Direction.EAST); break;
-            case "WEST" : move(Direction.WEST); break;
-            case "UP" : move(Direction.UP); break;
-            case "DOWN" : move(Direction.DOWN); break;
-            case "LOOK" : look(); break;
-            case "EXITS" : exits(); break;
-            case "EXAMINE {noun}" : examine(items); break;
-            case "GET {noun}" : get(items); break;
-            case "DROP {noun}" : drop(items); break;
-            case "INVENTORY" : inventory(); break;
-            case "TURN ON {noun}" : turnOn(items); break;
-            case "TURN OFF {noun}" : turnOff(items); break;
-            case "WAIT" : waitTurn(); break;
-            case "OPEN {noun}" : open(items); break;
-            case "CLOSE {noun}" : close(items); break;
-            case "EAT {noun}" : eat(items); break;
+            case "NORTH" : move(Direction.NORTH); break
+            case "SOUTH" : move(Direction.SOUTH); break
+            case "EAST" : move(Direction.EAST); break
+            case "WEST" : move(Direction.WEST); break
+            case "UP" : move(Direction.UP); break
+            case "DOWN" : move(Direction.DOWN); break
+            case "LOOK" : look(); break
+            case "EXITS" : exits(); break
+            case "EXAMINE {noun}" : examine(items); break
+            case "GET {noun}" : get(items); break
+            case "DROP {noun}" : drop(items); break
+            case "INVENTORY" : inventory(); break
+            case "TURN ON {noun}" : turnOn(items); break
+            case "TURN OFF {noun}" : turnOff(items); break
+            case "WAIT" : waitTurn(); break
+            case "OPEN {noun}" : open(items); break
+            case "CLOSE {noun}" : close(items); break
+            case "EAT {noun}" : eat(items); break
             default : throw new RuntimeException("Unexpected verb")
         }
     }

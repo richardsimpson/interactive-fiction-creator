@@ -27,23 +27,23 @@ class Loader {
 
 }
 
-public abstract class AdventureLoaderScript extends Script {
+abstract class AdventureLoaderScript extends Script {
 
     private AdventureDelegate adventureDelegate = new AdventureDelegate();
 
-    public void adventure(Closure closure) {
+    void adventure(Closure closure) {
         closure.delegate = adventureDelegate
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure()
     }
 
-    public Adventure getAdventure() {
+    Adventure getAdventure() {
         return this.adventureDelegate.getAdventure()
     }
 }
 
-public class AdventureDelegate {
-    private final Adventure adventure = new Adventure("");
+class AdventureDelegate {
+    private final Adventure adventure = new Adventure("")
 
     private void title(String title) {
         this.adventure.setTitle(StringUtils.sanitiseString(title))
@@ -98,7 +98,7 @@ public class AdventureDelegate {
     }
 }
 
-public class VerbDelegate {
+class VerbDelegate {
 
     private final CustomVerb customVerb
 
@@ -114,7 +114,7 @@ public class VerbDelegate {
 
 }
 
-public class RoomDelegate {
+class RoomDelegate {
     private Room room
     private final Adventure adventure
 
@@ -194,13 +194,13 @@ public class RoomDelegate {
 
 }
 
-public class ItemDelegate {
+class ItemDelegate {
 
     private final Item item
     private final Adventure adventure
 
     private ContentVisibility ALWAYS = ContentVisibility.ALWAYS
-    private ContentVisibility ÅFTER_EXAMINE = ContentVisibility.AFTER_EXAMINE
+    private ContentVisibility AFTER_EXAMINE = ContentVisibility.AFTER_EXAMINE
     private ContentVisibility NEVER = ContentVisibility.NEVER
 
     private ItemDelegate(Adventure adventure, Item item) {
@@ -320,7 +320,7 @@ public class ItemDelegate {
     }
 }
 
-public class VerbInstanceDelegate {
+class VerbInstanceDelegate {
 
     private String script
 

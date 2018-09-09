@@ -43,6 +43,7 @@ adventure {
             }
 '''
 
+        // TODO: Change description of chest once it is opened.
         item ("chest") {
             synonyms "large, wooden chest", "chest"
             description "The chest was both heavy and closed"

@@ -18,12 +18,12 @@ class ScriptExecutor {
         this.adventureController = adventureController
     }
 
-    public void executeScript(String scriptText) {
+    void executeScript(String scriptText) {
         def config = new CompilerConfiguration();
         config.scriptBaseClass = 'uk.co.rjsoftware.adventure.controller.customscripts.AdventureScript'
 
         def shell = new GroovyShell(new Binding(), config)
-        def script = shell.parse(scriptText)
+        Script script = shell.parse(scriptText)
 
         script.setAdventureController(this.adventureController)
         script.run()
