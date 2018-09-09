@@ -1,0 +1,808 @@
+package uk.co.rjsoftware.adventure.controller
+
+import groovy.transform.TailRecursive
+import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
+import uk.co.rjsoftware.adventure.controller.load.Loader
+import uk.co.rjsoftware.adventure.model.*
+import uk.co.rjsoftware.adventure.utils.StringUtils
+import uk.co.rjsoftware.adventure.view.CommandEvent
+import uk.co.rjsoftware.adventure.view.CommandListener
+import uk.co.rjsoftware.adventure.view.LoadEvent
+import uk.co.rjsoftware.adventure.view.MainWindow
+
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.function.Predicate
+
+class AdventureController {
+
+    private final MainWindow mainWindow
+
+    private Adventure adventure
+    private Room currentRoom
+    private Player player
+    private List<Room> visitedRooms = new ArrayList<>()
+    private List<ScheduledScript> scheduledScripts = new CopyOnWriteArrayList<>()
+    private int turnCounter = 0
+    private boolean disambiguating = false
+    private Verb disambiguatingVerb
+    private List<Item> disambiguatingNouns = new ArrayList<>()
+
+    private List<Verb> verbs = new ArrayList<>()
+    private Map<String, Item> nouns = new HashMap<>()
+    private Map<String, Room> rooms = new HashMap<>()
+
+    AdventureController(MainWindow mainWindow) {
+        this.mainWindow = mainWindow
+        mainWindow.addCommandListener(this.&executeCommand)
+        mainWindow.addLoadListener(this.&loadAdventureInternal)
+    }
+
+    // FOR TESTING ONLY
+    Room getCurrentRoom() {
+        this.currentRoom
+    }
+
+    // FOR TESTING ONLY
+    Player getPlayer() {
+        this.player
+    }
+
+    private void loadAdventureInternal(LoadEvent event) {
+        if (event.getFile() != null) {
+            final Adventure adventure = Loader.loadAdventure(event.getFile())
+            loadAdventure(adventure)
+        }
+    }
+
+    void loadAdventure(Adventure adventure) {
+        this.player = new Player()
+        this.visitedRooms.clear()
+        this.scheduledScripts.clear()
+        this.turnCounter = 0
+
+        this.verbs.clear()
+        this.verbs.addAll(StandardVerbs.getVerbs())
+        // add in any custom verbs
+        this.verbs.addAll(adventure.getCustomVerbs())
+
+        this.nouns.clear()
+        this.rooms.clear()
+
+        for (Room room : adventure.getRooms()) {
+            rooms.put(room.getName().toUpperCase(), room)
+            for (Map.Entry<String, Item> itemEntry : room.getItems()) {
+                nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
+            }
+        }
+
+        // initialise the view
+        this.mainWindow.loadAdventure(adventure.getTitle(), adventure.getIntroduction())
+
+        this.adventure = adventure
+
+        moveToInternal(adventure.getStartRoom())
+        say("")
+    }
+
+    // TODO: Extract the parser into another class
+
+    private VerbNoun determineVerbNoun(String[] inputWords) {
+        iterateWords(inputWords)
+    }
+
+    @TailRecursive
+    private VerbNoun iterateWords(String[] inputWords) {
+        if (inputWords.length == 0) {
+            return null
+        }
+
+        final VerbNoun verbNoun = iterateVerbs(inputWords, this.verbs)
+        if (verbNoun != null) {
+            return verbNoun
+        }
+        else {
+            iterateWords(inputWords.tail())
+        }
+    }
+
+    @TailRecursive
+    private VerbNoun iterateVerbs(String[] inputWords, List<Verb> verbs) {
+        if (verbs.isEmpty()) {
+            return null
+        }
+
+        VerbNoun verbNoun = iterateVerbSynonymns(inputWords, verbs.get(0).getSynonyms(), new VerbNoun(verbs.get(0), new ArrayList()))
+
+        if (verbNoun != null) {
+            return verbNoun
+        }
+        else {
+            iterateVerbs(inputWords, verbs.tail())
+        }
+    }
+
+    @TailRecursive
+    private VerbNoun iterateVerbSynonymns(String[] inputWords, List<String> verbSynonymns, VerbNoun result) {
+        if (verbSynonymns.isEmpty()) {
+            return null
+        }
+
+        VerbNoun verbNoun = iterateVerbWords(inputWords, verbSynonymns.get(0), result)
+
+        if (verbNoun != null) {
+            return verbNoun
+        }
+        else {
+            iterateVerbSynonymns(inputWords, verbSynonymns.tail(), result)
+        }
+    }
+
+    private VerbNoun iterateVerbWords(String[] inputWords, String verbWords, VerbNoun result) {
+        doIterateVerbWords(inputWords, verbWords.split(" "), result)
+    }
+
+    @TailRecursive
+    private VerbNoun doIterateVerbWords(String[] inputWords, String[] verbWords, VerbNoun result) {
+        if (verbWords.length == 0) {
+            return result
+        }
+
+        if (inputWords.length == 0) {
+            return null
+        }
+
+        if (verbWords[0].equals("{noun}")) {
+            final Set<Item> nouns = iterateInputToFindNouns(inputWords, new HashSet<Item>())
+            if (nouns == null) {
+                return null
+            }
+            else result.nouns = nouns.toList()
+        }
+        else if (!verbWords[0].equals(inputWords[0])) {
+            return null
+        }
+
+        doIterateVerbWords(inputWords.tail(), verbWords.tail(), result)
+    }
+
+    @TailRecursive
+    private Set<Item> iterateInputToFindNouns(String[] inputWords, Set<Item> validNouns) {
+        if (inputWords.length == 0) {
+            return validNouns
+        }
+
+        final Set<Item> items = determineNouns(
+                this.nouns.values().findAll {item -> isItemInRoomOrPlayerInventory(item)},
+                inputWords[0], new HashSet<Item>())
+
+        iterateInputToFindNouns(inputWords.tail(), validNouns + items)
+    }
+
+    @TailRecursive
+    private Set<Item> determineNouns(List<Item> nouns, String inputWord, Set<Item> validNouns) {
+        if (nouns.isEmpty()) {
+            return validNouns
+        }
+
+        final String synonym = iterateNounSynonyms(nouns.get(0).getSynonyms(), inputWord)
+
+        if (synonym == null) {
+            determineNouns(nouns.tail(), inputWord, validNouns)
+        }
+        else {
+            determineNouns(nouns.tail(), inputWord, validNouns + nouns.get(0))
+        }
+    }
+
+    @TailRecursive
+    private String iterateNounSynonyms(List<String> synonyms, String inputWord) {
+        if (synonyms.isEmpty()) {
+            return null
+        }
+
+        if (synonyms.get(0).toUpperCase() == inputWord) {
+            return synonyms.get(0)
+        }
+
+        iterateNounSynonyms(synonyms.tail(), inputWord)
+    }
+
+    private void executeCommand(CommandEvent event) {
+        if (this.disambiguating) {
+            doDisambiguateCommand(event)
+        }
+        else {
+            doExecuteCommand(event)
+        }
+    }
+
+    private void doExecuteCommand(CommandEvent event) {
+        final String[] words = event.getCommand().trim().replaceAll(" +", " ").toUpperCase().split(" ")
+
+        try {
+            this.turnCounter = this.turnCounter + 1
+
+            if (words.length < 1) {
+                say("There are no words...")
+                return
+            }
+
+            // TODO: HELP
+            // TODO: GET ALL / TAKE ALL
+
+            final VerbNoun verbNoun = determineVerbNoun(words)
+            if (verbNoun == null) {
+                say("I don't understand what you are trying to do.")
+                return
+            }
+
+            // TODO: if verb requires noun, and there is not one, say(verb + " what?")
+
+            if (verbNoun.verb instanceof CustomVerb) {
+                executeCustomVerb(verbNoun.verb as CustomVerb, verbNoun.nouns)
+            }
+            else {
+                executeCommand(verbNoun.verb.getVerb(), verbNoun.nouns)
+            }
+        }
+        finally {
+            if (!this.disambiguating) {
+                doPostCommandActions()
+            }
+            say("")
+        }
+    }
+
+    private void doPostCommandActions() {
+        final List<ScheduledScript> scriptsToRemove = new ArrayList<>()
+
+        // execute any scripts which should be executed on this turn.
+        for (ScheduledScript scheduledScript : this.scheduledScripts) {
+            if (scheduledScript.getTurnToExecuteOn() <= this.turnCounter) {
+                scheduledScript.getScript().call()
+                scriptsToRemove.add(scheduledScript)
+            }
+        }
+
+        this.scheduledScripts.removeAll(scriptsToRemove)
+    }
+
+    private void doDisambiguateCommand(CommandEvent event) {
+        try {
+            final String selection = event.getCommand().trim()
+            final int selectionAsInt = selection.toInteger()
+            if ((selectionAsInt < 1) || (selectionAsInt > this.disambiguatingNouns.size())) {
+                say("I'm sorry, I don't understand")
+                return
+            }
+            final Item noun = this.disambiguatingNouns.get(selectionAsInt-1)
+
+            if (this.disambiguatingVerb instanceof CustomVerb) {
+                executeCustomVerb(this.disambiguatingVerb as CustomVerb, [noun])
+            }
+            else {
+                executeCommand(this.disambiguatingVerb.getVerb(), [noun])
+            }
+        }
+        catch(NumberFormatException exception) {
+            say("I'm sorry, I don't understand")
+        }
+        finally {
+            this.disambiguating = false
+            this.disambiguatingNouns.clear()
+            this.disambiguatingVerb = null
+            doPostCommandActions()
+            say("")
+        }
+    }
+
+    private boolean isItemInRoomOrPlayerInventory(Item item) {
+        this.currentRoom.contains(item) || this.player.contains(item)
+    }
+
+    private List<Item> determineIntendedNoun(List<Item> items) {
+        items.findAll {item ->
+            item.isVisible()
+        }
+    }
+
+    private List<Item> determineIntendedNoun(ItemContainer container, List<Item> items) {
+        return items.findAll { item ->
+            item.isVisible() && container.contains(item)
+        }
+    }
+
+    private void askUserToDisambiguate(Verb verb, List<Item> items) {
+        final List<Item> sortedItems = items.toSorted({item ->
+            item.getName()
+        })
+        this.disambiguating = true
+        this.disambiguatingVerb = verb
+        this.disambiguatingNouns = sortedItems
+
+        say(verb.getFriendlyName() + " what?")
+        for (int index = 0; index < sortedItems.size(); index++) {
+            say((index+1).toString() + ") " + sortedItems.get(index).getName())
+        }
+    }
+
+    private void executeCustomVerb(CustomVerb verb, List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        // first, determine the verb container
+        VerbContainer verbContainer = null
+        if (items.size() > 1) {
+            askUserToDisambiguate(verb, items)
+            return
+        }
+        else if (items.size() == 1) {
+            verbContainer = items.get(0)
+        }
+        else if (this.currentRoom.getVerbs().containsKey(verb)) {
+            // user did not specify a noun, so imply the current room is the noun
+            verbContainer = this.currentRoom
+        }
+        else {
+            say("You cannot do that right now.")
+            return
+        }
+
+        // then check that the item / room that was referred to by the user actually contains this verb
+        if (!verbContainer.getVerbs().containsKey(verb)) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final String script = verbContainer.getVerbs().get(verb)
+        executeScript(script)
+    }
+
+    private void executeCommand(String verb, List<Item> items) {
+        switch (verb) {
+            case "NORTH" : move(Direction.NORTH); break;
+            case "SOUTH" : move(Direction.SOUTH); break;
+            case "EAST" : move(Direction.EAST); break;
+            case "WEST" : move(Direction.WEST); break;
+            case "UP" : move(Direction.UP); break;
+            case "DOWN" : move(Direction.DOWN); break;
+            case "LOOK" : look(); break;
+            case "EXITS" : exits(); break;
+            case "EXAMINE {noun}" : examine(items); break;
+            case "GET {noun}" : get(items); break;
+            case "DROP {noun}" : drop(items); break;
+            case "INVENTORY" : inventory(); break;
+            case "TURN ON {noun}" : turnOn(items); break;
+            case "TURN OFF {noun}" : turnOff(items); break;
+            case "WAIT" : waitTurn(); break;
+            case "OPEN {noun}" : open(items); break;
+            case "CLOSE {noun}" : close(items); break;
+            case "EAT {noun}" : eat(items); break;
+            default : throw new RuntimeException("Unexpected verb")
+        }
+    }
+
+    //
+    // Standard Verbs
+    //
+
+    private void look() {
+        say(this.currentRoom.getDescription())
+        if (!this.currentRoom.getItems().isEmpty()) {
+            boolean firstItemOutput = false
+
+            for (Item item : this.currentRoom.getItems().values()) {
+                if (item.isVisible() && !item.isScenery()) {
+                    if (!firstItemOutput) {
+                        firstItemOutput = true
+                        say("You can also see:")
+                    }
+                    say(item.getLookDescription())
+                }
+            }
+        }
+    }
+
+    private void exits() {
+        StringBuilder outputText = new StringBuilder("From here you can go ")
+
+        for (Direction direction : this.currentRoom.getExits().keySet()) {
+            outputText.append(direction.getDescription()).append(", ")
+        }
+
+        say(outputText.toString())
+    }
+
+    private void move(Direction direction) {
+        final Room newRoom = this.currentRoom.getExit(direction)
+
+        if (newRoom == null) {
+            say("You cannot go that way.")
+        }
+        else {
+            moveToInternal(newRoom)
+        }
+    }
+
+    private void moveToInternal(Room room) {
+        // process leaving the previous room
+        if (this.currentRoom != null) {
+            if (this.currentRoom.getAfterLeaveRoomScript() != null) {
+                executeScript(this.currentRoom.getAfterLeaveRoomScript())
+            }
+        }
+
+        // now deal with entering the new room
+        boolean firstVisit = false
+        this.currentRoom = room
+
+        if (!this.visitedRooms.contains(room)) {
+            firstVisit = true
+            this.visitedRooms.add(this.currentRoom)
+        }
+
+        if (firstVisit) {
+            if (this.currentRoom.getBeforeEnterRoomFirstTimeScript() != null) {
+                executeScript(this.currentRoom.getBeforeEnterRoomFirstTimeScript())
+            }
+        }
+
+        if (this.currentRoom.getBeforeEnterRoomScript() != null) {
+            executeScript(this.currentRoom.getBeforeEnterRoomScript())
+        }
+
+        look()
+
+        if (firstVisit) {
+            if (this.currentRoom.getAfterEnterRoomFirstTimeScript() != null) {
+                executeScript(this.currentRoom.getAfterEnterRoomFirstTimeScript())
+            }
+        }
+
+        if (this.currentRoom.getAfterEnterRoomScript() != null) {
+            executeScript(this.currentRoom.getAfterEnterRoomScript())
+        }
+
+    }
+
+    private void get(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(this.currentRoom, candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.GET, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isGettable()) {
+            say("You cannot pick up the " + item.getName())
+        }
+        else {
+            this.currentRoom.removeItem(item)
+            this.player.addItem(item)
+            say("You pick up the " + item.getName())
+        }
+    }
+
+    private void drop(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(this.player, candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.DROP, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isDroppable()) {
+            say("You cannot drop the " + item.getName())
+        }
+        else {
+            this.player.removeItem(item)
+            this.currentRoom.addItem(item)
+            say("You drop the " + item.getName())
+        }
+    }
+
+    private void examine(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.EXAMINE, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        item.setItemPreviouslyExamined(true)
+        say(item.getItemDescription())
+    }
+
+    private void inventory() {
+        say("You are currently carrying:")
+        if (this.player.getItems().isEmpty()) {
+            say("Nothing")
+        }
+        else {
+            for (Item item : this.player.getItems().values()) {
+                say(item.getName())
+            }
+        }
+    }
+
+    private void turnOn(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.TURNON, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isSwitchable()) {
+            say("You can't turn on the " + item.getName())
+        }
+        else {
+            if (item.isSwitchedOn()) {
+                say(item.getName() + " is already on")
+            }
+            else {
+                item.switchOn()
+                String message = item.getSwitchOnMessage()
+                if (message == null) {
+                    message = "You turn on the " + item.getName()
+                }
+                say(message)
+            }
+        }
+    }
+
+    private void turnOff(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.TURNOFF, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isSwitchable()) {
+            say("You can't turn off the " + item.getName())
+        }
+        else {
+            if (item.isSwitchedOff()) {
+                say(item.getName() + " is already off")
+            }
+            else {
+                item.switchOff()
+                String message = item.getSwitchOffMessage()
+                if (message == null) {
+                    message = "You turn off the " + item.getName()
+                }
+                say(message)
+            }
+        }
+    }
+
+    private void waitTurn() {
+        final String waitText = this.adventure.getWaitText()
+        if (waitText == null) {
+            say("time passes...")
+        }
+        else {
+            say(waitText)
+        }
+    }
+
+    private void open(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.OPEN, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isOpenable()) {
+            say("You cannot open the " + item.getName())
+        }
+        else if (item.isOpen()) {
+            say(item.getName() + " is already open")
+        }
+        else {
+            item.setOpen(true)
+            String message = item.getOpenMessage()
+            if (message == null) {
+                message = "You open the " + item.getName()
+            }
+            say(message)
+
+            if (item.getOnOpenScript() != null) {
+                executeScript(item.getOnOpenScript())
+            }
+
+        }
+    }
+
+    private void close(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.CLOSE, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isCloseable()) {
+            say("You cannot close the " + item.getName())
+        }
+        else if (!item.isOpen()) {
+            say(item.getName() + " is already closed")
+        }
+        else {
+            item.setOpen(false)
+            String message = item.getCloseMessage()
+            if (message == null) {
+                message = "You close the " + item.getName()
+            }
+            say(message)
+
+            if (item.getOnCloseScript() != null) {
+                executeScript(item.getOnCloseScript())
+            }
+
+        }
+    }
+
+    private void eat(List<Item> candidateItems) {
+        final List<Item> items = determineIntendedNoun(candidateItems)
+
+        if (items.size() > 1) {
+            askUserToDisambiguate(StandardVerbs.EAT, items)
+            return
+        }
+        else if (items.isEmpty()) {
+            say("You cannot do that right now.")
+            return
+        }
+
+        final Item item = items.get(0)
+
+        if (!item.isEdible()) {
+            say("You cannot eat the " + item.getName())
+        }
+        else {
+            this.player.removeItem(item)
+            this.currentRoom.removeItem(item)
+
+            String message = item.getEatMessage()
+            if (message == null) {
+                message = "You eat the " + item.getName()
+            }
+            say(message)
+
+            if (item.getOnEatScript() != null) {
+                executeScript(item.getOnEatScript())
+            }
+
+        }
+    }
+
+    private void executeScript(String script) {
+        ScriptExecutor executor = new ScriptExecutor(this)
+        executor.executeScript(script)
+    }
+
+    //
+    // Utility functions - can be used by Scripts.
+    //
+
+    void say(String outputText) {
+        this.mainWindow.say(StringUtils.sanitiseString(outputText))
+    }
+
+    boolean isSwitchedOn(String itemId) {
+        final Item item = getItem(itemId)
+        item.isSwitchedOn()
+    }
+
+    boolean isOpen(String itemId) {
+        final Item item = getItem(itemId)
+        item.isOpen()
+    }
+
+    void executeAfterTurns(int turns, Closure<Void> script) {
+        this.scheduledScripts.add(new ScheduledScript(this.turnCounter + turns, script))
+    }
+
+    void setVisible(String itemId, boolean visible) {
+        final Item item = getItem(itemId)
+        item.setVisible(visible)
+    }
+
+    boolean playerInRoom(String roomName) {
+        this.currentRoom.getName().equals(roomName)
+    }
+
+    void moveTo(String roomName) {
+        final Room room = getRoom(roomName)
+        moveToInternal(room)
+    }
+
+    // TODO: add script functions for:
+    //      print a message (without carriage return)
+    //      clear the screen.
+    //      player is carrying object
+    //      player is NOT carrying object
+    //      object is visible
+    //      object is not visible.
+
+    //
+    // private helper methods to support the methods that can be used by Scripts
+    //
+    private Item getItem(String itemId) {
+        final Item item = this.nouns.get(itemId.toUpperCase())
+
+        if (item == null) {
+            say("ERROR: Specified item does not exist.")
+            throw new RuntimeException("Specified item does not exist.")
+        }
+
+        item
+    }
+
+    private Room getRoom(String roomName) {
+        final Room room = this.rooms.get(roomName.toUpperCase())
+
+        if (room == null) {
+            say("ERROR: Specified room does not exist.")
+            throw new RuntimeException("Specified room does not exist.")
+        }
+
+        room
+    }
+
+    private static class VerbNoun {
+        final Verb verb
+        List<Item> nouns
+
+        VerbNoun(Verb verb, List<Item> nouns) {
+            this.verb = verb
+            this.nouns = nouns
+        }
+    }
+}
+
+

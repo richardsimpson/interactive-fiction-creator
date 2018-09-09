@@ -63,6 +63,7 @@ adventure {
             }
         }
 
+        // TODO: Door is openable.  Should not be.  SHouldn't 'scenery=true' make in un-openable?
         item ("door") {
             description """
                 Examining the door, Bimbo saw that it had a combination lock.  A small plate below it
@@ -72,6 +73,7 @@ adventure {
             scenery true
         }
 
+        // TODO: Window is openable.  Should not be.  SHouldn't 'scenery=true' make in un-openable?
         item ("window") {
             description "Bimbo couldn't reach the window"
             scenery true

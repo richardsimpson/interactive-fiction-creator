@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'interactive-fiction-creator'
+//rootProject.name = 'interactive-fiction-creator'

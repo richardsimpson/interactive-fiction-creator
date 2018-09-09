@@ -8,32 +8,23 @@
  */
 
 // Apply the java plugin to add support for Java
-apply plugin: 'scala'
 apply plugin: 'groovy'
 apply plugin: 'idea'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
 }
 
-configurations {
-    scalaCompiler
-}
-
-dependencies {
-      scalaCompiler "org.scala-lang:scala-compiler:2.11.8"
-      scalaCompiler "org.scala-lang:scala-library:2.11.8"
-      scalaCompiler "org.scala-lang:scala-reflect:2.11.8"
-}
-
-tasks.withType(ScalaCompile) {
-    scalaClasspath = configurations.scalaCompiler
-}
-
 // In this section you declare the dependencies for your production and test code
+def javaFxHome = "${System.properties['java.home']}";
+
 dependencies {
-    testCompile "org.scalactic:scalactic_2.11:3.0.1"
-    testCompile "org.scalatest:scalatest_2.11:3.0.1"
+    compile files("$javaFxHome/lib/ext/jfxrt.jar")
+    compile 'org.codehaus.groovy:groovy-all:2.5.2'
     testCompile "org.mockito:mockito-core:2.8.9"
+    testCompile "org.junit.vintage:junit-vintage-engine:4.12.0"
 }
