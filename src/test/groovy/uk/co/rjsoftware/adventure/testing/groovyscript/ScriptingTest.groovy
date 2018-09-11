@@ -19,16 +19,24 @@ class ScriptingTest {
     private AdventureController controller
     private MainWindowForTesting mainWindow
 
-    private final Room study = new Room("study", "This is your study.")
-    private final Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room study
+    private Room livingRoom
 
-    private final Item tv = new Item("tv", ["TV", "television"], "A 28\" TV")
-    private final Item chest = new Item("chest", ["chest"], "This is the chest.")
-    private final Item dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
-    private final Item dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
+    private Item tv
+    private Item chest
+    private Item dummy
+    private Item dummy2
 
     @Before
     void before() {
+        study = new Room("study", "This is your study.")
+        livingRoom = new Room("livingRoom", "This is the living room.")
+
+        tv = new Item("tv", ["TV", "television"], "A 28\" TV")
+        chest = new Item("chest", ["chest"], "This is the chest.")
+        dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
+        dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
+
         tv.setVisible(true)
         tv.setSwitchable(true)
 
@@ -62,6 +70,15 @@ class ScriptingTest {
         this.mainWindow = new MainWindowForTesting()
         this.controller = new AdventureController(mainWindow)
         this.controller.loadAdventure(adventure)
+
+        // read back the data from the controller, as it would have made a copy
+        study = this.controller.getAdventure().findRoom("study")
+        livingRoom = this.controller.getAdventure().findRoom("livingRoom")
+
+        tv = livingRoom.getItem("tv")
+        chest = livingRoom.getItem("chest")
+        dummy = livingRoom.getItem("dummy")
+        dummy2 = study.getItem("dummy2")
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

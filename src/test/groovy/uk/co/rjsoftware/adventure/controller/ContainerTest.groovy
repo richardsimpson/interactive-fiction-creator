@@ -15,17 +15,22 @@ class ContainerTest {
     private Player player
     private MainWindowForTesting mainWindow
 
-    private final Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room livingRoom
 
-    private final Item chest = new Item("chest", "chest", "This is the chest.")
-
-    private final Item goldCoin = new Item("coin", ["gold coin", "coin"], "This coin is gold.")
-    private final Item notepad = new Item("notepad", ["notepad"], "A notebook with strange writing on it.")
+    private Item chest
+    private Item goldCoin
+    private Item notepad
 
     private final Map<String, Verb> verbs = new HashMap()
 
     @Before
     void before() {
+        livingRoom = new Room("livingRoom", "This is the living room.")
+
+        chest = new Item("chest", "chest", "This is the chest.")
+        goldCoin = new Item("coin", ["gold coin", "coin"], "This coin is gold.")
+        notepad = new Item("notepad", ["notepad"], "A notebook with strange writing on it.")
+
         for (Verb verb : StandardVerbs.getVerbs()) {
             verbs.put(verb.getVerb(), verb)
         }
@@ -38,6 +43,8 @@ class ContainerTest {
         chest.setCloseMessage("The chest is now closed")
         chest.setOnOpenScript("say('onOpenScript')")
         chest.setOnCloseScript("say('onCloseScript')")
+
+        setup()
     }
 
     private void setup() {
@@ -57,7 +64,14 @@ class ContainerTest {
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(adventure)
+
+        // read back the data from the controller, as it would have made a copy
         this.player = this.classUnderTest.getPlayer()
+        livingRoom = this.classUnderTest.getAdventure().findRoom("livingRoom")
+
+        chest = livingRoom.getItem("chest")
+        goldCoin = chest.getItem("coin")
+        notepad = chest.getItem("notepad")
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

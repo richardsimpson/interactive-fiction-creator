@@ -9,26 +9,24 @@ import static org.junit.Assert.*
 
 class VerbsTest {
 
-    private Adventure adventure
-
     private AdventureController classUnderTest
     private Player player
     private MainWindowForTesting mainWindow
 
-    private Room study = new Room("study", "This is your study.")
-    private Room livingRoom = new Room("livingRoom", "This is the living room.")
-    private Room garden = new Room("garden", "This is the garden.")
-    private Room kitchen = new Room("kitchen", "This is the kitchen.")
-    private Room diningRoom = new Room("diningRoom", "This is the dining room.")
-    private Room landing = new Room("landing", "This is the landing.")
-    private Room cellar = new Room("cellar", "This is the cellar.")
+    private Room study
+    private Room livingRoom
+    private Room garden
+    private Room kitchen
+    private Room diningRoom
+    private Room landing
+    private Room cellar
 
-    private Item lamp = new Item("lamp", "lamp", "A bedside lamp. with a simple on/off switch.")
-    private Item tv = new Item("tv", ["TV", "television"], "A 28\" TV")
-    private Item newspaper = new Item("paper", ["newspaper", "paper"], "The Daily Bugle.")
-    private Item remote = new Item("remote", "remote", "The TV remote")
-    private Item sandwich = new Item("sandwich", "sandwich", "A crusty old sandwich")
-    private Item donut = new Item("donut", "donut", "A delicious looking donut")
+    private Item lamp
+    private Item tv
+    private Item newspaper
+    private Item remote
+    private Item sandwich
+    private Item donut
 
     private CustomVerb watch = new CustomVerb("Watch", ["WATCH {noun}"])
     private CustomVerb relax = new CustomVerb("Relax", ["RELAX"])
@@ -37,6 +35,21 @@ class VerbsTest {
 
     @Before
     void before() {
+        study = new Room("study", "This is your study.")
+        livingRoom = new Room("livingRoom", "This is the living room.")
+        garden = new Room("garden", "This is the garden.")
+        kitchen = new Room("kitchen", "This is the kitchen.")
+        diningRoom = new Room("diningRoom", "This is the dining room.")
+        landing = new Room("landing", "This is the landing.")
+        cellar = new Room("cellar", "This is the cellar.")
+
+        lamp = new Item("lamp", "lamp", "A bedside lamp. with a simple on/off switch.")
+        tv = new Item("tv", ["TV", "television"], "A 28\" TV")
+        newspaper = new Item("paper", ["newspaper", "paper"], "The Daily Bugle.")
+        remote = new Item("remote", "remote", "The TV remote")
+        sandwich = new Item("sandwich", "sandwich", "A crusty old sandwich")
+        donut = new Item("donut", "donut", "A delicious looking donut")
+
         lamp.setSwitchable(true)
         tv.setScenery(true)
         tv.setGettable(false)
@@ -85,12 +98,12 @@ class VerbsTest {
         setup()
     }
 
-    private void setup() {
-        this.adventure = new Adventure("Welcome to the Adventure!")
-        this.adventure.setWaitText("This is the wait text")
+    private void setup(String waitText = null) {
+        final Adventure adventure = new Adventure("Welcome to the Adventure!")
+        adventure.setWaitText(waitText)
 
-        this.adventure.addCustomVerb(watch)
-        this.adventure.addCustomVerb(relax)
+        adventure.addCustomVerb(watch)
+        adventure.addCustomVerb(relax)
 
         livingRoom.addItem(lamp)
         livingRoom.addItem(tv)
@@ -103,18 +116,36 @@ class VerbsTest {
         lamp.switchOff()
         tv.switchOff()
 
-        this.adventure.addRoom(study)
-        this.adventure.addRoom(livingRoom)
-        this.adventure.addRoom(garden)
-        this.adventure.addRoom(kitchen)
-        this.adventure.addRoom(diningRoom)
+        adventure.addRoom(study)
+        adventure.addRoom(livingRoom)
+        adventure.addRoom(garden)
+        adventure.addRoom(kitchen)
+        adventure.addRoom(diningRoom)
+        adventure.addRoom(landing)
+        adventure.addRoom(cellar)
 
-        this.adventure.setStartRoom(livingRoom)
+        adventure.setStartRoom(livingRoom)
 
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
-        this.classUnderTest.loadAdventure(this.adventure)
+        this.classUnderTest.loadAdventure(adventure)
+
+        // read back the data from the controller, as it would have made a copy
         this.player = this.classUnderTest.getPlayer()
+        study = this.classUnderTest.getAdventure().findRoom("study")
+        livingRoom = this.classUnderTest.getAdventure().findRoom("livingRoom")
+        garden = this.classUnderTest.getAdventure().findRoom("garden")
+        kitchen = this.classUnderTest.getAdventure().findRoom("kitchen")
+        diningRoom = this.classUnderTest.getAdventure().findRoom("diningRoom")
+        landing = this.classUnderTest.getAdventure().findRoom("landing")
+        cellar = this.classUnderTest.getAdventure().findRoom("cellar")
+
+        lamp = livingRoom.getItem("lamp")
+        tv = livingRoom.getItem("tv")
+        newspaper = livingRoom.getItem("paper")
+        remote = livingRoom.getItem("remote")
+        sandwich = diningRoom.getItem("sandwich")
+        donut = diningRoom.getItem("donut")
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
@@ -557,7 +588,6 @@ class VerbsTest {
     void testWait_WithDefaultWaitText() {
         for (String verbString : this.verbs.get("WAIT").getSynonyms()) {
             setup()
-            this.adventure.setWaitText(null)
             testWait(verbString, "time passes...")
         }
     }
@@ -565,7 +595,7 @@ class VerbsTest {
     @Test
     void testWait_WithDefaultCustomText() {
         for (String verbString : this.verbs.get("WAIT").getSynonyms()) {
-            setup()
+            setup("This is the wait text")
             testWait(verbString, "This is the wait text")
         }
     }
@@ -708,4 +738,51 @@ class VerbsTest {
 
     // TODO Add a test for the script functions isSwitchedOn and isSwitchedOff
     // TODO: Add test where two object have the same custom verb defined
+
+    @Test
+    void testRestart() {
+        for (String verbString : this.verbs.get("RESTART").getSynonyms()) {
+            setup()
+
+            assertTrue(livingRoom.contains(lamp))
+            assertTrue(livingRoom.contains(newspaper))
+
+            mainWindow.fireCommand(new CommandEvent("GET lamp"))
+            mainWindow.fireCommand(new CommandEvent("GET newspaper"))
+            mainWindow.fireCommand(new CommandEvent("TURN ON lamp"))
+            mainWindow.fireCommand(new CommandEvent("TURN ON tv"))
+
+            mainWindow.fireCommand(new CommandEvent("NORTH"))
+            mainWindow.fireCommand(new CommandEvent("DROP lamp"))
+
+            assertEquals(kitchen, this.classUnderTest.getCurrentRoom())
+            assertTrue(player.contains(newspaper))
+            assertTrue(kitchen.contains(lamp))
+            assertFalse(livingRoom.contains(lamp))
+            assertFalse(livingRoom.contains(newspaper))
+            assertTrue(lamp.isSwitchedOn())
+            assertTrue(tv.isSwitchedOn())
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+            mainWindow.fireCommand(new CommandEvent("yes"))
+
+            // check that the adventure has reverted to it's original state
+            final newPlayer = this.classUnderTest.getPlayer()
+            final newLivingRoom = this.classUnderTest.getAdventure().findRoom("livingRoom")
+            final newKitchen = this.classUnderTest.getAdventure().findRoom("kitchen")
+            final newLamp = newLivingRoom.getItem("lamp")
+            final newTv = newLivingRoom.getItem("tv")
+
+            assertEquals(newLivingRoom, this.classUnderTest.getCurrentRoom())
+            assertFalse(newPlayer.contains(newspaper))
+            assertFalse(newPlayer.contains(lamp))
+            assertFalse(newKitchen.contains(lamp))
+            assertTrue(newLivingRoom.contains(lamp))
+            assertTrue(newLivingRoom.contains(newspaper))
+            assertFalse(newLamp.isSwitchedOn())
+            assertFalse(newTv.isSwitchedOn())
+        }
+    }
+
+
 }

@@ -22,9 +22,11 @@ class StandardVerbs {
     static final Verb OPEN = new Verb("Open", ["OPEN {noun}"])
     static final Verb CLOSE = new Verb("Close", ["CLOSE {noun}"])
     static final Verb EAT = new Verb("Eat", ["EAT {noun}"])
+    static final Verb RESTART = new Verb("Restart", ["RESTART"])
 
     private static final List<Verb> verbs = [NORTH, SOUTH, EAST, WEST, UP, DOWN, LOOK, EXITS, EXAMINE,
-                                             GET, DROP, INVENTORY, TURNON, TURNOFF, WAIT, OPEN, CLOSE, EAT]
+                                             GET, DROP, INVENTORY, TURNON, TURNOFF, WAIT, OPEN, CLOSE, EAT,
+                                             RESTART]
 
     // TODO: Add verbs (or should these just be custom verbs):
     //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON

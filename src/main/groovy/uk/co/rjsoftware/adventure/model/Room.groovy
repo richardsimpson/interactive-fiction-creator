@@ -3,8 +3,8 @@ package uk.co.rjsoftware.adventure.model
 class Room implements ItemContainer, VerbContainer {
 
     private final Map<Direction, Room> exits = new TreeMap()
-    private final Map<CustomVerb, String> customVerbs = new HashMap()
-    private final Map<String, Item> items = new TreeMap<String, Item>()
+    private Map<CustomVerb, String> customVerbs = new HashMap()
+    private Map<String, Item> items = new TreeMap<String, Item>()
     private String name
     private String description
     private String beforeEnterRoomScript
@@ -29,6 +29,30 @@ class Room implements ItemContainer, VerbContainer {
 
     Room(String name) {
         this(name, "")
+    }
+
+    Room createCopy() {
+        // Create a copy with WITHOUT the exits.  They will get fixed up later
+        final Room roomCopy = new Room(name, description, beforeEnterRoomScript, afterEnterRoomScript,
+                                       afterLeaveRoomScript, beforeEnterRoomFirstTimeScript, afterEnterRoomFirstTimeScript)
+
+        for (Map.Entry<CustomVerb, String> entry : customVerbs) {
+            roomCopy.addVerb(entry.key.createCopy(), entry.value)
+        }
+
+        for (Map.Entry<String, Item> entry : items) {
+            roomCopy.addItem(entry.value.createCopy())
+        }
+
+        roomCopy
+    }
+
+    void fixupExits(Adventure originalAdventure, Adventure newAdventure) {
+        final Room originalRoom = originalAdventure.findRoom(name)
+
+        for (Map.Entry<Direction, Room> entry : originalRoom.exits) {
+            addExit(entry.key, newAdventure.findRoom(entry.value.name))
+        }
     }
 
     String getName() {

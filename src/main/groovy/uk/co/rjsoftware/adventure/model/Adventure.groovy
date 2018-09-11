@@ -14,6 +14,21 @@ class Adventure {
         this.introduction = introduction
     }
 
+    Adventure createCopy() {
+        final Adventure adventureCopy = new Adventure(introduction)
+        adventureCopy.title = title
+        adventureCopy.rooms = rooms.collect {it.createCopy()}
+        adventureCopy.startRoom = adventureCopy.rooms.find{it.getName() == startRoom.getName()}
+        adventureCopy.customVerbs = customVerbs.collect {it.createCopy()}
+        adventureCopy.waitText = waitText
+
+        // now fixup the exits in the rooms
+        for (Room newRoom : adventureCopy.rooms) {
+            newRoom.fixupExits(this, adventureCopy)
+        }
+        adventureCopy
+    }
+
     void setTitle(String title) {
         this.title = title
     }

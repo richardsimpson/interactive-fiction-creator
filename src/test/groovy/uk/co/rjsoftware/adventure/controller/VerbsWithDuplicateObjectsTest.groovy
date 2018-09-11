@@ -13,23 +13,31 @@ class VerbsWithDuplicateObjectsTest {
     private Player player
     private MainWindowForTesting mainWindow
 
-    private Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room livingRoom
 
-    private Item redBox = new Item("redbox", ["red box", "box"], "This is the red box.")
+    private Item redBox
 
-    private Item blueBox = new Item("bluebox", ["blue box", "box"], "This is the blue box.")
+    private Item blueBox
 
     private final Map<String, Verb> verbs = new HashMap()
 
     @Before
     void before() {
+        livingRoom = new Room("livingRoom", "This is the living room.")
+
+        redBox = new Item("redbox", ["red box", "box"], "This is the red box.")
+
+        blueBox = new Item("bluebox", ["blue box", "box"], "This is the blue box.")
+
         for (Verb verb : StandardVerbs.getVerbs()) {
             verbs.put(verb.getVerb(), verb)
         }
+
+        setup()
     }
 
     private void setup() {
-        Adventure adventure = new Adventure("Welcome to the Adventure!")
+        final Adventure adventure = new Adventure("Welcome to the Adventure!")
 
         livingRoom.addItem(redBox)
         livingRoom.addItem(blueBox)
@@ -43,7 +51,13 @@ class VerbsWithDuplicateObjectsTest {
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(adventure)
+
+        // read back the data from the controller, as it would have made a copy
         this.player = this.classUnderTest.getPlayer()
+        livingRoom = this.classUnderTest.getAdventure().findRoom("livingRoom")
+
+        redBox = livingRoom.getItem("redbox")
+        blueBox = livingRoom.getItem("bluebox")
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

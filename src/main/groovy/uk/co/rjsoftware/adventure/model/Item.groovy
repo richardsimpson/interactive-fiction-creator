@@ -53,6 +53,48 @@ class Item implements ItemContainer, VerbContainer {
         this(id, id)
     }
 
+    Item createCopy() {
+        // Create a copy with WITHOUT the exits.  They will get fixed up later
+
+        final newSynonyms = new ArrayList<>()
+        newSynonyms.addAll(synonyms)
+
+        final Item itemCopy = new Item(id, newSynonyms, description)
+        itemCopy.visible = visible
+        itemCopy.scenery = scenery
+        itemCopy.gettable = gettable
+        itemCopy.droppable = droppable
+        itemCopy.switchable = switchable
+        itemCopy.switchedOn = switchedOn
+        itemCopy.switchOnMessage = switchOnMessage
+        itemCopy.switchOffMessage = switchOffMessage
+        itemCopy.extraMessageWhenSwitchedOn = extraMessageWhenSwitchedOn
+        itemCopy.extraMessageWhenSwitchedOff = extraMessageWhenSwitchedOff
+        itemCopy.container = container
+        itemCopy.openable = openable
+        itemCopy.closeable = closeable
+        itemCopy.open = open
+        itemCopy.openMessage = openMessage
+        itemCopy.closeMessage = closeMessage
+        itemCopy.onOpenScript = onOpenScript
+        itemCopy.onCloseScript = onCloseScript
+        itemCopy.contentVisibility = contentVisibility
+        itemCopy.edible = edible
+        itemCopy.eatMessage = eatMessage
+        itemCopy.onEatScript = onEatScript
+
+        for (Map.Entry<CustomVerb, String> entry : customVerbs) {
+            itemCopy.addVerb(entry.key.createCopy(), entry.value)
+        }
+
+        for (Map.Entry<String, Item> entry : items) {
+            itemCopy.addItem(entry.value.createCopy())
+        }
+
+        itemCopy.itemPreviouslyExamined = itemPreviouslyExamined
+        itemCopy
+    }
+
     String getId() {
         this.id
     }
