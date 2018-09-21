@@ -6,10 +6,11 @@ adventure {
 
     room ("bedroom") {
         description "This is your bedroom.  Clothes are strewn across the floor, there is a TV, and a lamp sits on the bedsite table."
-        afterEnterRoomFirstTimeScript """
+        afterEnterRoomFirstTime {
             executeAfterTurns(5) {
                 say('you decide you should tidy up')
-            }"""
+            }
+        }
 
         item ("lamp") {
             description "A bedside lamp. with a simple on/off switch"

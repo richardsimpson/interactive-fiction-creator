@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.testing.groovyscript
 
+import groovy.transform.TypeChecked
 import org.junit.Before
 import org.junit.Test
 import uk.co.rjsoftware.adventure.controller.AdventureController
@@ -14,6 +15,7 @@ import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertEquals
 
+@TypeChecked
 class ScriptingTest {
 
     private AdventureController controller
@@ -75,7 +77,7 @@ class ScriptingTest {
 
     @Test
     void testSay() {
-        dummy.setOnOpenScript("say('hello')")
+        dummy.setOnOpen {say('hello')}
         this.mainWindow.clearMessages()
 
         mainWindow.fireCommand(new CommandEvent("open dummy"))
@@ -89,15 +91,14 @@ class ScriptingTest {
 
     @Test
     void testIsSwitchedOn() {
-        dummy.setOnOpenScript(
-                """
-              |if (isSwitchedOn('tv')) {
-              |    say('tv is switched on')
-              |}
-              |else {
-              |    say('tv is switched off')
-              |}
-            """.stripMargin())
+        dummy.setOnOpen {
+            if (isSwitchedOn('tv')) {
+                say('tv is switched on')
+            }
+            else {
+                say('tv is switched off')
+            }
+        }
 
         tv.switchOn()
         this.mainWindow.clearMessages()
@@ -125,15 +126,13 @@ class ScriptingTest {
 
     @Test
     void testIsSwitchedOff() {
-        dummy.setOnOpenScript(
-                """
-              |if (isSwitchedOff('tv')) {
-              |    say('tv is switched off')
-              |}
-              |else {
-              |    say('tv is switched on')
-              |}
-            """.stripMargin())
+        dummy.setOnOpen {
+            if (isSwitchedOff('tv')) {
+                say('tv is switched off')
+            } else {
+                say('tv is switched on')
+            }
+        }
 
         tv.switchOn()
         this.mainWindow.clearMessages()
@@ -161,15 +160,13 @@ class ScriptingTest {
 
     @Test
     void testIsOpen() {
-        dummy.setOnOpenScript(
-                """
-              |if (isOpen('chest')) {
-              |    say('chest is open')
-              |}
-              |else {
-              |    say('chest is closed')
-              |}
-            """.stripMargin())
+        dummy.setOnOpen {
+            if (isOpen('chest')) {
+                say('chest is open')
+            } else {
+                say('chest is closed')
+            }
+        }
 
         chest.setOpen(true)
         this.mainWindow.clearMessages()
@@ -197,15 +194,13 @@ class ScriptingTest {
 
     @Test
     void testIsClosed() {
-        dummy.setOnOpenScript(
-                """
-              |if (isClosed('chest')) {
-              |    say('chest is closed')
-              |}
-              |else {
-              |    say('chest is open')
-              |}
-            """.stripMargin())
+        dummy.setOnOpen {
+            if (isClosed('chest')) {
+                say('chest is closed')
+            } else {
+                say('chest is open')
+            }
+        }
 
         chest.setOpen(true)
         this.mainWindow.clearMessages()
@@ -233,10 +228,11 @@ class ScriptingTest {
 
     @Test
     void testExecuteAfterTurns() {
-        dummy.setOnOpenScript(
-                "executeAfterTurns(5) {" +
-                        "    say('hello from closure')" +
-                        "}")
+        dummy.setOnOpen {
+            executeAfterTurns(5) {
+                say('hello from closure')
+            }
+        }
 
         mainWindow.fireCommand(new CommandEvent("open dummy"))
 
@@ -268,7 +264,9 @@ class ScriptingTest {
 
     @Test
     void testSetVisible() {
-        dummy.setOnOpenScript("setVisible('tv')")
+        dummy.setOnOpen {
+            setVisible('tv')
+        }
 
         tv.setVisible(false)
         assertFalse(tv.isVisible())
@@ -280,7 +278,9 @@ class ScriptingTest {
 
     @Test
     void testSetInvisible() {
-        dummy.setOnOpenScript("setInvisible('tv')")
+        dummy.setOnOpen {
+            setInvisible('tv')
+        }
 
         tv.setVisible(true)
         assertTrue(tv.isVisible())
@@ -292,16 +292,14 @@ class ScriptingTest {
 
     @Test
     void testPlayerInRoom() {
-        dummy.setOnOpenScript(
-                """
-              |if (playerInRoom('livingRoom')) {
-              |    say('player is in the living room')
-              |}
-              |else {
-              |    say('player is not in the living room')
-              |}
-            """.stripMargin())
-        dummy2.setOnOpenScript(dummy.getOnOpenScript())
+        dummy.setOnOpen {
+            if (playerInRoom('livingRoom')) {
+                say('player is in the living room')
+            } else {
+                say('player is not in the living room')
+            }
+        }
+        dummy2.setOnOpen(dummy.getOnOpen())
 
         this.mainWindow.clearMessages()
 
@@ -328,16 +326,14 @@ class ScriptingTest {
 
     @Test
     void testPlayerNotInRoom() {
-        dummy.setOnOpenScript(
-                """
-              |if (playerNotInRoom('livingRoom')) {
-              |    say('player is not in the living room')
-              |}
-              |else {
-              |    say('player is in the living room')
-              |}
-            """.stripMargin())
-        dummy2.setOnOpenScript(dummy.getOnOpenScript())
+        dummy.setOnOpen {
+            if (playerNotInRoom('livingRoom')) {
+                say('player is not in the living room')
+            } else {
+                say('player is in the living room')
+            }
+        }
+        dummy2.setOnOpen(dummy.getOnOpen())
 
         this.mainWindow.clearMessages()
 
@@ -364,7 +360,9 @@ class ScriptingTest {
 
     @Test
     void testMove() {
-        dummy.setOnOpenScript("moveTo('study')")
+        dummy.setOnOpen {
+            moveTo('study')
+        }
 
         assertEquals(livingRoom, this.controller.getCurrentRoom())
 

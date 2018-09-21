@@ -1,23 +1,40 @@
 package uk.co.rjsoftware.adventure.controller.load
 
+import groovy.transform.TypeChecked
 import org.junit.Test
 import uk.co.rjsoftware.adventure.model.*
 
 import static org.junit.Assert.assertEquals
 
+@TypeChecked
 class LoaderTest {
+
+    class ClosureChecker {
+        String lastMessage
+
+        void say(String message) {
+            lastMessage = message
+        }
+    }
+
+    private ClosureChecker checker = new ClosureChecker()
+
+    void verifyClosure(String expected, Closure closure) {
+        checker.tap(closure)
+        assertEquals(expected, checker.lastMessage)
+    }
 
     @Test
     void testLoadAdventure() {
-        final File file = new File("/Users/richardsimpson/workspace/interactive-fiction-creator/src/test/scala/uk/co/rjsoftware/adventure/controller/load/SampleAdventure.groovy")
+        final File file = new File("/Users/richardsimpson/workspace/interactive-fiction-creator-groovy/src/test/groovy/uk/co/rjsoftware/adventure/controller/load/SampleAdventure.groovy")
         final Adventure adventure = Loader.loadAdventure(file)
 
         assertEquals("Adventure Game", adventure.getTitle())
         assertEquals("Welcome to the Adventure!", adventure.getIntroduction())
 
-        assertEquals(2, adventure.getRooms().size)
+        assertEquals(2, adventure.getRooms().size())
 
-        assertEquals(1, adventure.getCustomVerbs().size)
+        assertEquals(1, adventure.getCustomVerbs().size())
         final CustomVerb watch = adventure.getCustomVerbs().get(0)
         assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], watch.getSynonyms())
 
@@ -26,21 +43,21 @@ class LoaderTest {
 
         assertEquals("bedroom", bedroom.getName())
         assertEquals("custom description", bedroom.getDescription())
-        assertEquals("beforeEnterRoomScript", bedroom.getBeforeEnterRoomScript())
-        assertEquals("afterEnterRoomScript", bedroom.getAfterEnterRoomScript())
-        assertEquals("afterLeaveRoomScript", bedroom.getAfterLeaveRoomScript())
-        assertEquals("beforeEnterRoomFirstTimeScript", bedroom.getBeforeEnterRoomFirstTimeScript())
-        assertEquals("afterEnterRoomFirstTimeScript", bedroom.getAfterEnterRoomFirstTimeScript())
+        verifyClosure("beforeEnterRoomScript", bedroom.getBeforeEnterRoom())
+        verifyClosure("afterEnterRoomScript", bedroom.getAfterEnterRoom())
+        verifyClosure("afterLeaveRoomScript", bedroom.getAfterLeaveRoom())
+        verifyClosure("beforeEnterRoomFirstTimeScript", bedroom.getBeforeEnterRoomFirstTime())
+        verifyClosure("afterEnterRoomFirstTimeScript", bedroom.getAfterEnterRoomFirstTime())
         assertEquals(1, bedroom.getExits().size())
         assertEquals(landing, bedroom.getExit(Direction.EAST))
 
         assertEquals("landing", landing.getName())
         assertEquals("custom description2", landing.getDescription())
-        assertEquals("beforeEnterRoomScript2", landing.getBeforeEnterRoomScript())
-        assertEquals("afterEnterRoomScript2", landing.getAfterEnterRoomScript())
-        assertEquals("afterLeaveRoomScript2", landing.getAfterLeaveRoomScript())
-        assertEquals("beforeEnterRoomFirstTimeScript2", landing.getBeforeEnterRoomFirstTimeScript())
-        assertEquals("afterEnterRoomFirstTimeScript2", landing.getAfterEnterRoomFirstTimeScript())
+        verifyClosure("beforeEnterRoomScript2", landing.getBeforeEnterRoom())
+        verifyClosure("afterEnterRoomScript2", landing.getAfterEnterRoom())
+        verifyClosure("afterLeaveRoomScript2", landing.getAfterLeaveRoom())
+        verifyClosure("beforeEnterRoomFirstTimeScript2", landing.getBeforeEnterRoomFirstTime())
+        verifyClosure("afterEnterRoomFirstTimeScript2", landing.getAfterEnterRoomFirstTime())
         assertEquals(1, landing.getExits().size())
         assertEquals(bedroom, landing.getExit(Direction.WEST))
 
@@ -78,14 +95,8 @@ class LoaderTest {
             assertEquals("WATCH {noun}", customVerb.getVerb())
         }
 
-        final String customVerbExpectedScript = """if (isSwitchedOn('tv')) {
-    say('You watch the TV for a while.  It's showing a Western of some kind.')
-}
-else {
-    say('You watch the TV for a while.  It's just a black screen.')
-}"""
-        for (String script : tv.getVerbs().values()) {
-            assertEquals(customVerbExpectedScript, script)
+        for (Closure closure : tv.getVerbs().values()) {
+            verifyClosure("watchVerb", closure)
         }
 
         assertEquals("bedroom", adventure.getStartRoom().getName())

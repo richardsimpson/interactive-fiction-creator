@@ -1,5 +1,8 @@
 package uk.co.rjsoftware.adventure.view
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 interface MainWindow {
 
     void say(String outputText)
@@ -11,10 +14,12 @@ interface MainWindow {
     void loadAdventure(String title, String introduction)
 }
 
+@TypeChecked
 interface LoadListener {
     void callback(LoadEvent event)
 }
 
+@TypeChecked
 interface CommandListener {
     void callback(CommandEvent event)
 }

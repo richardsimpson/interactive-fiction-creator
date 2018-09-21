@@ -1,30 +1,34 @@
 package uk.co.rjsoftware.adventure.model
 
+import groovy.transform.TypeChecked
+import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
+
+@TypeChecked
 class Room implements ItemContainer, VerbContainer {
 
     private final Map<Direction, Room> exits = new TreeMap()
-    private final Map<CustomVerb, String> customVerbs = new HashMap()
+    private final Map<CustomVerb, Closure> customVerbs = new HashMap()
     private final Map<String, Item> items = new TreeMap<String, Item>()
     private String name
     private String description
-    private String beforeEnterRoomScript
-    private String afterEnterRoomScript
-    private String afterLeaveRoomScript
-    private String beforeEnterRoomFirstTimeScript
-    private String afterEnterRoomFirstTimeScript
+    private Closure beforeEnterRoom
+    private Closure afterEnterRoom
+    private Closure afterLeaveRoom
+    private Closure beforeEnterRoomFirstTime
+    private Closure afterEnterRoomFirstTime
 
     Room(String name, String description,
-         String beforeEnterRoomScript = null, String afterEnterRoomScript = null,
-         String afterLeaveRoomScript = null,
-         String beforeEnterRoomFirstTimeScript = null, String afterEnterRoomFirstTimeScript = null) {
+         Closure beforeEnterRoom = null, Closure afterEnterRoom = null,
+         Closure afterLeaveRoom = null,
+         Closure beforeEnterRoomFirstTime = null, Closure afterEnterRoomFirstTime = null) {
 
         this.name = name
         this.description = description
-        this.beforeEnterRoomScript = beforeEnterRoomScript
-        this.afterEnterRoomScript = afterEnterRoomScript
-        this.afterLeaveRoomScript = afterLeaveRoomScript
-        this.beforeEnterRoomFirstTimeScript = beforeEnterRoomFirstTimeScript
-        this.afterEnterRoomFirstTimeScript = afterEnterRoomFirstTimeScript
+        this.beforeEnterRoom = beforeEnterRoom
+        this.afterEnterRoom = afterEnterRoom
+        this.afterLeaveRoom = afterLeaveRoom
+        this.beforeEnterRoomFirstTime = beforeEnterRoomFirstTime
+        this.afterEnterRoomFirstTime = afterEnterRoomFirstTime
     }
 
     Room(String name) {
@@ -75,52 +79,52 @@ class Room implements ItemContainer, VerbContainer {
         this.items
     }
 
-    Map<CustomVerb, String> getVerbs() {
+    Map<CustomVerb, Closure> getVerbs() {
         this.customVerbs
     }
 
-    void addVerb(CustomVerb verb, String script) {
-        this.customVerbs.put(verb, script)
+    void addVerb(CustomVerb verb, @DelegatesTo(strategy=Closure.DELEGATE_ONLY, value= ScriptRuntimeDelegate) Closure closure) {
+        this.customVerbs.put(verb, closure)
     }
 
-    String getBeforeEnterRoomScript() {
-        this.beforeEnterRoomScript
+    Closure getBeforeEnterRoom() {
+        this.beforeEnterRoom
     }
 
-    void setBeforeEnterRoomScript(String script) {
-        this.beforeEnterRoomScript = script
+    void setBeforeEnterRoom(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.beforeEnterRoom = closure
     }
 
-    String getAfterEnterRoomScript() {
-        this.afterEnterRoomScript
+    Closure getAfterEnterRoom() {
+        this.afterEnterRoom
     }
 
-    void setAfterEnterRoomScript(String script) {
-        this.afterEnterRoomScript = script
+    void setAfterEnterRoom(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.afterEnterRoom = closure
     }
 
-    String getAfterLeaveRoomScript() {
-        this.afterLeaveRoomScript
+    Closure getAfterLeaveRoom() {
+        this.afterLeaveRoom
     }
 
-    void setAfterLeaveRoomScript(String script) {
-        this.afterLeaveRoomScript = script
+    void setAfterLeaveRoom(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.afterLeaveRoom = closure
     }
 
-    String getBeforeEnterRoomFirstTimeScript() {
-        this.beforeEnterRoomFirstTimeScript
+    Closure getBeforeEnterRoomFirstTime() {
+        this.beforeEnterRoomFirstTime
     }
 
-    void setBeforeEnterRoomFirstTimeScript(String script) {
-        this.beforeEnterRoomFirstTimeScript = script
+    void setBeforeEnterRoomFirstTime(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.beforeEnterRoomFirstTime = closure
     }
 
-    String getAfterEnterRoomFirstTimeScript() {
-        this.afterEnterRoomFirstTimeScript
+    Closure getAfterEnterRoomFirstTime() {
+        this.afterEnterRoomFirstTime
     }
 
-    void setAfterEnterRoomFirstTimeScript(String script) {
-        this.afterEnterRoomFirstTimeScript = script
+    void setAfterEnterRoomFirstTime(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.afterEnterRoomFirstTime = closure
     }
 
 }

@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.view
 
+import groovy.transform.TypeChecked
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -15,6 +16,7 @@ import javafx.stage.Stage
 
 import java.nio.file.Paths
 
+@TypeChecked
 class MainWindowView implements MainWindow {
 
     @FXML private TextArea outputTextArea = null

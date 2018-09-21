@@ -10,11 +10,11 @@ adventure {
 
     room ("bedroom") {
         description "custom description"
-        beforeEnterRoomScript "beforeEnterRoomScript"
-        afterEnterRoomScript "afterEnterRoomScript"
-        afterLeaveRoomScript "afterLeaveRoomScript"
-        beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript"
-        afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript"
+        beforeEnterRoom { say("beforeEnterRoomScript") }
+        afterEnterRoom { say("afterEnterRoomScript") }
+        afterLeaveRoom { say("afterLeaveRoomScript") }
+        beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript") }
+        afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript") }
 
         item ("lamp") {
             synonyms "lampshade", "lamp", "shade"
@@ -43,27 +43,17 @@ adventure {
             extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
             extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
 
-            // TODO: Improve the DSL for custom verb scripts
-            verb ("WATCH {noun}") {
-                script """
-                if (isSwitchedOn('tv')) {
-                    say('You watch the TV for a while.  It's showing a Western of some kind.')
-                }
-                else {
-                    say('You watch the TV for a while.  It's just a black screen.')
-                }
-                """
-            }
+            verb ("WATCH {noun}") { say("watchVerb") }
         }
     }
 
     room ("landing") {
         description "custom description2"
-        beforeEnterRoomScript "beforeEnterRoomScript2"
-        afterEnterRoomScript "afterEnterRoomScript2"
-        afterLeaveRoomScript "afterLeaveRoomScript2"
-        beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript2"
-        afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript2"
+        beforeEnterRoom { say("beforeEnterRoomScript2") }
+        afterEnterRoom { say("afterEnterRoomScript2") }
+        afterLeaveRoom { say("afterLeaveRoomScript2") }
+        beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript2") }
+        afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript2") }
 
         exit direction: WEST, room: "bedroom"
     }

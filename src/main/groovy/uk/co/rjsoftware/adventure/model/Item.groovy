@@ -1,5 +1,9 @@
 package uk.co.rjsoftware.adventure.model
 
+import groovy.transform.TypeChecked
+import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
+
+@TypeChecked
 class Item implements ItemContainer, VerbContainer {
     private final String id
     private final List<String> synonyms
@@ -20,18 +24,18 @@ class Item implements ItemContainer, VerbContainer {
     private boolean open
     private String openMessage
     private String closeMessage
-    private String onOpenScript
-    private String onCloseScript
+    private Closure onOpen
+    private Closure onClose
     private ContentVisibility contentVisibility = ContentVisibility.AFTER_EXAMINE
     private boolean edible
     private String eatMessage
-    private String onEatScript
+    private Closure onEat
 
     // TODO: To add:
     //          Use/Give...
     //          Player...
 
-    private Map<CustomVerb, String> customVerbs = new HashMap()
+    private Map<CustomVerb, Closure> customVerbs = new HashMap()
     private Map<String, Item> items = new TreeMap()
     private boolean itemPreviouslyExamined = false
 
@@ -190,12 +194,12 @@ class Item implements ItemContainer, VerbContainer {
         result
     }
 
-    Map<CustomVerb, String> getVerbs() {
+    Map<CustomVerb, Closure> getVerbs() {
         this.customVerbs
     }
 
-    void addVerb(CustomVerb verb, String script) {
-        this.customVerbs.put(verb, script)
+    void addVerb(CustomVerb verb, @DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.customVerbs.put(verb, closure)
     }
 
     //
@@ -245,11 +249,15 @@ class Item implements ItemContainer, VerbContainer {
     String getCloseMessage() { this.closeMessage }
     void setCloseMessage(String closeMessage) { this.closeMessage = closeMessage }
 
-    String getOnOpenScript() { this.onOpenScript }
-    void setOnOpenScript(String onOpenScript) { this.onOpenScript = onOpenScript }
+    Closure getOnOpen() { this.onOpen }
+    void setOnOpen(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.onOpen = closure
+    }
 
-    String getOnCloseScript() { this.onCloseScript }
-    void setOnCloseScript(String onCloseScript) { this.onCloseScript = onCloseScript }
+    Closure getOnClose() { this.onClose }
+    void setOnClose(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.onClose = closure
+    }
 
     ContentVisibility getContentVisibility() { this.contentVisibility }
     void setContentVisibility(ContentVisibility contentVisibility) { this.contentVisibility = contentVisibility }
@@ -288,6 +296,8 @@ class Item implements ItemContainer, VerbContainer {
     String getEatMessage() { this.eatMessage }
     void setEatMessage(String eatMessage) { this.eatMessage = eatMessage }
 
-    String getOnEatScript() { this.onEatScript }
-    void setOnEatScript(String onEatScript) { this.onEatScript = onEatScript }
+    Closure getOnEat() { this.onEat }
+    void setOnEat(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
+        this.onEat = closure
+    }
 }

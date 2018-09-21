@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.controller
 
+import groovy.transform.TypeChecked
 import org.junit.Before
 import org.junit.Test
 import uk.co.rjsoftware.adventure.model.*
@@ -7,6 +8,7 @@ import uk.co.rjsoftware.adventure.view.CommandEvent
 
 import static org.junit.Assert.*
 
+@TypeChecked
 class VerbsTest {
 
     private Adventure adventure
@@ -51,11 +53,11 @@ class VerbsTest {
         sandwich.setEdible(true)
         donut.setEdible(true)
         donut.setEatMessage("eating donut")
-        donut.setOnEatScript("say('onEatScript')")
+        donut.setOnEat {say('onEatScript')}
 
-        tv.addVerb(watch, "say('You watch the TV for a while.')")
-        livingRoom.addVerb(relax , "say('You sit on the floor, and veg out in front of the TV.')")
-        garden.addVerb(relax , "say('You sunbathe for a while.  Difficult without anything to sit on though.')")
+        tv.addVerb(watch) {say('You watch the TV for a while.')}
+        livingRoom.addVerb(relax) {say('You sit on the floor, and veg out in front of the TV.')}
+        garden.addVerb(relax) {say('You sunbathe for a while.  Difficult without anything to sit on though.')}
 
         //           kitchen    landing
         //                |      |

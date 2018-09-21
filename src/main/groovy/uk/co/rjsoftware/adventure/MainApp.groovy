@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure
 
+import groovy.transform.TypeChecked
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
@@ -12,6 +13,7 @@ import uk.co.rjsoftware.adventure.view.MainWindowView
 
 import java.nio.file.Paths
 
+@TypeChecked
 class MainApp extends Application {
 
     static void main(String[] args) {

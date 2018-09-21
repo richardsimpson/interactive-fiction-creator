@@ -33,7 +33,7 @@ abstract class AdventureLoaderScript extends Script {
 
     void adventure(Closure closure) {
         closure.delegate = adventureDelegate
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
     }
 
@@ -66,7 +66,7 @@ class AdventureDelegate {
         this.adventure.addCustomVerb(customVerb)
 
         closure.delegate = new VerbDelegate(customVerb)
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
     }
 
@@ -79,7 +79,7 @@ class AdventureDelegate {
         }
 
         closure.delegate = new RoomDelegate(room, this.adventure)
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
     }
 
@@ -134,24 +134,24 @@ class RoomDelegate {
         this.room.setDescription(StringUtils.sanitiseString(description))
     }
 
-    private void beforeEnterRoomScript(String script) {
-        this.room.setBeforeEnterRoomScript(StringUtils.sanitiseString(script))
+    private void beforeEnterRoom(Closure closure) {
+        this.room.setBeforeEnterRoom(closure)
     }
 
-    private void afterEnterRoomScript(String script) {
-        this.room.setAfterEnterRoomScript(StringUtils.sanitiseString(script))
+    private void afterEnterRoom(Closure closure) {
+        this.room.setAfterEnterRoom(closure)
     }
 
-    private void afterLeaveRoomScript(String script) {
-        this.room.setAfterLeaveRoomScript(StringUtils.sanitiseString(script))
+    private void afterLeaveRoom(Closure closure) {
+        this.room.setAfterLeaveRoom(closure)
     }
 
-    private void beforeEnterRoomFirstTimeScript(String script) {
-        this.room.setBeforeEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
+    private void beforeEnterRoomFirstTime(Closure closure) {
+        this.room.setBeforeEnterRoomFirstTime(closure)
     }
 
-    private void afterEnterRoomFirstTimeScript(String script) {
-        this.room.setAfterEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
+    private void afterEnterRoomFirstTime(Closure closure) {
+        this.room.setAfterEnterRoomFirstTime(closure)
     }
 
     private void exit(LinkedHashMap linkedHashMap) {
@@ -172,7 +172,7 @@ class RoomDelegate {
         }
 
         closure.delegate = new ItemDelegate(this.adventure, item)
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
     }
 
@@ -183,13 +183,7 @@ class RoomDelegate {
             throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
         }
 
-        final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
-        closure.delegate = delegate
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure()
-
-        this.room.addVerb(customVerb, delegate.getScript())
-
+        this.room.addVerb(customVerb, closure)
     }
 
 }
@@ -262,13 +256,7 @@ class ItemDelegate {
             throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
         }
 
-        final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
-        closure.delegate = delegate
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure()
-
-        this.item.addVerb(customVerb, delegate.getScript())
-
+        this.item.addVerb(customVerb, closure)
     }
 
     private container(Boolean container) {
@@ -295,12 +283,12 @@ class ItemDelegate {
         this.item.setCloseMessage(closeMessage)
     }
 
-    private onOpenScript(String onOpenScript) {
-        this.item.setOnOpenScript(onOpenScript)
+    private onOpen(Closure closure) {
+        this.item.setOnOpen(closure)
     }
 
-    private onCloseScript(String onCloseScript) {
-        this.item.setOnCloseScript(onCloseScript)
+    private onClose(Closure closure) {
+        this.item.setOnClose(closure)
     }
 
     private contentVisibility(ContentVisibility contentVisibility) {
@@ -315,21 +303,7 @@ class ItemDelegate {
         this.item.setEatMessage(eatMessage)
     }
 
-    private onEatScript(String onEatScript) {
-        this.item.setOnEatScript(onEatScript)
+    private onEat(Closure closure) {
+        this.item.setOnEat(closure)
     }
 }
-
-class VerbInstanceDelegate {
-
-    private String script
-
-    private void script(String script) {
-        this.script = StringUtils.sanitiseString(script)
-    }
-
-    private String getScript() {
-        this.script
-    }
-}
-

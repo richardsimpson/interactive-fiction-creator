@@ -1,14 +1,13 @@
-package uk.co.rjsoftware.adventure.controller.customscripts
+package uk.co.rjsoftware.adventure.controller
 
 import groovy.transform.TypeChecked
-import uk.co.rjsoftware.adventure.controller.AdventureController
 
 @TypeChecked
-abstract class AdventureScript extends Script {
+class ScriptRuntimeDelegate {
 
-    private AdventureController adventureController = null
+    private final AdventureController adventureController
 
-    void setAdventureController(AdventureController adventureController) {
+    ScriptRuntimeDelegate(AdventureController adventureController) {
         this.adventureController = adventureController
     }
 

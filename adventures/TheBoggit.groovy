@@ -5,6 +5,7 @@ adventure {
         Bimbo waited.
         Time crawled slowly past."""
 
+    // TODO: Why do these verbs have a closure?
     verb ("Climb into", "CLIMB INTO {noun}") {}
     verb ("Climb out", "CLIMB OUT") {}
 
@@ -14,8 +15,7 @@ adventure {
              window was set high into the wall.
              To the south, was the round green toilet."""
 
-        // TODO: Consider turning the scripts into closures. Will make defining them here easier.  But may make defining them in a (web?) gui more difficult
-        beforeEnterRoomFirstTimeScript '''
+        beforeEnterRoomFirstTime {
             executeAfterTurns(3) {
                 if (playerInRoom("tunnel like hall")) {
                     say("""
@@ -41,7 +41,7 @@ adventure {
                     setVisible("wreckedChocolates")
                 }
             }
-'''
+        }
 
         // TODO: Change description of chest once it is opened.
         item ("chest") {
@@ -52,15 +52,14 @@ adventure {
             closeMessage "Bimbo closed the chest, neatly avoiding trapping his thumb, and crunching all his fingers instead"
             contentVisibility NEVER
 
+            // TODO: Change the verb script so that they are closures
             verb ("CLIMB INTO {noun}") {
-                script """
                 if (isOpen('chest')) {
                     moveTo("inside chest")
                 }
                 else {
                     say("Bimbo could not climb into the chest at this time.")
                 }
-                """
             }
         }
 
@@ -102,7 +101,9 @@ adventure {
                 Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
                 A few moments later, he exploded for no apparent reason.
                 """
-            onEatScript "moveTo('game over')"
+            onEat {
+                moveTo('game over')
+            }
         }
 
         item ("wreckedChocolates") {
@@ -128,9 +129,7 @@ adventure {
         }
 
         verb ("CLIMB OUT") {
-            script """
-                moveTo("tunnel like hall")
-                """
+            moveTo("tunnel like hall")
         }
 
         // TODO: GET <noun>: This magnificent act, to put it plainly, was done!

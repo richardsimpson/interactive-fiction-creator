@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.controller
 
+import groovy.transform.TypeChecked
 import org.junit.Before
 import org.junit.Test
 import uk.co.rjsoftware.adventure.model.*
@@ -7,6 +8,7 @@ import uk.co.rjsoftware.adventure.view.CommandEvent
 
 import static org.junit.Assert.*
 
+@TypeChecked
 class VerbsWithDuplicateObjectsTest {
 
     private AdventureController classUnderTest

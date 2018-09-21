@@ -1,7 +1,9 @@
 package uk.co.rjsoftware.adventure.controller
 
+import groovy.transform.TypeChecked
 import uk.co.rjsoftware.adventure.model.Verb
 
+@TypeChecked
 class StandardVerbs {
 
     static final Verb NORTH = new Verb("North", ["NORTH", "N"])

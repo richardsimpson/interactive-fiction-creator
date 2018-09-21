@@ -1,11 +1,13 @@
 package uk.co.rjsoftware.adventure.controller
 
+import groovy.transform.TypeChecked
 import uk.co.rjsoftware.adventure.view.CommandEvent
 import uk.co.rjsoftware.adventure.view.CommandListener
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.MainWindow
 
+@TypeChecked
 class MainWindowForTesting implements MainWindow {
 
     private List<CommandListener> commandListeners = new ArrayList()

@@ -1,6 +1,8 @@
 package uk.co.rjsoftware.adventure.controller
 
 import groovy.transform.TailRecursive
+import groovy.transform.TypeChecked
+import uk.co.rjsoftware.adventure.controller.customscripts.AdventureScript
 import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
@@ -11,6 +13,7 @@ import uk.co.rjsoftware.adventure.view.MainWindow
 
 import java.util.concurrent.CopyOnWriteArrayList
 
+@TypeChecked
 class AdventureController {
 
     private final MainWindow mainWindow
@@ -28,6 +31,8 @@ class AdventureController {
     private List<Verb> verbs = new ArrayList<>()
     private Map<String, Item> nouns = new HashMap<>()
     private Map<String, Room> rooms = new HashMap<>()
+
+    final ScriptRuntimeDelegate scriptRuntimeDelegate = new ScriptRuntimeDelegate(this)
 
     AdventureController(MainWindow mainWindow) {
         this.mainWindow = mainWindow
@@ -169,7 +174,7 @@ class AdventureController {
         }
 
         final Set<Item> items = determineNouns(
-                this.nouns.values().findAll {item -> isItemInRoomOrPlayerInventory(item)},
+                this.nouns.values().findAll {item -> isItemInRoomOrPlayerInventory(item)}.asList(),
                 inputWords[0], new HashSet<Item>())
 
         iterateInputToFindNouns(inputWords.tail(), validNouns + items)
@@ -350,8 +355,9 @@ class AdventureController {
             return
         }
 
-        final String script = verbContainer.getVerbs().get(verb)
-        executeScript(script)
+        // TODO: Replace verbContainer.getVerbs().get(verb) with a new method verbContainer.getVerb(verb)
+        final Closure closure = verbContainer.getVerbs().get(verb)
+        executeClosure(closure)
     }
 
     private void executeCommand(String verb, List<Item> items) {
@@ -423,8 +429,8 @@ class AdventureController {
     private void moveToInternal(Room room) {
         // process leaving the previous room
         if (this.currentRoom != null) {
-            if (this.currentRoom.getAfterLeaveRoomScript() != null) {
-                executeScript(this.currentRoom.getAfterLeaveRoomScript())
+            if (this.currentRoom.getAfterLeaveRoom() != null) {
+                executeClosure(this.currentRoom.getAfterLeaveRoom())
             }
         }
 
@@ -438,25 +444,25 @@ class AdventureController {
         }
 
         if (firstVisit) {
-            if (this.currentRoom.getBeforeEnterRoomFirstTimeScript() != null) {
-                executeScript(this.currentRoom.getBeforeEnterRoomFirstTimeScript())
+            if (this.currentRoom.getBeforeEnterRoomFirstTime() != null) {
+                executeClosure(this.currentRoom.getBeforeEnterRoomFirstTime())
             }
         }
 
-        if (this.currentRoom.getBeforeEnterRoomScript() != null) {
-            executeScript(this.currentRoom.getBeforeEnterRoomScript())
+        if (this.currentRoom.getBeforeEnterRoom() != null) {
+            executeClosure(this.currentRoom.getBeforeEnterRoom())
         }
 
         look()
 
         if (firstVisit) {
-            if (this.currentRoom.getAfterEnterRoomFirstTimeScript() != null) {
-                executeScript(this.currentRoom.getAfterEnterRoomFirstTimeScript())
+            if (this.currentRoom.getAfterEnterRoomFirstTime() != null) {
+                executeClosure(this.currentRoom.getAfterEnterRoomFirstTime())
             }
         }
 
-        if (this.currentRoom.getAfterEnterRoomScript() != null) {
-            executeScript(this.currentRoom.getAfterEnterRoomScript())
+        if (this.currentRoom.getAfterEnterRoom() != null) {
+            executeClosure(this.currentRoom.getAfterEnterRoom())
         }
 
     }
@@ -641,8 +647,8 @@ class AdventureController {
             }
             say(message)
 
-            if (item.getOnOpenScript() != null) {
-                executeScript(item.getOnOpenScript())
+            if (item.getOnOpen() != null) {
+                executeClosure(item.getOnOpen())
             }
 
         }
@@ -676,8 +682,8 @@ class AdventureController {
             }
             say(message)
 
-            if (item.getOnCloseScript() != null) {
-                executeScript(item.getOnCloseScript())
+            if (item.getOnClose() != null) {
+                executeClosure(item.getOnClose())
             }
 
         }
@@ -710,16 +716,16 @@ class AdventureController {
             }
             say(message)
 
-            if (item.getOnEatScript() != null) {
-                executeScript(item.getOnEatScript())
+            if (item.getOnEat() != null) {
+                executeClosure(item.getOnEat())
             }
 
         }
     }
 
-    private void executeScript(String script) {
-        ScriptExecutor executor = new ScriptExecutor(this)
-        executor.executeScript(script)
+    private void executeClosure(Closure closure) {
+        closure.delegate = scriptRuntimeDelegate
+        closure.call()
     }
 
     //

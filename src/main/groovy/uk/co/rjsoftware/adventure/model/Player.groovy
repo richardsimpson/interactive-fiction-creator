@@ -1,5 +1,8 @@
 package uk.co.rjsoftware.adventure.model
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class Player implements ItemContainer {
     private final Map<String, Item> items = new TreeMap()
 

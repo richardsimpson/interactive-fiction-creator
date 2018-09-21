@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.controller
 
+import groovy.transform.TypeChecked
 import org.junit.Before
 import org.junit.Test
 import uk.co.rjsoftware.adventure.model.*
@@ -9,6 +10,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
+@TypeChecked
 class ContainerTest {
 
     private AdventureController classUnderTest
@@ -36,8 +38,12 @@ class ContainerTest {
         chest.setContainer(true)
         chest.setOpenMessage("The chest is now open")
         chest.setCloseMessage("The chest is now closed")
-        chest.setOnOpenScript("say('onOpenScript')")
-        chest.setOnCloseScript("say('onCloseScript')")
+        chest.setOnOpen {
+            say('onOpenScript')
+        }
+        chest.setOnClose {
+            say('onCloseScript')
+        }
     }
 
     private void setup() {
