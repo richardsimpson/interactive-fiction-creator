@@ -5,12 +5,12 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class CustomVerb extends Verb {
 
-    CustomVerb(String friendlyName, List<String> synonyms) {
-        super(friendlyName, synonyms)
+    CustomVerb(String id, String friendlyName, List<String> synonyms) {
+        super(id, friendlyName, synonyms)
     }
 
-    CustomVerb(String friendlyName, String name) {
-        this(friendlyName, [name])
+    CustomVerb(String id, String friendlyName, String command) {
+        this(id, friendlyName, [command])
     }
 
 }

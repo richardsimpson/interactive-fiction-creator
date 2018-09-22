@@ -32,8 +32,8 @@ class VerbsTest {
     private Item sandwich = new Item("sandwich", "sandwich", "A crusty old sandwich")
     private Item donut = new Item("donut", "donut", "A delicious looking donut")
 
-    private CustomVerb watch = new CustomVerb("Watch", ["WATCH {noun}"])
-    private CustomVerb relax = new CustomVerb("Relax", ["RELAX"])
+    private CustomVerb watch = new CustomVerb("Watch", "Watch", ["WATCH {noun}"])
+    private CustomVerb relax = new CustomVerb("Relax", "Relax", ["RELAX"])
 
     private final Map<String, Verb> verbs = new HashMap()
 

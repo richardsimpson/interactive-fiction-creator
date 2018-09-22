@@ -5,6 +5,7 @@ import org.junit.Test
 import uk.co.rjsoftware.adventure.model.*
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 @TypeChecked
 class LoaderTest {
@@ -34,9 +35,15 @@ class LoaderTest {
 
         assertEquals(2, adventure.getRooms().size())
 
-        assertEquals(1, adventure.getCustomVerbs().size())
-        final CustomVerb watch = adventure.getCustomVerbs().get(0)
-        assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], watch.getSynonyms())
+        assertEquals(2, adventure.getCustomVerbs().size())
+
+        final Map<String, CustomVerb> verbMap = new HashMap<>()
+        for (CustomVerb verb : adventure.getCustomVerbs()) {
+            verbMap.put(verb.id, verb)
+        }
+
+        assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], verbMap.get("Watch").getSynonyms())
+        assertEquals(["THROW {noun}"], verbMap.get("Throw").getSynonyms())
 
         final Room bedroom = adventure.findRoom("bedroom")
         final Room landing = adventure.findRoom("landing")
@@ -89,15 +96,11 @@ class LoaderTest {
         assertEquals("extraMessageWhenSwitchedOn", tv.getExtraMessageWhenSwitchedOn())
         assertEquals("extraMessageWhenSwitchedOff", tv.getExtraMessageWhenSwitchedOff())
 
-        assertEquals(1, tv.getVerbs().size())
+        assertTrue(tv.containsVerb(verbMap.get("Watch")))
+        assertTrue(tv.containsVerb(verbMap.get("Throw")))
 
-        for (CustomVerb customVerb : tv.getVerbs().keySet()) {
-            assertEquals("WATCH {noun}", customVerb.getVerb())
-        }
-
-        for (Closure closure : tv.getVerbs().values()) {
-            verifyClosure("watchVerb", closure)
-        }
+        verifyClosure("watchVerb", tv.getVerbClosure(verbMap.get("Watch")))
+        verifyClosure("throwVerb", tv.getVerbClosure(verbMap.get("Throw")))
 
         assertEquals("bedroom", adventure.getStartRoom().getName())
     }

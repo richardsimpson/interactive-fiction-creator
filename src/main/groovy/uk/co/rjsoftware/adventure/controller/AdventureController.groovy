@@ -340,7 +340,7 @@ class AdventureController {
         else if (items.size() == 1) {
             verbContainer = items.get(0)
         }
-        else if (this.currentRoom.getVerbs().containsKey(verb)) {
+        else if (this.currentRoom.containsVerb(verb)) {
             // user did not specify a noun, so imply the current room is the noun
             verbContainer = this.currentRoom
         }
@@ -350,13 +350,12 @@ class AdventureController {
         }
 
         // then check that the item / room that was referred to by the user actually contains this verb
-        if (!verbContainer.getVerbs().containsKey(verb)) {
+        if (!verbContainer.containsVerb(verb)) {
             say("You cannot do that right now.")
             return
         }
 
-        // TODO: Replace verbContainer.getVerbs().get(verb) with a new method verbContainer.getVerb(verb)
-        final Closure closure = verbContainer.getVerbs().get(verb)
+        final Closure closure = verbContainer.getVerbClosure(verb)
         executeClosure(closure)
     }
 

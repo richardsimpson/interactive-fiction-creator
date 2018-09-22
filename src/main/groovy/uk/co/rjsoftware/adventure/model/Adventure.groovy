@@ -63,9 +63,9 @@ class Adventure {
         this.customVerbs
     }
 
-    def findCustomVerb(String verbName) {
+    CustomVerb findCustomVerb(String verbId) {
         this.customVerbs.find { verb ->
-            verb.getVerb().equals(verbName)
+            verb.getId().equals(verbId)
         }
     }
 

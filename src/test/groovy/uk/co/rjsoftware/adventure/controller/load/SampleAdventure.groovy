@@ -4,9 +4,11 @@ adventure {
     title "Adventure Game"
     introduction "Welcome to the Adventure!"
 
-    verb ("Watch", "WATCH {noun}") {
+    verb ("Watch", "Watch", "WATCH {noun}") {
         synonyms "LOOK AT {noun}", "VIEW {noun}"
     }
+
+    verb ("Throw", "THROW {noun}") {}
 
     room ("bedroom") {
         description "custom description"
@@ -43,7 +45,8 @@ adventure {
             extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
             extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
 
-            verb ("WATCH {noun}") { say("watchVerb") }
+            verb ("Watch") { say("watchVerb") }
+            verb ("Throw") { say("throwVerb") }
         }
     }
 

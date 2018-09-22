@@ -5,8 +5,10 @@ import groovy.transform.TypeChecked
 @TypeChecked
 interface VerbContainer {
 
-    Map<CustomVerb, Closure> getVerbs()
-
     void addVerb(CustomVerb verb, Closure closure)
+
+    boolean containsVerb(CustomVerb verb)
+
+    Closure getVerbClosure(CustomVerb verb)
 
 }

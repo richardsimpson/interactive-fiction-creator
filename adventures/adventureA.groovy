@@ -2,7 +2,7 @@ adventure {
     title "Adventure Game"
     introduction "Welcome to the Adventure!"
 
-    verb ("Watch", "WATCH {noun}") {}
+    verb ("Watch", "Watch", "WATCH {noun}") {}
 
     room ("bedroom") {
         description "This is your bedroom.  Clothes are strewn across the floor, there is a TV, and a lamp sits on the bedsite table."
@@ -29,7 +29,7 @@ adventure {
             extraMessageWhenSwitchedOff "It is currently switched off."
 
             // TODO: Improve the DSL for custom verb scripts
-            verb ("WATCH {noun}") {
+            verb ("Watch") {
                 script """
                 if (isSwitchedOn('tv')) {
                     say("You watch the TV for a while.  It's showing a Western of some kind.")

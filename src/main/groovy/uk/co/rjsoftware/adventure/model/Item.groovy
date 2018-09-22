@@ -35,7 +35,7 @@ class Item implements ItemContainer, VerbContainer {
     //          Use/Give...
     //          Player...
 
-    private Map<CustomVerb, Closure> customVerbs = new HashMap()
+    private Map<String, Closure> customVerbs = new HashMap()
     private Map<String, Item> items = new TreeMap()
     private boolean itemPreviouslyExamined = false
 
@@ -194,12 +194,16 @@ class Item implements ItemContainer, VerbContainer {
         result
     }
 
-    Map<CustomVerb, Closure> getVerbs() {
-        this.customVerbs
+    boolean containsVerb(CustomVerb verb) {
+        this.customVerbs.containsKey(verb.id)
     }
 
     void addVerb(CustomVerb verb, @DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
-        this.customVerbs.put(verb, closure)
+        this.customVerbs.put(verb.getId(), closure)
+    }
+
+    Closure getVerbClosure(CustomVerb verb) {
+        this.customVerbs.get(verb.id)
     }
 
     //

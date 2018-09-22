@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.controller.load
 
+import groovy.transform.TypeChecked
 import org.codehaus.groovy.control.CompilerConfiguration
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.ContentVisibility
@@ -27,6 +28,7 @@ class Loader {
 
 }
 
+@TypeChecked
 abstract class AdventureLoaderScript extends Script {
 
     private AdventureDelegate adventureDelegate = new AdventureDelegate();
@@ -42,6 +44,7 @@ abstract class AdventureLoaderScript extends Script {
     }
 }
 
+@TypeChecked
 class AdventureDelegate {
     private final Adventure adventure = new Adventure("")
 
@@ -57,12 +60,25 @@ class AdventureDelegate {
         this.adventure.setWaitText(StringUtils.sanitiseString(waitText))
     }
 
-    private void verb(String friendlyName, String verbName, Closure closure) {
-        if (this.adventure.findCustomVerb(verbName) != null) {
+    private void verb(String id, String friendlyName, String command, Closure closure) {
+        if (this.adventure.findCustomVerb(id) != null) {
             throw new RuntimeException("Cannot declare custom verbs twice")
         }
 
-        CustomVerb customVerb = new CustomVerb(friendlyName, verbName)
+        CustomVerb customVerb = new CustomVerb(id, friendlyName, command)
+        this.adventure.addCustomVerb(customVerb)
+
+        closure.delegate = new VerbDelegate(customVerb)
+        closure.resolveStrategy = Closure.DELEGATE_ONLY
+        closure()
+    }
+
+    private void verb(String id, String command, Closure closure) {
+        if (this.adventure.findCustomVerb(id) != null) {
+            throw new RuntimeException("Cannot declare custom verbs twice")
+        }
+
+        CustomVerb customVerb = new CustomVerb(id, id, command)
         this.adventure.addCustomVerb(customVerb)
 
         closure.delegate = new VerbDelegate(customVerb)
@@ -93,16 +109,17 @@ class AdventureDelegate {
         this.adventure.setStartRoom(room)
     }
 
-    private Adventure getAdventure() {
+    Adventure getAdventure() {
         return this.adventure
     }
 }
 
+@TypeChecked
 class VerbDelegate {
 
     private final CustomVerb customVerb
 
-    private VerbDelegate(final CustomVerb customVerb) {
+    VerbDelegate(final CustomVerb customVerb) {
         this.customVerb = customVerb
     }
 
@@ -114,6 +131,7 @@ class VerbDelegate {
 
 }
 
+@TypeChecked
 class RoomDelegate {
     private Room room
     private final Adventure adventure
@@ -125,7 +143,7 @@ class RoomDelegate {
     private Direction UP = Direction.UP
     private Direction DOWN = Direction.DOWN
 
-    private RoomDelegate(final Room room, final Adventure adventure) {
+    RoomDelegate(final Room room, final Adventure adventure) {
         this.adventure = adventure
         this.room = room
     }
@@ -155,13 +173,13 @@ class RoomDelegate {
     }
 
     private void exit(LinkedHashMap linkedHashMap) {
-        Room room = this.adventure.findRoom(linkedHashMap.get("room"))
+        Room room = this.adventure.findRoom((String)linkedHashMap.get("room"))
 
         if (room == null) {
             throw new RuntimeException("Cannot reference a room before it is defined")
         }
 
-        this.room.addExit(linkedHashMap.get("direction"), room)
+        this.room.addExit((Direction)linkedHashMap.get("direction"), room)
     }
 
     private void item(String itemId, Closure closure) {
@@ -176,11 +194,11 @@ class RoomDelegate {
         closure()
     }
 
-    private void verb(String verbName, Closure closure) {
-        final CustomVerb customVerb = this.adventure.findCustomVerb(verbName)
+    private void verb(String verbId, Closure closure) {
+        final CustomVerb customVerb = this.adventure.findCustomVerb(verbId)
 
         if (customVerb == null) {
-            throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
+            throw new RuntimeException("Cannot locate custom verb '" + verbId + "'")
         }
 
         this.room.addVerb(customVerb, closure)
@@ -188,6 +206,7 @@ class RoomDelegate {
 
 }
 
+@TypeChecked
 class ItemDelegate {
 
     private final Item item
@@ -197,7 +216,7 @@ class ItemDelegate {
     private ContentVisibility AFTER_EXAMINE = ContentVisibility.AFTER_EXAMINE
     private ContentVisibility NEVER = ContentVisibility.NEVER
 
-    private ItemDelegate(Adventure adventure, Item item) {
+    ItemDelegate(Adventure adventure, Item item) {
         this.adventure = adventure
         this.item = item
     }
@@ -249,61 +268,61 @@ class ItemDelegate {
         this.item.setExtraMessageWhenSwitchedOff(StringUtils.sanitiseString(extraMessageWhenSwitchedOff))
     }
 
-    private void verb(String verbName, Closure closure) {
-        final CustomVerb customVerb = this.adventure.findCustomVerb(verbName)
+    private void verb(String verbId, Closure closure) {
+        final CustomVerb customVerb = this.adventure.findCustomVerb(verbId)
 
         if (customVerb == null) {
-            throw new RuntimeException("Cannot locate custom verb '" + verbName + "'")
+            throw new RuntimeException("Cannot locate custom verb '" + verbId + "'")
         }
 
         this.item.addVerb(customVerb, closure)
     }
 
-    private container(Boolean container) {
+    private void container(Boolean container) {
         this.item.setContainer(container)
     }
 
-    private openable(Boolean openable) {
+    private void openable(Boolean openable) {
         this.item.setOpenable(openable)
     }
 
-    private closeable(Boolean closeable) {
+    private void closeable(Boolean closeable) {
         this.item.setCloseable(closeable)
     }
 
-    private open(Boolean open) {
+    private void open(Boolean open) {
         this.item.setOpen(open)
     }
 
-    private openMessage(String openMessage) {
+    private void openMessage(String openMessage) {
         this.item.setOpenMessage(openMessage)
     }
 
-    private closeMessage(String closeMessage) {
+    private void closeMessage(String closeMessage) {
         this.item.setCloseMessage(closeMessage)
     }
 
-    private onOpen(Closure closure) {
+    private void onOpen(Closure closure) {
         this.item.setOnOpen(closure)
     }
 
-    private onClose(Closure closure) {
+    private void onClose(Closure closure) {
         this.item.setOnClose(closure)
     }
 
-    private contentVisibility(ContentVisibility contentVisibility) {
+    private void contentVisibility(ContentVisibility contentVisibility) {
         this.item.setContentVisibility(contentVisibility)
     }
 
-    private edible(Boolean edible) {
+    private void edible(Boolean edible) {
         this.item.setEdible(edible)
     }
 
-    private eatMessage(String eatMessage) {
+    private void eatMessage(String eatMessage) {
         this.item.setEatMessage(eatMessage)
     }
 
-    private onEat(Closure closure) {
+    private void onEat(Closure closure) {
         this.item.setOnEat(closure)
     }
 }

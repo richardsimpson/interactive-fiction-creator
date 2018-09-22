@@ -6,8 +6,8 @@ adventure {
         Time crawled slowly past."""
 
     // TODO: Why do these verbs have a closure?
-    verb ("Climb into", "CLIMB INTO {noun}") {}
-    verb ("Climb out", "CLIMB OUT") {}
+    verb ("ClimbInto", "Climb into", "CLIMB INTO {noun}") {}
+    verb ("ClimbOut", "Climb out", "CLIMB OUT") {}
 
     room ("tunnel like hall") {
         description """
@@ -53,7 +53,7 @@ adventure {
             contentVisibility NEVER
 
             // TODO: Change the verb script so that they are closures
-            verb ("CLIMB INTO {noun}") {
+            verb ("ClimbInto") {
                 if (isOpen('chest')) {
                     moveTo("inside chest")
                 }
@@ -128,7 +128,7 @@ adventure {
                 Farmer Faggot: 4/7/31"""
         }
 
-        verb ("CLIMB OUT") {
+        verb ("ClimbOut") {
             moveTo("tunnel like hall")
         }
 
