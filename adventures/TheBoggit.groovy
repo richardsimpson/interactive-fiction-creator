@@ -49,6 +49,8 @@ adventure {
             synonyms "large, wooden chest", "chest"
             description "The chest was both heavy and closed"
             container true
+            openable true
+            closeable true
             openMessage "Bimbo opened the chest, but couldn't quite see inside"
             closeMessage "Bimbo closed the chest, neatly avoiding trapping his thumb, and crunching all his fingers instead"
             contentVisibility NEVER
@@ -63,7 +65,6 @@ adventure {
             }
         }
 
-        // TODO: Door is openable.  Should not be.  SHouldn't 'scenery=true' make in un-openable?
         item ("door") {
             description """
                 Examining the door, Bimbo saw that it had a combination lock.  A small plate below it
@@ -73,7 +74,6 @@ adventure {
             scenery true
         }
 
-        // TODO: Window is openable.  Should not be.  SHouldn't 'scenery=true' make in un-openable?
         item ("window") {
             description "Bimbo couldn't reach the window"
             scenery true

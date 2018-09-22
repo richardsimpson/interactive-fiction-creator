@@ -36,7 +36,11 @@ class ScriptingTest {
 
         chest.setContainer(true)
         dummy.setContainer(true)
+        dummy.setOpenable(true)
+        dummy.setCloseable(true)
         dummy2.setContainer(true)
+        dummy2.setOpenable(true)
+        dummy2.setCloseable(true)
 
         //
         // study -------- livingRoom

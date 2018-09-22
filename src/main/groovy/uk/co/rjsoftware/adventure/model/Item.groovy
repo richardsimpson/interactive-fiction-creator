@@ -19,8 +19,8 @@ class Item implements ItemContainer, VerbContainer {
     private String extraMessageWhenSwitchedOn
     private String extraMessageWhenSwitchedOff
     private boolean container
-    private boolean openable = true
-    private boolean closeable = true
+    private boolean openable = false
+    private boolean closeable = false
     private boolean open
     private String openMessage
     private String closeMessage
