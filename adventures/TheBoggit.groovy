@@ -53,7 +53,6 @@ adventure {
             closeMessage "Bimbo closed the chest, neatly avoiding trapping his thumb, and crunching all his fingers instead"
             contentVisibility NEVER
 
-            // TODO: Change the verb script so that they are closures
             verb ("ClimbInto") {
                 if (isOpen('chest')) {
                     moveTo("inside chest")
