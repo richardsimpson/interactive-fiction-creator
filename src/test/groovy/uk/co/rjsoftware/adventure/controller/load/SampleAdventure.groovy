@@ -8,7 +8,7 @@ adventure {
         synonyms "LOOK AT {noun}", "VIEW {noun}"
     }
 
-    verb ("Throw", "THROW {noun}") {}
+    verb ("Throw", "THROW {noun}")
 
     room ("bedroom") {
         description "custom description"

@@ -60,7 +60,7 @@ class AdventureDelegate {
         this.adventure.setWaitText(StringUtils.sanitiseString(waitText))
     }
 
-    private void verb(String id, String friendlyName, String command, Closure closure) {
+    private void verb(String id, String friendlyName, String command, Optional<Closure> closure) {
         if (this.adventure.findCustomVerb(id) != null) {
             throw new RuntimeException("Cannot declare custom verbs twice")
         }
@@ -68,22 +68,27 @@ class AdventureDelegate {
         CustomVerb customVerb = new CustomVerb(id, friendlyName, command)
         this.adventure.addCustomVerb(customVerb)
 
-        closure.delegate = new VerbDelegate(customVerb)
-        closure.resolveStrategy = Closure.DELEGATE_ONLY
-        closure()
+        closure.ifPresent {clo ->
+            clo.delegate = new VerbDelegate(customVerb)
+            clo.resolveStrategy = Closure.DELEGATE_ONLY
+            clo()
+        }
+    }
+
+    private void verb(String id, String friendlyName, String command, Closure closure) {
+        verb(id, friendlyName, command, Optional.of(closure))
+    }
+
+    private void verb(String id, String friendlyName, String command) {
+        verb(id, friendlyName, command, Optional.empty())
     }
 
     private void verb(String id, String command, Closure closure) {
-        if (this.adventure.findCustomVerb(id) != null) {
-            throw new RuntimeException("Cannot declare custom verbs twice")
-        }
+        verb(id, id, command, closure)
+    }
 
-        CustomVerb customVerb = new CustomVerb(id, id, command)
-        this.adventure.addCustomVerb(customVerb)
-
-        closure.delegate = new VerbDelegate(customVerb)
-        closure.resolveStrategy = Closure.DELEGATE_ONLY
-        closure()
+    private void verb(String id, String command) {
+        verb(id, id, command)
     }
 
     private void room(String roomName, Closure closure) {

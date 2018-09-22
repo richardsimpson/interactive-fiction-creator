@@ -5,9 +5,10 @@ adventure {
         Bimbo waited.
         Time crawled slowly past."""
 
-    // TODO: Why do these verbs have a closure?
+    //id, friendlyName, command { synonyms }
+    // both friendlyName and synonyms are optional.
     verb ("ClimbInto", "Climb into", "CLIMB INTO {noun}") {}
-    verb ("ClimbOut", "Climb out", "CLIMB OUT") {}
+    verb ("ClimbOut", "Climb out", "CLIMB OUT")
 
     room ("tunnel like hall") {
         description """
