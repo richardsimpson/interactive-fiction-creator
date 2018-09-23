@@ -35,8 +35,10 @@ class Item implements ItemContainer, VerbContainer {
     //          Use/Give...
     //          Player...
 
-    private Map<String, Closure> customVerbs = new HashMap()
-    private Map<String, Item> items = new TreeMap()
+    private ItemContainer parent
+
+    private final Map<String, Closure> customVerbs = new HashMap()
+    private final Map<String, Item> items = new TreeMap()
     private boolean itemPreviouslyExamined = false
 
     Item(String id, List<String> synonyms, String description) {
@@ -75,6 +77,26 @@ class Item implements ItemContainer, VerbContainer {
 
     void addSynonym(String synonym) {
         this.synonyms.add(synonym)
+    }
+
+    ItemContainer getParent() {
+        this.parent
+    }
+
+    void setParent(ItemContainer newParent) {
+        if (this.parent != newParent) {
+            ItemContainer oldParent = this.parent
+
+            if (oldParent != null) {
+                oldParent.removeItem(this)
+            }
+
+            this.parent = newParent
+
+            if (this.parent != null) {
+                this.parent.addItem(this)
+            }
+        }
     }
 
     String getDescription() {
@@ -271,7 +293,10 @@ class Item implements ItemContainer, VerbContainer {
     }
 
     void addItem(Item item) {
-        this.items.put(item.getId().toUpperCase(), item)
+        if (!contains(item)) {
+            this.items.put(item.getId().toUpperCase(), item)
+            item.setParent(this)
+        }
     }
 
     Item getItem(String itemId) {
@@ -279,7 +304,10 @@ class Item implements ItemContainer, VerbContainer {
     }
 
     void removeItem(Item item) {
-        this.items.remove(item.getId().toUpperCase())
+        if (contains(item)) {
+            this.items.remove(item.getId().toUpperCase())
+            item.setParent(null)
+        }
     }
 
     boolean contains(Item item) {

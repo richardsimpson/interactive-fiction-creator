@@ -11,7 +11,10 @@ class Player implements ItemContainer {
     }
 
     void addItem(Item item) {
-        this.items.put(item.getId().toUpperCase(), item)
+        if (!contains(item)) {
+            this.items.put(item.getId().toUpperCase(), item)
+            item.setParent(this)
+        }
     }
 
     Item getItem(String itemId) {
@@ -19,7 +22,10 @@ class Player implements ItemContainer {
     }
 
     void removeItem(Item item) {
-        this.items.remove(item.getId().toUpperCase())
+        if (contains(item)) {
+            this.items.remove(item.getId().toUpperCase())
+            item.setParent(null)
+        }
     }
 
     boolean contains(Item item) {

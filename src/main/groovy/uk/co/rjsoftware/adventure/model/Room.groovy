@@ -51,10 +51,6 @@ class Room implements ItemContainer, VerbContainer {
         this.exits.put(direction, room)
     }
 
-    void addItem(Item item) {
-        this.items.put(item.getId().toUpperCase(), item)
-    }
-
     Map<Direction, Room> getExits() {
         this.exits
     }
@@ -63,12 +59,22 @@ class Room implements ItemContainer, VerbContainer {
         this.exits.get(direction)
     }
 
+    void addItem(Item item) {
+        if (!contains(item)) {
+            this.items.put(item.getId().toUpperCase(), item)
+            item.setParent(this)
+        }
+    }
+
     Item getItem(String itemId) {
         this.items.get(itemId.toUpperCase())
     }
 
     void removeItem(Item item) {
-        this.items.remove(item.getId().toUpperCase())
+        if (contains(item)) {
+            this.items.remove(item.getId().toUpperCase())
+            item.setParent(null)
+        }
     }
 
     boolean contains(Item item) {
