@@ -29,24 +29,21 @@ adventure {
                 else {
                     say('A muffled "thwump" eminates from the hall, followed by fumbling noises')
                 }
-                // TODO: Move the objects from a dummy room into this room instead.
-                setVisible("card")
-                setVisible("expensiveChocolates")
+                moveItemTo("card", "tunnel like hall")
+                moveItemTo("expensiveChocolates", "tunnel like hall")
                 executeAfterTurns(10) {
-                    // TODO: This should check if the player is in the same room as the expensiveChocolates
-                    if (playerInRoom("tunnel like hall")) {
+                    // TODO: If the player is carrying the chocolates, then this check fails
+                    if (getItem("expensiveChocolates").getParent() == getCurrentRoom()) {
+                    //if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
                         movePlayerTo('game over')
                     }
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
                     }
-                    // TODO: Move the wreckedChocolates from a dummy room into the same room as the expensiveChocolates.
-                    // do with with item.getParent (this will work if the chocolates are e.g. in the chest,
-                    // or if they are on the player
-                    setVisible("wreckedChocolates")
-                    // TODO: Move the expensiveChocolates into a dummy instead.
-                    setInvisible("expensiveChocolates")
+                    // TODO: Throws exception if player is carrying the chocolates when they explode (player.getName doesn't exist)
+                    moveItemTo("wreckedChocolates", getItem("expensiveChocolates").getParent().getName())
+                    moveItemTo("expensiveChocolates", "hiddenRoom")
                 }
             }
         }
@@ -84,43 +81,6 @@ adventure {
         item ("window") {
             description "Bimbo couldn't reach the window"
             scenery true
-        }
-
-        item ("card") {
-            synonyms "small card", "card"
-            description """
-                On the card, in large, type-writer runes, were the words,
-                I wish thee to accompany some er, 'friends' on an adventure.  See you soon.
-                                         -GG-
-                                         
-                P.S. These chocs will self destruct in 10 minutes"""
-            visible false
-        }
-
-        // TODO: If you pick up the chocolates, then move to another room, they still explode in the first room!
-
-        item ("expensiveChocolates") {
-            synonyms "box of expensive chocolates", "chocolates", "chocs"
-            description """
-                The chocolates were small and brown.  They probably contained milk chocolate, milk solids
-                (20% minimum) and vegetable fat."""
-            visible false
-            edible true
-            eatMessage """
-                Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
-                A few moments later, he exploded for no apparent reason.
-                """
-            onEat {
-                movePlayerTo('game over')
-            }
-        }
-
-        item ("wreckedChocolates") {
-            synonyms "wrecked box of chocolates", "chocolates", "chocs"
-            description """
-                Bimbo examined the chocolates.  "The cleaning elf is gonna kill that old wizard one day!" he
-                remarked to no one in particular"""
-            visible false
         }
     }
 
@@ -178,6 +138,43 @@ adventure {
              And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
              chapter in Muddle Earth's sordid history....
 """
+    }
+
+    room ("hiddenRoom") {
+        item ("card") {
+            synonyms "small card", "card"
+            description """
+                On the card, in large, type-writer runes, were the words,
+                I wish thee to accompany some er, 'friends' on an adventure.  See you soon.
+                                         -GG-
+                                         
+                P.S. These chocs will self destruct in 10 minutes"""
+        }
+
+        // TODO: If you pick up the chocolates, then move to another room, they still explode in the first room!
+
+        item ("expensiveChocolates") {
+            synonyms "box of expensive chocolates", "chocolates", "chocs"
+            description """
+                The chocolates were small and brown.  They probably contained milk chocolate, milk solids
+                (20% minimum) and vegetable fat."""
+            edible true
+            eatMessage """
+                Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
+                A few moments later, he exploded for no apparent reason.
+                """
+            onEat {
+                movePlayerTo('game over')
+            }
+        }
+
+        item ("wreckedChocolates") {
+            synonyms "wrecked box of chocolates", "chocolates", "chocs"
+            description """
+                Bimbo examined the chocolates.  "The cleaning elf is gonna kill that old wizard one day!" he
+                remarked to no one in particular"""
+        }
+
     }
 
     // <WAIT FOR KEY>

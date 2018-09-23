@@ -50,11 +50,7 @@ class VerbsWithDuplicateObjectsTest {
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
         final String[] messages = this.mainWindow.getMessages()
-        assertEquals(expectedMessages.size(), messages.length)
-
-        for (int index = 0; index < expectedMessages.size(); index++) {
-            assertEquals(expectedMessages.get(index), messages[index])
-        }
+        assertEquals(expectedMessages.join(System.lineSeparator()), messages.join(System.lineSeparator()))
     }
 
     @Test

@@ -1,6 +1,9 @@
 package uk.co.rjsoftware.adventure.controller
 
 import groovy.transform.TypeChecked
+import uk.co.rjsoftware.adventure.model.Item
+import uk.co.rjsoftware.adventure.model.Player
+import uk.co.rjsoftware.adventure.model.Room
 
 @TypeChecked
 class ScriptRuntimeDelegate {
@@ -51,7 +54,25 @@ class ScriptRuntimeDelegate {
         !adventureController.playerInRoom(roomName)
     }
 
-    boolean movePlayerTo(String roomName) {
+    void movePlayerTo(String roomName) {
         adventureController.movePlayerTo(roomName)
+    }
+
+    void moveItemTo(String itemName, String roomName) {
+        adventureController.moveItemTo(itemName, roomName)
+    }
+
+    Item getItem(String itemName) {
+        adventureController.getItem(itemName)
+    }
+
+    Room getRoom(String roomName) {
+        adventureController.getRoom(roomName)
+    }
+
+    // TODO: replace with getCurrentPlayer.  Expose the player's current position via a getParent.  Requires that
+    // a player is also an item.
+    Room getCurrentRoom() {
+        adventureController.getCurrentRoom()
     }
 }

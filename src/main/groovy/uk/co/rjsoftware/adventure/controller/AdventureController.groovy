@@ -39,11 +39,6 @@ class AdventureController {
     }
 
     // FOR TESTING ONLY
-    Room getCurrentRoom() {
-        this.currentRoom
-    }
-
-    // FOR TESTING ONLY
     Player getPlayer() {
         this.player
     }
@@ -771,18 +766,13 @@ class AdventureController {
         movePlayerToInternal(room)
     }
 
-    // TODO: add script functions for:
-    //      print a message (without carriage return)
-    //      clear the screen.
-    //      player is carrying object
-    //      player is NOT carrying object
-    //      object is visible
-    //      object is not visible.
+    void moveItemTo(String itemName, String roomName) {
+        final Item item = getItem(itemName)
+        final Room room = getRoom(roomName)
+        item.setParent(room)
+    }
 
-    //
-    // private helper methods to support the methods that can be used by Scripts
-    //
-    private Item getItem(String itemId) {
+    Item getItem(String itemId) {
         final Item item = this.nouns.get(itemId.toUpperCase())
 
         if (item == null) {
@@ -793,7 +783,7 @@ class AdventureController {
         item
     }
 
-    private Room getRoom(String roomName) {
+    Room getRoom(String roomName) {
         final Room room = this.rooms.get(roomName.toUpperCase())
 
         if (room == null) {
@@ -803,6 +793,18 @@ class AdventureController {
 
         room
     }
+
+    Room getCurrentRoom() {
+        this.currentRoom
+    }
+
+    // TODO: add script functions for:
+    //      print a message (without carriage return)
+    //      clear the screen.
+    //      player is carrying object
+    //      player is NOT carrying object
+    //      object is visible
+    //      object is not visible.
 
     private static class VerbNoun {
         final Verb verb

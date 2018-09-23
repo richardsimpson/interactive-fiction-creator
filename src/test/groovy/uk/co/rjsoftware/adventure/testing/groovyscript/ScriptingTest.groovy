@@ -72,11 +72,7 @@ class ScriptingTest {
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
         final String[] messages = this.mainWindow.getMessages()
-        assertEquals(expectedMessages.size(), messages.length)
-
-        for (int index = 0; index < expectedMessages.size(); index++) {
-            assertEquals(expectedMessages.get(index), messages[index])
-        }
+        assertEquals(expectedMessages.join(System.lineSeparator()), messages.join(System.lineSeparator()))
     }
 
     @Test
@@ -363,7 +359,7 @@ class ScriptingTest {
     }
 
     @Test
-    void testMove() {
+    void testMovePlayerTo() {
         dummy.setOnOpen {
             movePlayerTo('study')
         }
@@ -383,6 +379,74 @@ class ScriptingTest {
                 "dummy2",
                 ""
         ])
+    }
+
+    @Test
+    void testMoveItemTo() {
+        dummy.setOnOpen {
+            moveItemTo('tv', 'study')
+        }
+
+        assertEquals(livingRoom, this.controller.getCurrentRoom())
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+
+        assertFalse(this.livingRoom.contains(tv))
+        assertTrue(this.study.contains(tv))
+        assertEquals(study, this.tv.getParent())
+    }
+
+    @Test
+    void testGetItem() {
+        dummy.setOnOpen {
+            say(getItem('tv').getName())
+        }
+
+        assertEquals(livingRoom, this.controller.getCurrentRoom())
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+
+        assertMessagesAreCorrect([
+                "You open the dummy",
+                "TV",
+                ""
+        ])
+    }
+
+    @Test
+    void testGetCurrentRoom() {
+        dummy.setOnOpen {
+            say(getCurrentRoom().getName())
+        }
+        dummy2.setOnOpen {
+            say(getCurrentRoom().getName())
+        }
+
+        assertEquals(livingRoom, this.controller.getCurrentRoom())
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        assertMessagesAreCorrect([
+                "You open the dummy",
+                "livingRoom",
+                ""
+        ])
+
+        mainWindow.fireCommand(new CommandEvent("west"))
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy2"))
+        assertMessagesAreCorrect([
+                "You open the dummy2",
+                "study",
+                ""
+        ])
+
     }
 
 }
