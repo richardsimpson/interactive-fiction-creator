@@ -35,6 +35,8 @@ class StandardVerbs {
     //          SPEAK TO / SPEAK / TALK TO / TALK, LISTEN TO, MOVE, SMELL / SNIFF, KNOCK, SHOW, BUY,
     //
     //          INSERT
+    //
+    //          PUT {noun} IN {noun}
 
     // Add diagonal directions
 
