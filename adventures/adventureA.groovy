@@ -30,16 +30,13 @@ adventure {
             extraMessageWhenSwitchedOn "It is showing an old western."
             extraMessageWhenSwitchedOff "It is currently switched off."
 
-            // TODO: Improve the DSL for custom verb scripts
             verb ("Watch") {
-                script """
                 if (isSwitchedOn('tv')) {
                     say("You watch the TV for a while.  It's showing a Western of some kind.")
                 }
                 else {
                     say("You watch the TV for a while.  It's just a black screen.")
                 }
-                """
             }
         }
     }

@@ -31,10 +31,6 @@ class Item implements ItemContainer, VerbContainer {
     private String eatMessage
     private Closure onEat
 
-    // TODO: To add:
-    //          Use/Give...
-    //          Player...
-
     private ItemContainer parent
 
     private final Map<String, Closure> customVerbs = new HashMap()

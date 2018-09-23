@@ -735,6 +735,5 @@ class VerbsTest {
         ])
     }
 
-    // TODO Add a test for the script functions isSwitchedOn and isSwitchedOff
     // TODO: Add test where two object have the same custom verb defined
 }
