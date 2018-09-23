@@ -60,20 +60,18 @@ class Adventure {
         }
     }
 
-    Map<String, Item> getItems() {
+    Map<String, Item> getAllItems() {
         final Map<String, Item> items = new HashMap<>()
 
         for (Room room : getRooms()) {
-            for (Map.Entry<String, Item> itemEntry : room.getItems()) {
-                items.put(itemEntry.key.toUpperCase(), itemEntry.value)
-            }
+            items.putAll(room.getAllItems())
         }
 
         items
     }
 
     Item getItem(String itemName) {
-        getItems().get(itemName.toUpperCase())
+        getAllItems().get(itemName.toUpperCase())
     }
 
     void addCustomVerb(CustomVerb customVerb) {

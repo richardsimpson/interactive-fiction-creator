@@ -382,7 +382,7 @@ class ScriptingTest {
     }
 
     @Test
-    void testMoveItemTo() {
+    void testMoveItemTo_WhenTargetIsARoom() {
         dummy.setOnOpen {
             moveItemTo('tv', 'study')
         }
@@ -395,7 +395,24 @@ class ScriptingTest {
 
         assertFalse(this.livingRoom.contains(tv))
         assertTrue(this.study.contains(tv))
-        assertEquals(study, this.tv.getParent())
+        assertEquals(this.study, this.tv.getParent())
+    }
+
+    @Test
+    void testMoveItemTo_WhenTargetIsAnItem() {
+        dummy.setOnOpen {
+            moveItemTo('tv', 'dummy2')
+        }
+
+        assertEquals(livingRoom, this.controller.getCurrentRoom())
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+
+        assertFalse(this.livingRoom.contains(tv))
+        assertTrue(this.dummy2.contains(tv))
+        assertEquals(this.dummy2, this.tv.getParent())
     }
 
     @Test

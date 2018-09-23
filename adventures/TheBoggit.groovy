@@ -41,7 +41,6 @@ adventure {
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
                     }
-                    // TODO: Throws exception if player is carrying the chocolates when they explode (player.getName doesn't exist)
                     moveItemTo("wreckedChocolates", getItem("expensiveChocolates").getParent().getName())
                     moveItemTo("expensiveChocolates", "hiddenRoom")
                 }

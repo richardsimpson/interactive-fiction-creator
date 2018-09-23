@@ -292,6 +292,17 @@ class Item implements ItemContainer, VerbContainer {
         this.items
     }
 
+    Map<String, Item> getAllItems() {
+        final Map<String, Item> items = new HashMap<>()
+        items.putAll(this.items)
+
+        for (Item item : this.items.values()) {
+            items.putAll(item.getAllItems())
+        }
+
+        items
+    }
+
     void addItem(Item item) {
         if (!contains(item)) {
             this.items.put(item.getId().toUpperCase(), item)

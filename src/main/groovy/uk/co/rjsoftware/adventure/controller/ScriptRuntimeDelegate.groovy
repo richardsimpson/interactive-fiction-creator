@@ -57,8 +57,8 @@ class ScriptRuntimeDelegate {
         adventureController.movePlayerTo(roomName)
     }
 
-    void moveItemTo(String itemName, String roomName) {
-        adventureController.moveItemTo(itemName, roomName)
+    void moveItemTo(String itemName, String itemContainerName) {
+        adventureController.moveItemTo(itemName, itemContainerName)
     }
 
     Item getItem(String itemName) {

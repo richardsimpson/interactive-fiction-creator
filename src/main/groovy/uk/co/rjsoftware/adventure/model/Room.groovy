@@ -85,6 +85,17 @@ class Room implements ItemContainer, VerbContainer {
         this.items
     }
 
+    Map<String, Item> getAllItems() {
+        final Map<String, Item> items = new HashMap<>()
+        items.putAll(this.items)
+
+        for (Item item : this.items.values()) {
+            items.putAll(item.getAllItems())
+        }
+
+        items
+    }
+
     boolean containsVerb(CustomVerb verb) {
         this.customVerbs.containsKey(verb.id)
     }

@@ -67,7 +67,7 @@ class AdventureController {
             rooms.put(room.getName().toUpperCase(), room)
         }
 
-        for (Map.Entry<String, Item> itemEntry : adventure.getItems()) {
+        for (Map.Entry<String, Item> itemEntry : adventure.getAllItems()) {
             nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
         }
 
@@ -776,15 +776,18 @@ class AdventureController {
 
     void moveItemTo(String itemName, String itemContainerName) {
         final Item item = getItem(itemName)
-        ItemContainer room = getRoom(itemContainerName)
-        if (room == null) {
-            room = getItem(itemContainerName)
+        ItemContainer container = getRoomOrNull(itemContainerName)
+        if (container == null) {
+            container = getItemOrNull(itemContainerName)
         }
-        item.setParent(room)
+        if (container == null) {
+            throw new RuntimeException("Specified itemContainer does not exist")
+        }
+        item.setParent(container)
     }
 
     Item getItem(String itemId) {
-        final Item item = this.adventure.getItem(itemId)
+        final Item item = getItemOrNull(itemId)
 
         if (item == null) {
             throw new RuntimeException("Specified item does not exist.")
@@ -793,8 +796,12 @@ class AdventureController {
         item
     }
 
+    private Item getItemOrNull(String itemId) {
+        this.adventure.getItem(itemId)
+    }
+
     Room getRoom(String roomName) {
-        final Room room = this.rooms.get(roomName.toUpperCase())
+        final Room room = getRoomOrNull(roomName)
 
         if (room == null) {
             say("ERROR: Specified room does not exist.")
@@ -802,6 +809,10 @@ class AdventureController {
         }
 
         room
+    }
+
+    private Room getRoomOrNull(String roomName) {
+        this.rooms.get(roomName.toUpperCase())
     }
 
     Room getCurrentRoom() {
