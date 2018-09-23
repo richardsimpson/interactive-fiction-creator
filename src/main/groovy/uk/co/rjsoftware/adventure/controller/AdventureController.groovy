@@ -486,7 +486,17 @@ class AdventureController {
         else {
             this.currentRoom.removeItem(item)
             this.player.addItem(item)
-            say("You pick up the " + item.getName())
+            say(getGetText(item.getName()))
+        }
+    }
+
+    private String getGetText(String itemName) {
+        final String getText = this.adventure.getGetText()
+        if (getText == null) {
+            "You pick up the " + itemName
+        }
+        else {
+            getText
         }
     }
 

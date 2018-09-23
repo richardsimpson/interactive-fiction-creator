@@ -4,6 +4,7 @@ adventure {
     waitText """
         Bimbo waited.
         Time crawled slowly past."""
+    getText "This magnificent act, to put it plainly, was done!"
 
     //id, friendlyName, command { synonyms }
     // both friendlyName and synonyms are optional.
@@ -90,6 +91,8 @@ adventure {
             visible false
         }
 
+        // TODO: If you pick up the chocolates, then move to another room, they still explode in the first room!
+
         item ("expensiveChocolates") {
             synonyms "box of expensive chocolates", "chocolates", "chocs"
             description """
@@ -131,8 +134,6 @@ adventure {
         verb ("ClimbOut") {
             moveTo("tunnel like hall")
         }
-
-        // TODO: GET <noun>: This magnificent act, to put it plainly, was done!
 
     }
 

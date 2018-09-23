@@ -17,6 +17,9 @@ class VerbsTest {
     private Player player
     private MainWindowForTesting mainWindow
 
+    private String waitText = "This is the wait text"
+    private String getText = "This is the get text"
+
     private Room study = new Room("study", "This is your study.")
     private Room livingRoom = new Room("livingRoom", "This is the living room.")
     private Room garden = new Room("garden", "This is the garden.")
@@ -89,7 +92,8 @@ class VerbsTest {
 
     private void setup() {
         this.adventure = new Adventure("Welcome to the Adventure!")
-        this.adventure.setWaitText("This is the wait text")
+        this.adventure.setWaitText(this.waitText)
+        this.adventure.setGetText(this.getText)
 
         this.adventure.addCustomVerb(watch)
         this.adventure.addCustomVerb(relax)
@@ -568,7 +572,7 @@ class VerbsTest {
     void testWait_WithDefaultCustomText() {
         for (String verbString : this.verbs.get("WAIT").getSynonyms()) {
             setup()
-            testWait(verbString, "This is the wait text")
+            testWait(verbString, this.waitText)
         }
     }
 
@@ -579,6 +583,34 @@ class VerbsTest {
 
         assertMessagesAreCorrect([
                 waitText,
+                ""
+        ])
+    }
+
+    @Test
+    void testGet_WithDefaultGetText() {
+        for (String verbString : this.verbs.get("GET {noun}").getSynonyms()) {
+            setup()
+            this.adventure.setGetText(null)
+            testGet(verbString, "You pick up the lamp")
+        }
+    }
+
+    @Test
+    void testGet_WithDefaultCustomText() {
+        for (String verbString : this.verbs.get("GET {noun}").getSynonyms()) {
+            setup()
+            testGet(verbString, this.getText)
+        }
+    }
+
+    private void testGet(String command, String getText) {
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent(command.replaceAll("\\{noun}", "lamp")))
+
+        assertMessagesAreCorrect([
+                getText,
                 ""
         ])
     }

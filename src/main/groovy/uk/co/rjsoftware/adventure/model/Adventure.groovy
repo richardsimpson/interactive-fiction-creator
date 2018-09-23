@@ -12,6 +12,7 @@ class Adventure {
     private List<CustomVerb> customVerbs = new ArrayList()
 
     private String waitText = null
+    private String getText = null
 
     Adventure(String introduction) {
         this.introduction = introduction
@@ -75,6 +76,14 @@ class Adventure {
 
     void setWaitText(String waitText) {
         this.waitText = waitText
+    }
+
+    String getGetText() {
+        this.getText
+    }
+
+    void setGetText(String getText) {
+        this.getText = getText
     }
 
 }
