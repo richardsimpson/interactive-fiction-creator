@@ -69,9 +69,12 @@ class ScriptRuntimeDelegate {
         adventureController.getRoom(roomName)
     }
 
-    // TODO: replace with getCurrentPlayer.  Expose the player's current position via a getParent.  Requires that
-    // a player is also an item.
     Room getCurrentRoom() {
         adventureController.getCurrentRoom()
     }
+
+    Item getPlayer() {
+        adventureController.getPlayer()
+    }
+
 }

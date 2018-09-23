@@ -32,16 +32,15 @@ adventure {
                 moveItemTo("card", "tunnel like hall")
                 moveItemTo("expensiveChocolates", "tunnel like hall")
                 executeAfterTurns(10) {
-                    // TODO: If the player is carrying the chocolates, then this check fails
-                    if (getItem("expensiveChocolates").getParent() == getCurrentRoom()) {
-                    //if (playerInRoom("tunnel like hall")) {
+                    def chocsLocation = getItem("expensiveChocolates").getParent()
+                    if (chocsLocation == getCurrentRoom() || chocsLocation == getPlayer()) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
                         movePlayerTo('game over')
                     }
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
                     }
-                    moveItemTo("wreckedChocolates", getItem("expensiveChocolates").getParent().getName())
+                    moveItemTo("wreckedChocolates", chocsLocation.getName())
                     moveItemTo("expensiveChocolates", "hiddenRoom")
                 }
             }

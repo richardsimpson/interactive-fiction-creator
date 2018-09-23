@@ -466,4 +466,20 @@ class ScriptingTest {
 
     }
 
+    @Test
+    void testGetPlayer() {
+        dummy.setOnOpen {
+            say(getPlayer().getName())
+        }
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        assertMessagesAreCorrect([
+                "You open the dummy",
+                "player",
+                ""
+        ])
+    }
+
 }

@@ -38,11 +38,6 @@ class AdventureController {
         mainWindow.addLoadListener(this.&loadAdventureInternal)
     }
 
-    // FOR TESTING ONLY
-    Item getPlayer() {
-        this.player
-    }
-
     private void loadAdventureInternal(LoadEvent event) {
         if (event.getFile() != null) {
             final Adventure adventure = Loader.loadAdventure(event.getFile())
@@ -817,6 +812,10 @@ class AdventureController {
 
     Room getCurrentRoom() {
         this.currentRoom
+    }
+
+    Item getPlayer() {
+        this.player
     }
 
     // TODO: add script functions for:
