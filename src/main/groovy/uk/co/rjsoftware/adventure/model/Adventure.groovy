@@ -8,7 +8,7 @@ class Adventure {
     private String introduction
     private String title = null
     private List<Room> rooms = new ArrayList()
-    private Room startRoom = null
+    private Item player = null
     private List<CustomVerb> customVerbs = new ArrayList()
 
     private String waitText = null
@@ -30,12 +30,16 @@ class Adventure {
         this.rooms.add(room)
     }
 
-    Room getStartRoom() {
-        this.startRoom
+    Item getPlayer() {
+        if (this.player != null) {
+            return this.player
+        }
+
+        getItem("player")
     }
 
-    void setStartRoom(Room startRoom) {
-        this.startRoom = startRoom
+    void setPlayer(Item player) {
+        this.player = player
     }
 
     String getIntroduction() {
@@ -50,10 +54,26 @@ class Adventure {
         this.rooms
     }
 
-    Room findRoom(String roomName) {
+    Room getRoom(String roomName) {
         this.rooms.find {room ->
             room.getName().equals(roomName)
         }
+    }
+
+    Map<String, Item> getItems() {
+        final Map<String, Item> items = new HashMap<>()
+
+        for (Room room : getRooms()) {
+            for (Map.Entry<String, Item> itemEntry : room.getItems()) {
+                items.put(itemEntry.key.toUpperCase(), itemEntry.value)
+            }
+        }
+
+        items
+    }
+
+    Item getItem(String itemName) {
+        getItems().get(itemName.toUpperCase())
     }
 
     void addCustomVerb(CustomVerb customVerb) {

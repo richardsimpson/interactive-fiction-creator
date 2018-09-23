@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue
 class ContainerTest {
 
     private AdventureController classUnderTest
-    private Player player
+    private Item player = new Item("player")
     private MainWindowForTesting mainWindow
 
     private final Room livingRoom = new Room("livingRoom", "This is the living room.")
@@ -50,6 +50,7 @@ class ContainerTest {
         final Adventure adventure = new Adventure("Welcome to the Adventure!")
 
         livingRoom.addItem(chest)
+        livingRoom.addItem(player)
 
         chest.setOpen(false)
         chest.setContentVisibility(ContentVisibility.AFTER_EXAMINE)
@@ -58,7 +59,6 @@ class ContainerTest {
         chest.setCloseable(true)
 
         adventure.addRoom(livingRoom)
-        adventure.setStartRoom(livingRoom)
 
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)

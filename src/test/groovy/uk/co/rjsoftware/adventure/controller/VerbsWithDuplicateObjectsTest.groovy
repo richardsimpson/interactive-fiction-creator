@@ -12,7 +12,7 @@ import static org.junit.Assert.*
 class VerbsWithDuplicateObjectsTest {
 
     private AdventureController classUnderTest
-    private Player player
+    private Item player = new Item("player")
     private MainWindowForTesting mainWindow
 
     private Room livingRoom = new Room("livingRoom", "This is the living room.")
@@ -35,12 +35,12 @@ class VerbsWithDuplicateObjectsTest {
 
         livingRoom.addItem(redBox)
         livingRoom.addItem(blueBox)
+        livingRoom.addItem(player)
 
         redBox.setVisible(true)
         blueBox.setVisible(false)
 
         adventure.addRoom(livingRoom)
-        adventure.setStartRoom(livingRoom)
 
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)

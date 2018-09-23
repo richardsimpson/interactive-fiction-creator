@@ -14,7 +14,7 @@ class VerbsTest {
     private Adventure adventure
 
     private AdventureController classUnderTest
-    private Player player
+    private Item player = new Item("player")
     private MainWindowForTesting mainWindow
 
     private String waitText = "This is the wait text"
@@ -102,6 +102,7 @@ class VerbsTest {
         livingRoom.addItem(tv)
         livingRoom.addItem(newspaper)
         livingRoom.addItem(remote)
+        livingRoom.addItem(player)
 
         diningRoom.addItem(donut)
         diningRoom.addItem(sandwich)
@@ -114,8 +115,6 @@ class VerbsTest {
         this.adventure.addRoom(garden)
         this.adventure.addRoom(kitchen)
         this.adventure.addRoom(diningRoom)
-
-        this.adventure.setStartRoom(livingRoom)
 
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)

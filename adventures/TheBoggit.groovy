@@ -48,6 +48,8 @@ adventure {
             }
         }
 
+        item ("player")
+
         // TODO: Change description of chest once it is opened.
         item ("chest") {
             synonyms "large, wooden chest", "chest"
@@ -205,5 +207,4 @@ adventure {
         exit direction: SOUTH, room: "round green toilet"
     }
 
-    startRoom "tunnel like hall"
 }

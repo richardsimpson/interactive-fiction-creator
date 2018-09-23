@@ -12,6 +12,8 @@ adventure {
             }
         }
 
+        item ("player")
+
         item ("lamp") {
             description "A bedside lamp. with a simple on/off switch"
             switchable true
@@ -50,7 +52,5 @@ adventure {
     room ("bedroom") {
         exit direction: EAST, room: "landing"
     }
-
-    startRoom "bedroom"
 
 }

@@ -28,6 +28,7 @@ class ScriptingTest {
     private final Item chest = new Item("chest", ["chest"], "This is the chest.")
     private final Item dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
     private final Item dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
+    private final Item player = new Item("player")
 
     @Before
     void before() {
@@ -54,13 +55,12 @@ class ScriptingTest {
         livingRoom.addItem(tv)
         livingRoom.addItem(chest)
         livingRoom.addItem(dummy)
+        livingRoom.addItem(player)
 
         study.addItem(dummy2)
 
         adventure.addRoom(study)
         adventure.addRoom(livingRoom)
-
-        adventure.setStartRoom(livingRoom)
 
         dummy.setOpen(false)
         dummy2.setOpen(false)

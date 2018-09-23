@@ -18,7 +18,7 @@ class AdventureController {
 
     private Adventure adventure
     private Room currentRoom
-    private Player player
+    private Item player
     private List<Room> visitedRooms = new ArrayList<>()
     private List<ScheduledScript> scheduledScripts = new CopyOnWriteArrayList<>()
     private int turnCounter = 0
@@ -39,7 +39,7 @@ class AdventureController {
     }
 
     // FOR TESTING ONLY
-    Player getPlayer() {
+    Item getPlayer() {
         this.player
     }
 
@@ -51,7 +51,6 @@ class AdventureController {
     }
 
     void loadAdventure(Adventure adventure) {
-        this.player = new Player()
         this.visitedRooms.clear()
         this.scheduledScripts.clear()
         this.turnCounter = 0
@@ -66,9 +65,18 @@ class AdventureController {
 
         for (Room room : adventure.getRooms()) {
             rooms.put(room.getName().toUpperCase(), room)
-            for (Map.Entry<String, Item> itemEntry : room.getItems()) {
-                nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
-            }
+        }
+
+        for (Map.Entry<String, Item> itemEntry : adventure.getItems()) {
+            nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
+        }
+
+        this.player = adventure.getPlayer()
+        if (this.player == null) {
+            throw new RuntimeException("Cannot locate player item.  Either provide a value for adventure.player, or create an item with the id 'player'.")
+        }
+        if (!(this.player.getParent() instanceof Room)) {
+            throw new RuntimeException("player item must exist in a Room, not another item.")
         }
 
         // initialise the view
@@ -76,7 +84,7 @@ class AdventureController {
 
         this.adventure = adventure
 
-        movePlayerToInternal(adventure.getStartRoom())
+        movePlayerToInternal((Room)this.player.getParent())
         say("")
     }
 
@@ -386,7 +394,7 @@ class AdventureController {
             boolean firstItemOutput = false
 
             for (Item item : this.currentRoom.getItems().values()) {
-                if (item.isVisible() && !item.isScenery()) {
+                if (item.isVisible() && !item.isScenery() && item != this.player) {
                     if (!firstItemOutput) {
                         firstItemOutput = true
                         say("You can also see:")
@@ -766,17 +774,19 @@ class AdventureController {
         movePlayerToInternal(room)
     }
 
-    void moveItemTo(String itemName, String roomName) {
+    void moveItemTo(String itemName, String itemContainerName) {
         final Item item = getItem(itemName)
-        final Room room = getRoom(roomName)
+        ItemContainer room = getRoom(itemContainerName)
+        if (room == null) {
+            room = getItem(itemContainerName)
+        }
         item.setParent(room)
     }
 
     Item getItem(String itemId) {
-        final Item item = this.nouns.get(itemId.toUpperCase())
+        final Item item = this.adventure.getItem(itemId)
 
         if (item == null) {
-            say("ERROR: Specified item does not exist.")
             throw new RuntimeException("Specified item does not exist.")
         }
 

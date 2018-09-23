@@ -2,7 +2,6 @@ package uk.co.rjsoftware.adventure.controller
 
 import groovy.transform.TypeChecked
 import uk.co.rjsoftware.adventure.model.Item
-import uk.co.rjsoftware.adventure.model.Player
 import uk.co.rjsoftware.adventure.model.Room
 
 @TypeChecked

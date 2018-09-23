@@ -96,7 +96,7 @@ class AdventureDelegate {
     }
 
     private void room(String roomName, Closure closure) {
-        Room room = this.adventure.findRoom(roomName)
+        Room room = this.adventure.getRoom(roomName)
 
         if (room == null) {
             room = new Room(roomName)
@@ -108,14 +108,14 @@ class AdventureDelegate {
         closure()
     }
 
-    private void startRoom(String roomName) {
-        Room room = this.adventure.findRoom(roomName)
+    private void player(String itemName) {
+        Item item = this.adventure.getItem(itemName)
 
-        if (room == null) {
-            throw new RuntimeException(("Cannot locate room named '" + roomName + "'"))
+        if (item == null) {
+            throw new RuntimeException(("Cannot locate player item named '" + itemName + "'"))
         }
 
-        this.adventure.setStartRoom(room)
+        this.adventure.setPlayer(item)
     }
 
     Adventure getAdventure() {
@@ -182,7 +182,7 @@ class RoomDelegate {
     }
 
     private void exit(LinkedHashMap linkedHashMap) {
-        Room room = this.adventure.findRoom((String)linkedHashMap.get("room"))
+        Room room = this.adventure.getRoom((String)linkedHashMap.get("room"))
 
         if (room == null) {
             throw new RuntimeException("Cannot reference a room before it is defined")
@@ -191,16 +191,26 @@ class RoomDelegate {
         this.room.addExit((Direction)linkedHashMap.get("direction"), room)
     }
 
-    private void item(String itemId, Closure closure) {
+    private void item(String itemId, Optional<Closure> closure) {
         Item item = this.room.getItem(itemId)
         if (item == null) {
             item = new Item(itemId)
             this.room.addItem(item)
         }
 
-        closure.delegate = new ItemDelegate(this.adventure, item)
-        closure.resolveStrategy = Closure.DELEGATE_ONLY
-        closure()
+        closure.ifPresent {clo ->
+            clo.delegate = new ItemDelegate(this.adventure, item)
+            clo.resolveStrategy = Closure.DELEGATE_ONLY
+            clo()
+        }
+    }
+
+    private void item(String itemId, Closure closure) {
+        item(itemId, Optional.of(closure))
+    }
+
+    private void item(String itemId) {
+        item(itemId, Optional.empty())
     }
 
     private void verb(String verbId, Closure closure) {

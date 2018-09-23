@@ -18,6 +18,8 @@ adventure {
         beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript") }
         afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript") }
 
+        item ("player")
+
         item ("lamp") {
             synonyms "lampshade", "lamp", "shade"
             description "description"
@@ -65,6 +67,6 @@ adventure {
         exit direction: EAST, room: "landing"
     }
 
-    startRoom "bedroom"
+    player "player"
 
 }

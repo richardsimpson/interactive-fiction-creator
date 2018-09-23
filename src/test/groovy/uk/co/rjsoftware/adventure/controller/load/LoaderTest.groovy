@@ -45,8 +45,8 @@ class LoaderTest {
         assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], verbMap.get("Watch").getSynonyms())
         assertEquals(["THROW {noun}"], verbMap.get("Throw").getSynonyms())
 
-        final Room bedroom = adventure.findRoom("bedroom")
-        final Room landing = adventure.findRoom("landing")
+        final Room bedroom = adventure.getRoom("bedroom")
+        final Room landing = adventure.getRoom("landing")
 
         assertEquals("bedroom", bedroom.getName())
         assertEquals("custom description", bedroom.getDescription())
@@ -68,7 +68,7 @@ class LoaderTest {
         assertEquals(1, landing.getExits().size())
         assertEquals(bedroom, landing.getExit(Direction.WEST))
 
-        assertEquals(2, bedroom.getItems().size())
+        assertEquals(3, bedroom.getItems().size())
 
         final Item lamp = bedroom.getItem("lamp")
         assertEquals(["lampshade", "lamp", "shade"], lamp.getSynonyms())
@@ -102,6 +102,6 @@ class LoaderTest {
         verifyClosure("watchVerb", tv.getVerbClosure(verbMap.get("Watch")))
         verifyClosure("throwVerb", tv.getVerbClosure(verbMap.get("Throw")))
 
-        assertEquals("bedroom", adventure.getStartRoom().getName())
+        assertEquals(bedroom, adventure.getPlayer().getParent())
     }
 }
