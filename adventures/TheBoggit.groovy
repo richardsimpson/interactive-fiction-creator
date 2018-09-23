@@ -36,7 +36,7 @@ adventure {
                     // TODO: This should check if the player is in the same room as the expensiveChocolates
                     if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
-                        moveTo('game over')
+                        movePlayerTo('game over')
                     }
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
@@ -64,7 +64,7 @@ adventure {
 
             verb ("ClimbInto") {
                 if (isOpen('chest')) {
-                    moveTo("inside chest")
+                    movePlayerTo("inside chest")
                 }
                 else {
                     say("Bimbo could not climb into the chest at this time.")
@@ -111,7 +111,7 @@ adventure {
                 A few moments later, he exploded for no apparent reason.
                 """
             onEat {
-                moveTo('game over')
+                movePlayerTo('game over')
             }
         }
 
@@ -138,7 +138,7 @@ adventure {
         }
 
         verb ("ClimbOut") {
-            moveTo("tunnel like hall")
+            movePlayerTo("tunnel like hall")
         }
 
     }

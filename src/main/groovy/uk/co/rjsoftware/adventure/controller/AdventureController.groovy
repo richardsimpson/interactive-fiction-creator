@@ -81,7 +81,7 @@ class AdventureController {
 
         this.adventure = adventure
 
-        moveToInternal(adventure.getStartRoom())
+        movePlayerToInternal(adventure.getStartRoom())
         say("")
     }
 
@@ -419,11 +419,11 @@ class AdventureController {
             say("You cannot go that way.")
         }
         else {
-            moveToInternal(newRoom)
+            movePlayerToInternal(newRoom)
         }
     }
 
-    private void moveToInternal(Room room) {
+    private void movePlayerToInternal(Room room) {
         // process leaving the previous room
         if (this.currentRoom != null) {
             if (this.currentRoom.getAfterLeaveRoom() != null) {
@@ -766,9 +766,9 @@ class AdventureController {
         this.currentRoom.getName().equals(roomName)
     }
 
-    void moveTo(String roomName) {
+    void movePlayerTo(String roomName) {
         final Room room = getRoom(roomName)
-        moveToInternal(room)
+        movePlayerToInternal(room)
     }
 
     // TODO: add script functions for:

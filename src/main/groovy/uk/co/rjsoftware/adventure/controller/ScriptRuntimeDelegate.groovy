@@ -51,7 +51,7 @@ class ScriptRuntimeDelegate {
         !adventureController.playerInRoom(roomName)
     }
 
-    boolean moveTo(String roomName) {
-        adventureController.moveTo(roomName)
+    boolean movePlayerTo(String roomName) {
+        adventureController.movePlayerTo(roomName)
     }
 }

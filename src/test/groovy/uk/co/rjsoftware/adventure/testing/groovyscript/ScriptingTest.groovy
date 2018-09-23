@@ -365,7 +365,7 @@ class ScriptingTest {
     @Test
     void testMove() {
         dummy.setOnOpen {
-            moveTo('study')
+            movePlayerTo('study')
         }
 
         assertEquals(livingRoom, this.controller.getCurrentRoom())
