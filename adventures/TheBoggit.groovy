@@ -151,8 +151,6 @@ adventure {
                 P.S. These chocs will self destruct in 10 minutes"""
         }
 
-        // TODO: If you pick up the chocolates, then move to another room, they still explode in the first room!
-
         item ("expensiveChocolates") {
             synonyms "box of expensive chocolates", "chocolates", "chocs"
             description """
