@@ -29,9 +29,11 @@ adventure {
                 else {
                     say('A muffled "thwump" eminates from the hall, followed by fumbling noises')
                 }
+                // TODO: Move the objects from a dummy room into this room instead.
                 setVisible("card")
                 setVisible("expensiveChocolates")
                 executeAfterTurns(10) {
+                    // TODO: This should check if the player is in the same room as the expensiveChocolates
                     if (playerInRoom("tunnel like hall")) {
                         say('The chocolates exploded, with a loud "BABOOM", blowing Bimbo and his surroundings to pieces.')
                         moveTo('game over')
@@ -39,8 +41,12 @@ adventure {
                     else {
                         say("A muffled report sounded as the chocolates exploded nearby")
                     }
-                    setInvisible("expensiveChocolates")
+                    // TODO: Move the wreckedChocolates from a dummy room into the same room as the expensiveChocolates.
+                    // do with with item.getParent (this will work if the chocolates are e.g. in the chest,
+                    // or if they are on the player
                     setVisible("wreckedChocolates")
+                    // TODO: Move the expensiveChocolates into a dummy instead.
+                    setInvisible("expensiveChocolates")
                 }
             }
         }

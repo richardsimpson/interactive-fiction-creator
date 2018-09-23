@@ -2,8 +2,6 @@ package uk.co.rjsoftware.adventure.controller
 
 import groovy.transform.TailRecursive
 import groovy.transform.TypeChecked
-import uk.co.rjsoftware.adventure.controller.customscripts.AdventureScript
-import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
 import uk.co.rjsoftware.adventure.utils.StringUtils
