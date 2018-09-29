@@ -526,4 +526,34 @@ class ScriptingTest {
         ])
     }
 
+    @Test
+    void testGetTurnCounter() {
+        dummy.setOnOpen {
+            say("TurnCounter: " + getTurnCounter())
+        }
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        assertMessagesAreCorrect([
+                "You open the dummy",
+                "TurnCounter: 1",
+                ""
+        ])
+
+        mainWindow.fireCommand(new CommandEvent("west"))
+        mainWindow.fireCommand(new CommandEvent("east"))
+        mainWindow.fireCommand(new CommandEvent("close dummy"))
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        assertMessagesAreCorrect([
+                "You open the dummy",
+                "TurnCounter: 5",
+                ""
+        ])
+
+    }
+
 }

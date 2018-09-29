@@ -833,6 +833,10 @@ class AdventureController {
         this.score
     }
 
+    int getTurnCounter() {
+        this.turnCounter
+    }
+
     // TODO: add script functions for:
     //      clear the screen.
     //      player is carrying object

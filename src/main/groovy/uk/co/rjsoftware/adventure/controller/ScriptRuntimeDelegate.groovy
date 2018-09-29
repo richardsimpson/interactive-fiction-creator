@@ -93,4 +93,8 @@ class ScriptRuntimeDelegate {
         adventureController.getScore()
     }
 
+    int getTurnCounter() {
+        adventureController.getTurnCounter()
+    }
+
 }
