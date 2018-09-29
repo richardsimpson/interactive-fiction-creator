@@ -36,7 +36,7 @@ class Item implements ItemContainer, VerbContainer {
 
     private final Map<String, Closure> customVerbs = new HashMap()
     private final Map<String, Item> items = new TreeMap()
-    private boolean itemPreviouslyExamined = false
+    private boolean itemExamined = false
 
     Item(String id, List<String> synonyms, String description) {
         this.id = id
@@ -158,13 +158,15 @@ class Item implements ItemContainer, VerbContainer {
         }
 
         if (this.contentVisibility == ContentVisibility.AFTER_EXAMINE) {
-            return this.itemPreviouslyExamined
+            return this.itemExamined
         }
 
         throw new RuntimeException("Unexpected value for ContentVisibility")
     }
 
-    void outputItemDescription(ScriptRuntimeDelegate delegate) {
+    void examine(ScriptRuntimeDelegate delegate) {
+        setItemExamined(true)
+
         if (this.descriptionClosure != null) {
             this.descriptionClosure.delegate = delegate
             this.descriptionClosure.call()
@@ -337,8 +339,8 @@ class Item implements ItemContainer, VerbContainer {
         this.items.containsKey(item.getId().toUpperCase())
     }
 
-    void setItemPreviouslyExamined(boolean itemPreviouslyExamined) {
-        this.itemPreviouslyExamined = itemPreviouslyExamined
+    void setItemExamined(boolean itemExamined) {
+        this.itemExamined = itemExamined
     }
 
     //

@@ -54,7 +54,7 @@ class ContainerTest {
 
         chest.setOpen(false)
         chest.setContentVisibility(ContentVisibility.AFTER_EXAMINE)
-        chest.setItemPreviouslyExamined(false)
+        chest.setItemExamined(false)
         chest.setOpenable(true)
         chest.setCloseable(true)
 
@@ -266,7 +266,7 @@ class ContainerTest {
     }
 
     @Test
-    void testLookWhenContainerClosedAndContentsNeverVisibletest() {
+    void testLookWhenContainerClosedAndContentsNeverVisible() {
         for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
             setup()
             this.chest.setContentVisibility(ContentVisibility.NEVER)
@@ -285,7 +285,7 @@ class ContainerTest {
     }
 
     @Test
-    void testLookWhenContainerOpenAndContentsNeverVisibletest() {
+    void testLookWhenContainerOpenAndContentsNeverVisible() {
         for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
             setup()
             this.chest.setContentVisibility(ContentVisibility.NEVER)

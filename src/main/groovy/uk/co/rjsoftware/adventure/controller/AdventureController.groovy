@@ -532,10 +532,7 @@ class AdventureController {
         }
 
         final Item item = items.get(0)
-
-        // TODO: Should we maybe rename outputItemDescription to be 'examine', and then it could also set 'setItemPreviouslyExamined'
-        item.setItemPreviouslyExamined(true)
-        item.outputItemDescription(this.scriptRuntimeDelegate)
+        item.examine(this.scriptRuntimeDelegate)
     }
 
     private void inventory() {
