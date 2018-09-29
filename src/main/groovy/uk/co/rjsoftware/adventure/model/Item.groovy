@@ -8,6 +8,7 @@ class Item implements ItemContainer, VerbContainer {
     private final String id
     private final List<String> synonyms
     private String description
+    private Closure descriptionClosure
     private boolean visible = true
     private boolean scenery
     private boolean gettable = true
@@ -103,6 +104,10 @@ class Item implements ItemContainer, VerbContainer {
         this.description = description
     }
 
+    void setDescriptionClosure(Closure closure) {
+        this.descriptionClosure = closure
+    }
+
     boolean isVisible() {
         this.visible
     }
@@ -159,53 +164,64 @@ class Item implements ItemContainer, VerbContainer {
         throw new RuntimeException("Unexpected value for ContentVisibility")
     }
 
-    String getItemDescription() {
-        String result = this.description
-
-        if (!result.endsWith(".")) {
-            result += '.'
+    void outputItemDescription(ScriptRuntimeDelegate delegate) {
+        if (this.descriptionClosure != null) {
+            this.descriptionClosure.delegate = delegate
+            this.descriptionClosure.call()
         }
+        else {
+            String desc = this.description
 
-        if (this.switchable) {
-            if (this.switchedOn && this.extraMessageWhenSwitchedOn != null) {
-                result += "  " + this.extraMessageWhenSwitchedOn
-            }
-            else if (!this.switchedOn && this.extraMessageWhenSwitchedOff != null) {
-                result += "  " + this.extraMessageWhenSwitchedOff
+            if (!desc.endsWith(".")) {
+                desc += '.'
             }
 
-            if (!result.endsWith(".")) {
-                result += '.'
+            if (this.switchable) {
+                if (this.switchedOn && this.extraMessageWhenSwitchedOn != null) {
+                    desc += "  " + this.extraMessageWhenSwitchedOn
+                }
+                else if (!this.switchedOn && this.extraMessageWhenSwitchedOff != null) {
+                    desc += "  " + this.extraMessageWhenSwitchedOff
+                }
+
+                // TODO: Check for other punctuation here (:,;?!)
+                if (!desc.endsWith(".")) {
+                    desc += '.'
+                }
             }
+
+            delegate.sayWithoutLineBreak(desc)
         }
 
         if (shouldShowContents()) {
-            result += "  It contains:" + System.lineSeparator()
+            String contents = "  It contains:"
 
             if (this.items.isEmpty()) {
-                result += "Nothing."
+                contents += System.lineSeparator() + "Nothing."
             }
 
             for (Item item : this.items.values()) {
-                result += item.getName() + System.lineSeparator()
+                contents += System.lineSeparator() + item.getName()
             }
+
+            delegate.sayWithoutLineBreak(contents)
         }
 
-        result
+        delegate.say("")
     }
 
     String getLookDescription() {
         String result = this.getName()
 
         if (shouldShowContents()) {
-            result += ", containing:" + System.lineSeparator()
+            result += ", containing:"
 
             if (this.items.isEmpty()) {
-                result += "Nothing."
+                result += System.lineSeparator() + "Nothing."
             }
 
             for (Item item : this.items.values()) {
-                result += "    " + item.getName() + System.lineSeparator()
+                result += System.lineSeparator() + "    " + item.getName()
             }
         }
 

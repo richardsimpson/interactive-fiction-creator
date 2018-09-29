@@ -4,12 +4,13 @@ import groovy.transform.TailRecursive
 import groovy.transform.TypeChecked
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
-import uk.co.rjsoftware.adventure.utils.StringUtils
 import uk.co.rjsoftware.adventure.view.CommandEvent
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.MainWindow
 
 import java.util.concurrent.CopyOnWriteArrayList
+
+import static java.util.stream.Collectors.toList
 
 @TypeChecked
 class AdventureController {
@@ -401,13 +402,11 @@ class AdventureController {
     }
 
     private void exits() {
-        StringBuilder outputText = new StringBuilder("From here you can go ")
+        final List<String> validExits = this.currentRoom.getExits().keySet().stream()
+                .map {direction -> direction.getDescription()}
+                .collect(toList())
 
-        for (Direction direction : this.currentRoom.getExits().keySet()) {
-            outputText.append(direction.getDescription()).append(", ")
-        }
-
-        say(outputText.toString())
+        say("From here you can go " + validExits.join(", "))
     }
 
     private void move(Direction direction) {
@@ -534,8 +533,9 @@ class AdventureController {
 
         final Item item = items.get(0)
 
+        // TODO: Should we maybe rename outputItemDescription to be 'examine', and then it could also set 'setItemPreviouslyExamined'
         item.setItemPreviouslyExamined(true)
-        say(item.getItemDescription())
+        item.outputItemDescription(this.scriptRuntimeDelegate)
     }
 
     private void inventory() {
@@ -738,7 +738,11 @@ class AdventureController {
     //
 
     void say(String outputText) {
-        this.mainWindow.say(StringUtils.sanitiseString(outputText))
+        this.mainWindow.say(outputText)
+    }
+
+    void sayWithoutLineBreak(String outputText) {
+        this.mainWindow.sayWithoutLineBreak(outputText)
     }
 
     boolean isSwitchedOn(String itemId) {

@@ -251,6 +251,10 @@ class ItemDelegate {
         this.item.setDescription(StringUtils.sanitiseString(description))
     }
 
+    private void description(Closure closure) {
+        this.item.setDescriptionClosure(closure)
+    }
+
     private void visible(Boolean visible) {
         this.item.setVisible(visible)
     }

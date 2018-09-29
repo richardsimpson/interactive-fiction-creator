@@ -18,6 +18,10 @@ class MainWindowForTesting implements MainWindow {
         this.messages += outputText + System.lineSeparator()
     }
 
+    void sayWithoutLineBreak(String outputText) {
+        this.messages += outputText
+    }
+
     void addCommandListener(CommandListener listener) {
         this.commandListeners.add(listener)
     }

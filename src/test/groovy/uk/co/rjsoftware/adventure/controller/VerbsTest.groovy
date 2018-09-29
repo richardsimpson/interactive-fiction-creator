@@ -219,12 +219,12 @@ class VerbsTest {
     }
 
     @Test
-    void testExists() {
+    void testExits() {
         this.mainWindow.clearMessages()
         mainWindow.fireCommand(new CommandEvent("exits"))
 
         assertMessagesAreCorrect([
-                "From here you can go North, South, East, West, Up, Down,",
+                "From here you can go North, South, East, West, Up, Down",
                 ""
         ])
     }

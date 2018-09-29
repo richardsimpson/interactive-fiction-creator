@@ -48,11 +48,16 @@ adventure {
 
         item ("player")
 
-        // TODO: Change description of chest once it is opened.  Use a script for the description?  How will this interact with extraMessageWhenSwitchedOn / extraMessageWhenSwitchedOff / open containers where contentVisibility is either ALWAYS or AFTER_EXAMINE
-        // In Quest, a script means extraMessageWhenSwitchedOn/Off gets ignored.  The content visibility IS still used.
         item ("chest") {
             synonyms "large, wooden chest", "chest"
-            description "The chest was both heavy and closed"
+            description {
+                if (isOpen("chest")) {
+                    say("The chest was both heavy and open")
+                }
+                else {
+                    say("The chest was both heavy and closed")
+                }
+            }
             container true
             openable true
             closeable true

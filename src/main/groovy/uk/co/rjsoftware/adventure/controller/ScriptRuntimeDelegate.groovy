@@ -17,6 +17,10 @@ class ScriptRuntimeDelegate {
         adventureController.say(message)
     }
 
+    void sayWithoutLineBreak(String outputText) {
+        adventureController.sayWithoutLineBreak(outputText)
+    }
+
     boolean isSwitchedOn(String itemName) {
         adventureController.isSwitchedOn(itemName);
     }

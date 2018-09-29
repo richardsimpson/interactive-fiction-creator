@@ -77,6 +77,10 @@ class MainWindowView implements MainWindow {
         this.outputTextArea.appendText(outputText + System.lineSeparator())
     }
 
+    void sayWithoutLineBreak(String outputText) {
+        this.outputTextArea.appendText(outputText)
+    }
+
     private void submitCommand() {
         say("> " + this.inputTextField.getText())
         processCommand(this.inputTextField.getText())

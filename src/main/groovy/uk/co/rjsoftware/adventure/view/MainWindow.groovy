@@ -7,6 +7,8 @@ interface MainWindow {
 
     void say(String outputText)
 
+    void sayWithoutLineBreak(String outputText)
+
     void addCommandListener(CommandListener listener)
 
     void addLoadListener(LoadListener listener)
