@@ -81,4 +81,16 @@ class ScriptRuntimeDelegate {
         adventureController.getPlayer()
     }
 
+    void increaseScore(int amount) {
+        adventureController.increaseScore(amount)
+    }
+
+    void decreaseScore(int amount) {
+        adventureController.decreaseScore(amount)
+    }
+
+    int getScore() {
+        adventureController.getScore()
+    }
+
 }

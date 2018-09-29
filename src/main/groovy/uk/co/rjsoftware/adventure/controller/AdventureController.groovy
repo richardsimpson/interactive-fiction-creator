@@ -23,6 +23,7 @@ class AdventureController {
     private List<Room> visitedRooms = new ArrayList<>()
     private List<ScheduledScript> scheduledScripts = new CopyOnWriteArrayList<>()
     private int turnCounter = 0
+    private int score = 0
     private boolean disambiguating = false
     private Verb disambiguatingVerb
     private List<Item> disambiguatingNouns = new ArrayList<>()
@@ -50,6 +51,7 @@ class AdventureController {
         this.visitedRooms.clear()
         this.scheduledScripts.clear()
         this.turnCounter = 0
+        this.score = 0
 
         this.verbs.clear()
         this.verbs.addAll(StandardVerbs.getVerbs())
@@ -819,8 +821,19 @@ class AdventureController {
         this.player
     }
 
+    void increaseScore(int amount) {
+        this.score += amount
+    }
+
+    void decreaseScore(int amount) {
+        this.score -= amount
+    }
+
+    int getScore() {
+        this.score
+    }
+
     // TODO: add script functions for:
-    //      print a message (without carriage return)
     //      clear the screen.
     //      player is carrying object
     //      player is NOT carrying object

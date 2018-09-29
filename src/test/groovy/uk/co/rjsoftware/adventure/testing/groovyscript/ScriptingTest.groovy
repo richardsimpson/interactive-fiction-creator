@@ -482,4 +482,48 @@ class ScriptingTest {
         ])
     }
 
+    @Test
+    void testIncreaseScore() {
+        dummy.setOnOpen {
+            increaseScore(1)
+        }
+        dummy2.setOnOpen {
+            say("Score: " + getScore())
+        }
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        mainWindow.fireCommand(new CommandEvent("west"))
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy2"))
+        assertMessagesAreCorrect([
+                "You open the dummy2",
+                "Score: 1",
+                ""
+        ])
+    }
+
+    @Test
+    void testDecreaseScore() {
+        dummy.setOnOpen {
+            decreaseScore(2)
+        }
+        dummy2.setOnOpen {
+            say("Score: " + getScore())
+        }
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+        mainWindow.fireCommand(new CommandEvent("west"))
+
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy2"))
+        assertMessagesAreCorrect([
+                "You open the dummy2",
+                "Score: -2",
+                ""
+        ])
+    }
+
 }
