@@ -157,32 +157,4 @@ class Room implements ItemContainer, VerbContainer {
         this.afterEnterRoomFirstTime = closure
     }
 
-    // TODO: Fix displaying of text output using 'say' in a script - see the Boggit adventure.
-    //       AdventureController.say used to call StringUtils.sanitiseString
-    //
-    // TODO: The model classes shouldn't have access to the controller, or it's delegate
-
-    void look(ScriptRuntimeDelegate delegate) {
-        if (this.descriptionClosure != null) {
-            this.descriptionClosure.delegate = delegate
-            this.descriptionClosure.call()
-        }
-        else {
-            delegate.say(this.description)
-        }
-
-        if (!this.items.isEmpty()) {
-            boolean firstItemOutput = false
-
-            for (Item item : this.items.values()) {
-                if (item.isVisible() && !item.isScenery() && item != delegate.getPlayer()) {
-                    if (!firstItemOutput) {
-                        firstItemOutput = true
-                        delegate.say("You can also see:")
-                    }
-                    delegate.say(item.getLookDescription())
-                }
-            }
-        }
-    }
 }

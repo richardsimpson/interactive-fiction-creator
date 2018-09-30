@@ -90,6 +90,26 @@ class ScriptingTest {
     }
 
     @Test
+    void testSayRemovesAnyMarginFromTheText() {
+        dummy.setOnOpen {
+            say("""
+                Hello
+                This is a test"""
+            )
+        }
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open dummy"))
+
+        assertMessagesAreCorrect([
+                "You open the dummy",
+                "Hello",
+                "This is a test",
+                ""
+        ])
+    }
+
+    @Test
     void testIsSwitchedOn() {
         dummy.setOnOpen {
             if (isSwitchedOn('tv')) {

@@ -168,52 +168,40 @@ class Item implements ItemContainer, VerbContainer {
         throw new RuntimeException("Unexpected value for ContentVisibility")
     }
 
-    void examine(ScriptRuntimeDelegate delegate) {
-        setItemExamined(true)
+    String getItemDescription() {
+        String result = this.description
 
-        if (this.descriptionClosure != null) {
-            this.descriptionClosure.delegate = delegate
-            this.descriptionClosure.call()
+        if (!result.endsWith(".")) {
+            result += '.'
         }
-        else {
-            String desc = this.description
 
-            if (!desc.endsWith(".")) {
-                desc += '.'
+        if (this.switchable) {
+            if (this.switchedOn && this.extraMessageWhenSwitchedOn != null) {
+                result += "  " + this.extraMessageWhenSwitchedOn
+            }
+            else if (!this.switchedOn && this.extraMessageWhenSwitchedOff != null) {
+                result += "  " + this.extraMessageWhenSwitchedOff
             }
 
-            if (this.switchable) {
-                if (this.switchedOn && this.extraMessageWhenSwitchedOn != null) {
-                    desc += "  " + this.extraMessageWhenSwitchedOn
-                }
-                else if (!this.switchedOn && this.extraMessageWhenSwitchedOff != null) {
-                    desc += "  " + this.extraMessageWhenSwitchedOff
-                }
-
-                // TODO: Check for other punctuation here (:,;?!)
-                if (!desc.endsWith(".")) {
-                    desc += '.'
-                }
+            // TODO: Check for other punctuation here (:,;?!)
+            if (!result.endsWith(".")) {
+                result += '.'
             }
-
-            delegate.sayWithoutLineBreak(desc)
         }
 
         if (shouldShowContents()) {
-            String contents = "  It contains:"
+            result += "  It contains:"
 
             if (this.items.isEmpty()) {
-                contents += System.lineSeparator() + "Nothing."
+                result += System.lineSeparator() + "Nothing."
             }
 
             for (Item item : this.items.values()) {
-                contents += System.lineSeparator() + item.getName()
+                result += System.lineSeparator() + item.getName()
             }
-
-            delegate.sayWithoutLineBreak(contents)
         }
 
-        delegate.say("")
+        result
     }
 
     String getLookDescription() {

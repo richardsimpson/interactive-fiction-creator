@@ -388,7 +388,26 @@ class AdventureController {
     //
 
     private void look() {
-        this.currentRoom.look(scriptRuntimeDelegate)
+        final Closure closure = this.currentRoom.getDescriptionClosure()
+        if (closure != null) {
+            executeClosure(closure)
+        }
+        else {
+            say(this.currentRoom.getDescription())
+            if (!this.currentRoom.getItems().isEmpty()) {
+                boolean firstItemOutput = false
+
+                for (Item item : this.currentRoom.getItems().values()) {
+                    if (item.isVisible() && !item.isScenery() && item != this.player) {
+                        if (!firstItemOutput) {
+                            firstItemOutput = true
+                            say("You can also see:")
+                        }
+                        say(item.getLookDescription())
+                    }
+                }
+            }
+        }
     }
 
     private void exits() {
@@ -522,7 +541,15 @@ class AdventureController {
         }
 
         final Item item = items.get(0)
-        item.examine(this.scriptRuntimeDelegate)
+
+        item.setItemExamined(true)
+        final Closure closure = item.getDescriptionClosure()
+        if (closure != null) {
+            executeClosure(closure)
+        }
+        else {
+            say(item.getItemDescription())
+        }
     }
 
     private void inventory() {
@@ -725,11 +752,11 @@ class AdventureController {
     //
 
     void say(String outputText) {
-        this.mainWindow.say(outputText)
+        this.mainWindow.say(StringUtils.sanitiseString(outputText))
     }
 
     void sayWithoutLineBreak(String outputText) {
-        this.mainWindow.sayWithoutLineBreak(outputText)
+        this.mainWindow.sayWithoutLineBreak(StringUtils.sanitiseString(outputText))
     }
 
     boolean isSwitchedOn(String itemId) {
