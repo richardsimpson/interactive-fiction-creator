@@ -4,6 +4,7 @@ import groovy.transform.TailRecursive
 import groovy.transform.TypeChecked
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
+import uk.co.rjsoftware.adventure.utils.StringUtils
 import uk.co.rjsoftware.adventure.view.CommandEvent
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.MainWindow
@@ -387,20 +388,7 @@ class AdventureController {
     //
 
     private void look() {
-        say(this.currentRoom.getDescription())
-        if (!this.currentRoom.getItems().isEmpty()) {
-            boolean firstItemOutput = false
-
-            for (Item item : this.currentRoom.getItems().values()) {
-                if (item.isVisible() && !item.isScenery() && item != this.player) {
-                    if (!firstItemOutput) {
-                        firstItemOutput = true
-                        say("You can also see:")
-                    }
-                    say(item.getLookDescription())
-                }
-            }
-        }
+        this.currentRoom.look(scriptRuntimeDelegate)
     }
 
     private void exits() {

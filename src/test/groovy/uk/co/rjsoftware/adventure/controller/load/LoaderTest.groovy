@@ -33,7 +33,7 @@ class LoaderTest {
         assertEquals("Adventure Game", adventure.getTitle())
         assertEquals("Welcome to the Adventure!", adventure.getIntroduction())
 
-        assertEquals(2, adventure.getRooms().size())
+        assertEquals(3, adventure.getRooms().size())
 
         assertEquals(2, adventure.getCustomVerbs().size())
 
@@ -101,6 +101,11 @@ class LoaderTest {
 
         verifyClosure("watchVerb", tv.getVerbClosure(verbMap.get("Watch")))
         verifyClosure("throwVerb", tv.getVerbClosure(verbMap.get("Throw")))
+
+        final Room roomWithDescriptionClosure = adventure.getRoom("roomWithDescriptionClosure")
+        final Item itemWithDescriptionClosure = roomWithDescriptionClosure.getItem("itemWithDescriptionClosure")
+        verifyClosure("roomDescriptionClosure", roomWithDescriptionClosure.getDescriptionClosure())
+        verifyClosure("itemDescriptionClosure", itemWithDescriptionClosure.getDescriptionClosure())
 
         assertEquals(bedroom, adventure.getPlayer().getParent())
     }

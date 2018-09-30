@@ -67,6 +67,17 @@ adventure {
         exit direction: EAST, room: "landing"
     }
 
+    room("roomWithDescriptionClosure") {
+        description {
+            say "roomDescriptionClosure"
+        }
+        item("itemWithDescriptionClosure") {
+            description {
+                say "itemDescriptionClosure"
+            }
+        }
+    }
+    
     player "player"
 
 }

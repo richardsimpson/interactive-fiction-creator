@@ -137,13 +137,17 @@ adventure {
     }
 
     room ("game over") {
-        description """
-             Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
-             The end had come.
-    
-             And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
-             chapter in Muddle Earth's sordid history....
-"""
+        description {
+            say("""
+                Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
+                The end had come.
+                
+                For you attempts you are worth ${getScore()} lenslok devices.
+                You have entered ${getTurnCounter()} profound utterances
+                
+                And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
+                chapter in Muddle Earth's sordid history....""")
+        }
     }
 
     room ("hiddenRoom") {

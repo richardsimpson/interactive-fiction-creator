@@ -104,6 +104,10 @@ class Item implements ItemContainer, VerbContainer {
         this.description = description
     }
 
+    Closure getDescriptionClosure() {
+        this.descriptionClosure
+    }
+
     void setDescriptionClosure(Closure closure) {
         this.descriptionClosure = closure
     }

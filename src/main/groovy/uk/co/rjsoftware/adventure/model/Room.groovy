@@ -11,6 +11,7 @@ class Room implements ItemContainer, VerbContainer {
     private final Map<String, Item> items = new TreeMap<String, Item>()
     private String name
     private String description
+    private Closure descriptionClosure
     private Closure beforeEnterRoom
     private Closure afterEnterRoom
     private Closure afterLeaveRoom
@@ -45,6 +46,14 @@ class Room implements ItemContainer, VerbContainer {
 
     void setDescription(String description) {
         this.description = description
+    }
+
+    Closure getDescriptionClosure() {
+        this.descriptionClosure
+    }
+
+    void setDescriptionClosure(Closure closure) {
+        this.descriptionClosure = closure
     }
 
     void addExit(Direction direction, Room room) {
@@ -148,4 +157,32 @@ class Room implements ItemContainer, VerbContainer {
         this.afterEnterRoomFirstTime = closure
     }
 
+    // TODO: Fix displaying of text output using 'say' in a script - see the Boggit adventure.
+    //       AdventureController.say used to call StringUtils.sanitiseString
+    //
+    // TODO: The model classes shouldn't have access to the controller, or it's delegate
+
+    void look(ScriptRuntimeDelegate delegate) {
+        if (this.descriptionClosure != null) {
+            this.descriptionClosure.delegate = delegate
+            this.descriptionClosure.call()
+        }
+        else {
+            delegate.say(this.description)
+        }
+
+        if (!this.items.isEmpty()) {
+            boolean firstItemOutput = false
+
+            for (Item item : this.items.values()) {
+                if (item.isVisible() && !item.isScenery() && item != delegate.getPlayer()) {
+                    if (!firstItemOutput) {
+                        firstItemOutput = true
+                        delegate.say("You can also see:")
+                    }
+                    delegate.say(item.getLookDescription())
+                }
+            }
+        }
+    }
 }

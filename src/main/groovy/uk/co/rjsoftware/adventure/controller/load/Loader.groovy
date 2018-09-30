@@ -161,6 +161,10 @@ class RoomDelegate {
         this.room.setDescription(StringUtils.sanitiseString(description))
     }
 
+    private void description(Closure closure) {
+        this.room.setDescriptionClosure(closure)
+    }
+
     private void beforeEnterRoom(Closure closure) {
         this.room.setBeforeEnterRoom(closure)
     }
