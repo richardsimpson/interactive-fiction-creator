@@ -18,6 +18,32 @@ class Adventure {
         this.introduction = introduction
     }
 
+    Adventure copy() {
+        final Adventure adventureCopy = new Adventure(this.introduction)
+
+        adventureCopy.title = this.title
+        for (Room room : this.rooms) {
+            adventureCopy.rooms.add(room.copy())
+        }
+        adventureCopy.customVerbs.addAll(this.customVerbs)
+        adventureCopy.waitText = this.waitText
+        adventureCopy.getText = this.getText
+
+        // now fixup the room references (exits)
+        for (Room room : this.rooms) {
+            final Room roomCopy = adventureCopy.getRoom(room.name)
+            for (Map.Entry<Direction, Room> entry : room.exits) {
+                roomCopy.addExit(entry.key, adventureCopy.getRoom(entry.value.name))
+            }
+        }
+
+        // todo: now fixup the player reference
+        if (this.player != null) {
+            adventureCopy.player = adventureCopy.getItem(this.player.getName())
+        }
+        adventureCopy
+    }
+
     void setTitle(String title) {
         this.title = title
     }

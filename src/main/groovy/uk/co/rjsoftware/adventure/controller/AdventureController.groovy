@@ -18,6 +18,7 @@ class AdventureController {
 
     private final MainWindow mainWindow
 
+    private Adventure adventureOriginal
     private Adventure adventure
     private Room currentRoom
     private Item player
@@ -48,7 +49,15 @@ class AdventureController {
         }
     }
 
+    // THIS METHOD IS FOR TESTS ONLY
+    Adventure getAdventure() {
+        this.adventure
+    }
+
     void loadAdventure(Adventure adventure) {
+        this.adventureOriginal = adventure
+        this.adventure = adventure.copy()
+
         this.visitedRooms.clear()
         this.scheduledScripts.clear()
         this.turnCounter = 0
@@ -57,20 +66,20 @@ class AdventureController {
         this.verbs.clear()
         this.verbs.addAll(StandardVerbs.getVerbs())
         // add in any custom verbs
-        this.verbs.addAll(adventure.getCustomVerbs())
+        this.verbs.addAll(this.adventure.getCustomVerbs())
 
         this.nouns.clear()
         this.rooms.clear()
 
-        for (Room room : adventure.getRooms()) {
+        for (Room room : this.adventure.getRooms()) {
             rooms.put(room.getName().toUpperCase(), room)
         }
 
-        for (Map.Entry<String, Item> itemEntry : adventure.getAllItems()) {
+        for (Map.Entry<String, Item> itemEntry : this.adventure.getAllItems()) {
             nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
         }
 
-        this.player = adventure.getPlayer()
+        this.player = this.adventure.getPlayer()
         if (this.player == null) {
             throw new RuntimeException("Cannot locate player item.  Either provide a value for adventure.player, or create an item with the id 'player'.")
         }
@@ -79,9 +88,7 @@ class AdventureController {
         }
 
         // initialise the view
-        this.mainWindow.loadAdventure(adventure.getTitle(), adventure.getIntroduction())
-
-        this.adventure = adventure
+        this.mainWindow.loadAdventure(this.adventure.getTitle(), this.adventure.getIntroduction())
 
         movePlayerToInternal((Room)this.player.getParent())
         say("")

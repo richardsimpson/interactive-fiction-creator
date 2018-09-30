@@ -36,6 +36,26 @@ class Room implements ItemContainer, VerbContainer {
         this(name, "")
     }
 
+    Room copy() {
+        final Room roomCopy = new Room(this.name)
+
+        // NOTE: Don't assign the exits here - need to do that in Adventure.copy, after all the rooms copies
+        //       have been created
+        roomCopy.customVerbs.putAll(customVerbs)
+        for (Map.Entry<String, Item> entry : this.items) {
+            roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
+        }
+        roomCopy.description = this.description
+        roomCopy.descriptionClosure = this.descriptionClosure
+        roomCopy.beforeEnterRoom = this.beforeEnterRoom
+        roomCopy.afterEnterRoom = this.afterEnterRoom
+        roomCopy.afterLeaveRoom = this.afterLeaveRoom
+        roomCopy.beforeEnterRoomFirstTime = this.beforeEnterRoomFirstTime
+        roomCopy.afterEnterRoomFirstTime = this.afterEnterRoomFirstTime
+
+        roomCopy
+    }
+
     String getName() {
         this.name
     }

@@ -17,12 +17,12 @@ class ContainerTest {
     private Item player = new Item("player")
     private MainWindowForTesting mainWindow
 
-    private final Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room livingRoom = new Room("livingRoom", "This is the living room.")
 
-    private final Item chest = new Item("chest", "chest", "This is the chest.")
+    private Item chest = new Item("chest", "chest", "This is the chest.")
 
-    private final Item goldCoin = new Item("coin", ["gold coin", "coin"], "This coin is gold.")
-    private final Item notepad = new Item("notepad", ["notepad"], "A notebook with strange writing on it.")
+    private Item goldCoin = new Item("coin", ["gold coin", "coin"], "This coin is gold.")
+    private Item notepad = new Item("notepad", ["notepad"], "A notebook with strange writing on it.")
 
     private final Map<String, Verb> verbs = new HashMap()
 
@@ -64,6 +64,13 @@ class ContainerTest {
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(adventure)
         this.player = this.classUnderTest.getPlayer()
+
+        // get room and item references back from the AdventureController, as that now copies the adventure
+        // during the loading process
+        this.livingRoom = this.classUnderTest.getRoom(this.livingRoom.name)
+        this.chest = this.classUnderTest.getItem(this.chest.id)
+        this.goldCoin = this.classUnderTest.getItem(this.goldCoin.id)
+        this.notepad = this.classUnderTest.getItem(this.notepad.id)
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

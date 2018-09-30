@@ -21,14 +21,14 @@ class ScriptingTest {
     private AdventureController controller
     private MainWindowForTesting mainWindow
 
-    private final Room study = new Room("study", "This is your study.")
-    private final Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room study = new Room("study", "This is your study.")
+    private Room livingRoom = new Room("livingRoom", "This is the living room.")
 
-    private final Item tv = new Item("tv", ["TV", "television"], "A 28\" TV")
-    private final Item chest = new Item("chest", ["chest"], "This is the chest.")
-    private final Item dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
-    private final Item dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
-    private final Item player = new Item("player")
+    private Item tv = new Item("tv", ["TV", "television"], "A 28\" TV")
+    private Item chest = new Item("chest", ["chest"], "This is the chest.")
+    private Item dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
+    private Item dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
+    private Item player = new Item("player")
 
     @Before
     void before() {
@@ -68,6 +68,15 @@ class ScriptingTest {
         this.mainWindow = new MainWindowForTesting()
         this.controller = new AdventureController(mainWindow)
         this.controller.loadAdventure(adventure)
+
+        // get room and item references back from the AdventureController, as that now copies the adventure
+        // during the loading process
+        this.study = this.controller.getRoom(this.study.name)
+        this.livingRoom = this.controller.getRoom(this.livingRoom.name)
+        this.tv = this.controller.getItem(this.tv.id)
+        this.chest = this.controller.getItem(this.chest.id)
+        this.dummy = this.controller.getItem(this.dummy.id)
+        this.dummy2 = this.controller.getItem(this.dummy2.id)
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

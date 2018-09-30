@@ -115,11 +115,32 @@ class VerbsTest {
         this.adventure.addRoom(garden)
         this.adventure.addRoom(kitchen)
         this.adventure.addRoom(diningRoom)
+        this.adventure.addRoom(landing)
+        this.adventure.addRoom(cellar)
 
         this.mainWindow = new MainWindowForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(this.adventure)
         this.player = this.classUnderTest.getPlayer()
+
+        // get room and item references back from the AdventureController, as that now copies the adventure
+        // during the loading process
+        this.adventure = this.classUnderTest.getAdventure()
+
+        this.study = this.classUnderTest.getRoom(this.study.name)
+        this.livingRoom = this.classUnderTest.getRoom(this.livingRoom.name)
+        this.garden = this.classUnderTest.getRoom(this.garden.name)
+        this.kitchen = this.classUnderTest.getRoom(this.kitchen.name)
+        this.diningRoom = this.classUnderTest.getRoom(this.diningRoom.name)
+        this.landing = this.classUnderTest.getRoom(this.landing.name)
+        this.cellar = this.classUnderTest.getRoom(this.cellar.name)
+
+        this.lamp = this.classUnderTest.getItem(this.lamp.id)
+        this.tv = this.classUnderTest.getItem(this.tv.id)
+        this.newspaper = this.classUnderTest.getItem(this.newspaper.id)
+        this.remote = this.classUnderTest.getItem(this.remote.id)
+        this.sandwich = this.classUnderTest.getItem(this.sandwich.id)
+        this.donut = this.classUnderTest.getItem(this.donut.id)
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

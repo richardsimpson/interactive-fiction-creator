@@ -46,6 +46,12 @@ class VerbsWithDuplicateObjectsTest {
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(adventure)
         this.player = this.classUnderTest.getPlayer()
+
+        // get room and item references back from the AdventureController, as that now copies the adventure
+        // during the loading process
+        this.livingRoom = this.classUnderTest.getRoom(this.livingRoom.name)
+        this.redBox = this.classUnderTest.getItem(this.redBox.id)
+        this.blueBox = this.classUnderTest.getItem(this.blueBox.id)
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

@@ -6,7 +6,7 @@ import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
 @TypeChecked
 class Item implements ItemContainer, VerbContainer {
     private final String id
-    private final List<String> synonyms
+    private final List<String> synonyms = new ArrayList<>()
     private String description
     private Closure descriptionClosure
     private boolean visible = true
@@ -40,7 +40,7 @@ class Item implements ItemContainer, VerbContainer {
 
     Item(String id, List<String> synonyms, String description) {
         this.id = id
-        this.synonyms = synonyms
+        this.synonyms.addAll(synonyms)
         this.description = description
     }
 
@@ -54,6 +54,44 @@ class Item implements ItemContainer, VerbContainer {
 
     Item(String id) {
         this(id, id)
+    }
+
+    Item copy(ItemContainer parent) {
+        final Item itemCopy = new Item(this.id, synonyms, description)
+
+        itemCopy.descriptionClosure = this.descriptionClosure
+        itemCopy.visible = this.visible
+        itemCopy.scenery = this.scenery
+        itemCopy.gettable = this.gettable
+        itemCopy.droppable = this.droppable
+        itemCopy.switchable = this.switchable
+        itemCopy.switchedOn = this.switchedOn
+        itemCopy.switchOnMessage = this.switchOnMessage
+        itemCopy.switchOffMessage = this.switchOffMessage
+        itemCopy.extraMessageWhenSwitchedOn = this.extraMessageWhenSwitchedOn
+        itemCopy.extraMessageWhenSwitchedOff = this.extraMessageWhenSwitchedOff
+        itemCopy.container = this.container
+        itemCopy.openable = this.openable
+        itemCopy.closeable = this.closeable
+        itemCopy.open = this.open
+        itemCopy.openMessage = this.openMessage
+        itemCopy.closeMessage = this.closeMessage
+        itemCopy.onOpen = this.onOpen
+        itemCopy.onClose = this.onClose
+        itemCopy.contentVisibility = this.contentVisibility
+        itemCopy.edible = this.edible
+        itemCopy.eatMessage = this.eatMessage
+        itemCopy.onEat = this.onEat
+
+        itemCopy.parent = parent
+
+        itemCopy.customVerbs.putAll(this.customVerbs)
+        for (Map.Entry<String, Item> entry : this.items) {
+            itemCopy.items.put(entry.key, entry.value.copy(itemCopy))
+        }
+        itemCopy.itemExamined = this.itemExamined
+
+        itemCopy
     }
 
     String getId() {
@@ -244,6 +282,7 @@ class Item implements ItemContainer, VerbContainer {
     boolean isSwitchedOn() { this.switchedOn }
     boolean isSwitchedOff() { !this.switchedOn }
 
+    void setSwitchedOn(boolean switchedOn) {this.switchedOn = switchedOn}
     void switchOn() { this.switchedOn = true }
     void switchOff() { this.switchedOn = false }
 
