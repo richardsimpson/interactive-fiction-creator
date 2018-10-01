@@ -31,7 +31,7 @@ class VerbsWithDuplicateObjectsTest {
     }
 
     private void setup() {
-        Adventure adventure = new Adventure("Welcome to the Adventure!")
+        final Adventure adventure = new Adventure("Welcome to the Adventure!")
 
         livingRoom.addItem(redBox)
         livingRoom.addItem(blueBox)

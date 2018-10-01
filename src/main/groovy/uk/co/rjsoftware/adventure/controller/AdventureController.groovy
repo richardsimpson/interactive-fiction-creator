@@ -18,7 +18,7 @@ class AdventureController {
 
     private final MainWindow mainWindow
 
-    private Adventure adventureOriginal
+    private Adventure originalAdventure
     private Adventure adventure
     private Room currentRoom
     private Item player
@@ -29,6 +29,7 @@ class AdventureController {
     private boolean disambiguating = false
     private Verb disambiguatingVerb
     private List<Item> disambiguatingNouns = new ArrayList<>()
+    private boolean confirmingRestart = false
 
     private List<Verb> verbs = new ArrayList<>()
     private Map<String, Item> nouns = new HashMap<>()
@@ -55,13 +56,18 @@ class AdventureController {
     }
 
     void loadAdventure(Adventure adventure) {
-        this.adventureOriginal = adventure
+        this.originalAdventure = adventure
         this.adventure = adventure.copy()
 
         this.visitedRooms.clear()
         this.scheduledScripts.clear()
         this.turnCounter = 0
         this.score = 0
+
+        this.disambiguating = false
+        this.disambiguatingVerb = null
+        this.disambiguatingNouns = null
+        this.confirmingRestart = false
 
         this.verbs.clear()
         this.verbs.addAll(StandardVerbs.getVerbs())
@@ -217,7 +223,10 @@ class AdventureController {
     }
 
     private void executeCommand(CommandEvent event) {
-        if (this.disambiguating) {
+        if (this.confirmingRestart) {
+            doConfirmRestart(event)
+        }
+        else if (this.disambiguating) {
             doDisambiguateCommand(event)
         }
         else {
@@ -255,7 +264,7 @@ class AdventureController {
             }
         }
         finally {
-            if (!this.disambiguating) {
+            if (!this.disambiguating && !this.confirmingRestart) {
                 doPostCommandActions()
             }
             say("")
@@ -386,6 +395,7 @@ class AdventureController {
             case "OPEN {noun}" : open(items); break
             case "CLOSE {noun}" : close(items); break
             case "EAT {noun}" : eat(items); break
+            case "RESTART" : restart(); break
             default : throw new RuntimeException("Unexpected verb")
         }
     }
@@ -752,6 +762,27 @@ class AdventureController {
     private void executeClosure(Closure closure) {
         closure.delegate = scriptRuntimeDelegate
         closure.call()
+    }
+
+    private void restart() {
+        this.confirmingRestart = true
+        say("Are you sure you want to restart (Yes / No) ?")
+    }
+
+    private void doConfirmRestart(CommandEvent event) {
+            this.confirmingRestart = false
+
+            final String input = event.getCommand().trim().toUpperCase()
+            if (input.equals("YES")) {
+                say("Ok, Restarting...")
+                // TODO: The 'restarting message doesn't get displayed, despite the thread sleep.
+                Thread.sleep(2000)
+                loadAdventure(this.originalAdventure)
+            }
+            else {
+                // wind back time; the restart command should not count as a turn
+                this.turnCounter = this.turnCounter - 1
+            }
     }
 
     //

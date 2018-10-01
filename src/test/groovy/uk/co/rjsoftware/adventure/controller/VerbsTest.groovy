@@ -757,4 +757,51 @@ class VerbsTest {
     }
 
     // TODO: Add test where two object have the same custom verb defined
+
+    @Test
+    void testRestart() {
+        for (String verbString : this.verbs.get("RESTART").getSynonyms()) {
+            setup()
+
+            assertTrue(livingRoom.contains(lamp))
+            assertTrue(livingRoom.contains(newspaper))
+
+            mainWindow.fireCommand(new CommandEvent("GET lamp"))
+            mainWindow.fireCommand(new CommandEvent("GET newspaper"))
+            mainWindow.fireCommand(new CommandEvent("TURN ON lamp"))
+            mainWindow.fireCommand(new CommandEvent("TURN ON tv"))
+
+            mainWindow.fireCommand(new CommandEvent("NORTH"))
+            mainWindow.fireCommand(new CommandEvent("DROP lamp"))
+
+            assertEquals(kitchen, this.classUnderTest.getCurrentRoom())
+            assertTrue(player.contains(newspaper))
+            assertTrue(kitchen.contains(lamp))
+            assertFalse(livingRoom.contains(lamp))
+            assertFalse(livingRoom.contains(newspaper))
+            assertTrue(lamp.isSwitchedOn())
+            assertTrue(tv.isSwitchedOn())
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+            mainWindow.fireCommand(new CommandEvent("yes"))
+
+            // check that the adventure has reverted to it's original state
+            final newPlayer = this.classUnderTest.getPlayer()
+            final newLivingRoom = this.classUnderTest.getRoom("livingRoom")
+            final newKitchen = this.classUnderTest.getRoom("kitchen")
+            final newLamp = newLivingRoom.getItem("lamp")
+            final newTv = newLivingRoom.getItem("tv")
+
+            assertEquals(newLivingRoom, this.classUnderTest.getCurrentRoom())
+            assertFalse(newPlayer.contains(newspaper))
+            assertFalse(newPlayer.contains(lamp))
+            assertFalse(newKitchen.contains(lamp))
+            assertTrue(newLivingRoom.contains(lamp))
+            assertTrue(newLivingRoom.contains(newspaper))
+            assertFalse(newLamp.isSwitchedOn())
+            assertFalse(newTv.isSwitchedOn())
+        }
+    }
+
+
 }
