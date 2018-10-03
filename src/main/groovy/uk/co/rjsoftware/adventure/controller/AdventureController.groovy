@@ -30,6 +30,7 @@ class AdventureController {
     private Verb disambiguatingVerb
     private List<Item> disambiguatingNouns = new ArrayList<>()
     private boolean confirmingRestart = false
+    private boolean confirmingEndGame = false
 
     private List<Verb> verbs = new ArrayList<>()
     private Map<String, Item> nouns = new HashMap<>()
@@ -68,6 +69,7 @@ class AdventureController {
         this.disambiguatingVerb = null
         this.disambiguatingNouns = null
         this.confirmingRestart = false
+        this.confirmingEndGame = false
 
         this.verbs.clear()
         this.verbs.addAll(StandardVerbs.getVerbs())
@@ -101,6 +103,7 @@ class AdventureController {
     }
 
     // TODO: Extract the parser into another class
+    // TODO: Support nouns that are more than one word (e.g. 'booby trapped box' or 'expensive chocolates')
 
     private VerbNoun determineVerbNoun(String[] inputWords) {
         iterateWords(inputWords)
@@ -225,6 +228,9 @@ class AdventureController {
     private void executeCommand(CommandEvent event) {
         if (this.confirmingRestart) {
             doConfirmRestart(event)
+        }
+        else if (this.confirmingEndGame) {
+            doConfirmEndGame(event)
         }
         else if (this.disambiguating) {
             doDisambiguateCommand(event)
@@ -785,6 +791,11 @@ class AdventureController {
             }
     }
 
+    private void doConfirmEndGame(CommandEvent event) {
+        this.confirmingEndGame = false
+        loadAdventure(this.originalAdventure)
+    }
+
     //
     // Utility functions - can be used by Scripts.
     //
@@ -888,6 +899,12 @@ class AdventureController {
 
     int getTurnCounter() {
         this.turnCounter
+    }
+
+    void endGame() {
+        this.confirmingEndGame = true
+        say("")
+        say("Press <Enter> to start a new game.")
     }
 
     // TODO: add script functions for:

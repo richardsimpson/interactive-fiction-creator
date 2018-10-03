@@ -28,6 +28,7 @@ class ScriptingTest {
     private Item chest = new Item("chest", ["chest"], "This is the chest.")
     private Item dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
     private Item dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
+    private Item boobyTrappedBox = new Item("booby trapped box", ["booby trapped box", "box"], "This box will explode when opened.")
     private Item player = new Item("player")
 
     @Before
@@ -42,6 +43,11 @@ class ScriptingTest {
         dummy2.setContainer(true)
         dummy2.setOpenable(true)
         dummy2.setCloseable(true)
+        boobyTrappedBox.setOpenable(true)
+        boobyTrappedBox.setOnOpen {
+            say("the box explodes. game over.")
+            endGame()
+        }
 
         //
         // study -------- livingRoom
@@ -56,6 +62,7 @@ class ScriptingTest {
         livingRoom.addItem(chest)
         livingRoom.addItem(dummy)
         livingRoom.addItem(player)
+        livingRoom.addItem(boobyTrappedBox)
 
         study.addItem(dummy2)
 
@@ -77,6 +84,7 @@ class ScriptingTest {
         this.chest = this.controller.getItem(this.chest.id)
         this.dummy = this.controller.getItem(this.dummy.id)
         this.dummy2 = this.controller.getItem(this.dummy2.id)
+        this.boobyTrappedBox = this.controller.getItem(this.boobyTrappedBox.id)
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
@@ -584,5 +592,27 @@ class ScriptingTest {
         ])
 
     }
+
+    @Test
+    void testEndGame() {
+        this.mainWindow.clearMessages()
+
+        mainWindow.fireCommand(new CommandEvent("open box"))
+
+        assertMessagesAreCorrect([
+                "You open the booby trapped box",
+                "the box explodes. game over.",
+                "",
+                "Press <Enter> to start a new game.",
+                ""
+        ])
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent(""))
+
+        assertEquals(0, this.controller.getTurnCounter())
+        assertFalse(this.controller.getItem(this.boobyTrappedBox.id).isOpen())
+    }
+
 
 }

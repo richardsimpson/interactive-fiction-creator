@@ -97,4 +97,7 @@ class ScriptRuntimeDelegate {
         adventureController.getTurnCounter()
     }
 
+    void endGame() {
+        adventureController.endGame()
+    }
 }

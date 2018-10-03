@@ -147,6 +147,7 @@ adventure {
                 
                 And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
                 chapter in Muddle Earth's sordid history....""")
+            endGame()
         }
     }
 
@@ -184,30 +185,6 @@ adventure {
         }
 
     }
-
-    // <WAIT FOR KEY>
-    // <MOVE ROOM>
-    //
-    // Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
-    // The end had come.
-    //
-    // <WAIT FOR KEY>
-    //
-    // For you attempts you are worth N lenslok devices.
-    // You have entered 13 profound utterances
-    //
-    // And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
-    // chapter in Muddle Earth's sordid history....
-    //
-    // Are you going to try again or can we go home now?
-    //
-    // <WAIT FOR USER INPUT>
-    //
-    // Yes - restart the game.
-    // No - All right, be like that!
-    //      This magnificent act, to put it plainly, was done!
-    //      <reset game>
-
 
     room ("tunnel like hall") {
         exit direction: SOUTH, room: "round green toilet"
