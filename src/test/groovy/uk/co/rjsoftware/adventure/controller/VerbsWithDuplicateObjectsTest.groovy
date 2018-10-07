@@ -114,7 +114,24 @@ class VerbsWithDuplicateObjectsTest {
             mainWindow.fireCommand(new CommandEvent("2"))
 
             assertMessagesAreCorrect([
-                    "This is the red box.",
+                    redBox.getDescription(),
+                    ""
+            ])
+        }
+    }
+
+    @Test
+    void testExamineRedBox_WhenBothBoxesAreVisible() {
+        for (String verbString : this.verbs.get("EXAMINE {noun}").getSynonyms()) {
+            setup()
+            redBox.setVisible(true)
+            blueBox.setVisible(true)
+
+            this.mainWindow.clearMessages()
+            mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun}", "red box")))
+
+            assertMessagesAreCorrect([
+                    redBox.getDescription(),
                     ""
             ])
         }
@@ -141,7 +158,7 @@ class VerbsWithDuplicateObjectsTest {
             mainWindow.fireCommand(new CommandEvent("1"))
 
             assertMessagesAreCorrect([
-                    "This is the blue box.",
+                    blueBox.getDescription(),
                     ""
             ])
         }

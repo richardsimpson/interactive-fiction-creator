@@ -129,7 +129,7 @@ class AdventureController {
         if (verbs.isEmpty()) {
             return null
         }
-        VerbNoun verbNoun = iterateVerbSynonyms(inputWords, verbs.get(0).getSynonyms(), new VerbNoun(verbs.get(0), new ArrayList()))
+        VerbNoun verbNoun = iterateVerbSynonyms(inputWords, verbs.get(0).getSynonyms(), new VerbNoun(verbs.get(0)))
 
         if (verbNoun != null) {
             return verbNoun
@@ -170,11 +170,10 @@ class AdventureController {
         }
 
         if (verbWords[0].equals("{noun}")) {
-            final Set<Item> nouns = iterateInputToFindNouns(inputWords, new HashSet<Item>())
-            if (nouns == null) {
+            iterateInputToFindNouns(inputWords, result)
+            if (result.nouns.isEmpty()) {
                 return null
             }
-            else result.nouns = nouns.toList()
         }
         else if (!verbWords[0].equals(inputWords[0])) {
             return null
@@ -184,45 +183,59 @@ class AdventureController {
     }
 
     @TailRecursive
-    private Set<Item> iterateInputToFindNouns(String[] inputWords, Set<Item> validNouns) {
+    private VerbNoun iterateInputToFindNouns(String[] inputWords, VerbNoun result) {
         if (inputWords.length == 0) {
-            return validNouns
+            return result
         }
 
-        final Set<Item> items = determineNouns(
+        determineNouns(
                 this.nouns.values().findAll {item -> isItemInRoomOrPlayerInventory(item)}.asList(),
-                inputWords[0], new HashSet<Item>())
+                inputWords, result)
 
-        iterateInputToFindNouns(inputWords.tail(), validNouns + items)
+        iterateInputToFindNouns(inputWords.tail(), result)
     }
 
     @TailRecursive
-    private Set<Item> determineNouns(List<Item> nouns, String inputWord, Set<Item> validNouns) {
+    private VerbNoun determineNouns(List<Item> nouns, String[] inputWords, VerbNoun result) {
         if (nouns.isEmpty()) {
-            return validNouns
+            return result
         }
 
-        final String synonym = iterateNounSynonyms(nouns.get(0).getSynonyms(), inputWord)
+        iterateNounSynonyms(nouns.get(0), nouns.get(0).getSynonyms(), inputWords, result)
 
-        if (synonym == null) {
-            determineNouns(nouns.tail(), inputWord, validNouns)
+        determineNouns(nouns.tail(), inputWords, result)
+    }
+
+    @TailRecursive
+    private VerbNoun iterateNounSynonyms(Item noun, List<String> synonyms, String[] inputWords, VerbNoun result) {
+        if (synonyms.isEmpty()) {
+            return result
+        }
+
+        final String[] synonymWords = synonyms.get(0).split(" ")
+        if (iterateNounSynonymWords(synonymWords, inputWords)) {
+            result.addNoun(noun, synonymWords)
+        }
+
+        iterateNounSynonyms(noun, synonyms.tail(), inputWords, result)
+    }
+
+    @TailRecursive
+    private boolean iterateNounSynonymWords(String[] synonymWords, String[] inputWords) {
+        if (synonymWords.length == 0) {
+            return true
+        }
+
+        if (synonymWords.length > inputWords.length) {
+            return false
+        }
+
+        if (synonymWords[0].toUpperCase() == inputWords[0]) {
+            iterateNounSynonymWords(synonymWords.tail(), inputWords.tail())
         }
         else {
-            determineNouns(nouns.tail(), inputWord, validNouns + nouns.get(0))
+            iterateNounSynonymWords(synonymWords, inputWords.tail())
         }
-    }
-
-    @TailRecursive
-    private String iterateNounSynonyms(List<String> synonyms, String inputWord) {
-        if (synonyms.isEmpty()) {
-            return null
-        }
-
-        if (synonyms.get(0).toUpperCase() == inputWord) {
-            return synonyms.get(0)
-        }
-
-        iterateNounSynonyms(synonyms.tail(), inputWord)
     }
 
     private void executeCommand(CommandEvent event) {
@@ -263,10 +276,10 @@ class AdventureController {
             // TODO: if verb requires noun, and there is not one, say(verb + " what?")
 
             if (verbNoun.verb instanceof CustomVerb) {
-                executeCustomVerb(verbNoun.verb as CustomVerb, verbNoun.nouns)
+                executeCustomVerb(verbNoun.verb as CustomVerb, verbNoun.getCandidateItems())
             }
             else {
-                executeCommand(verbNoun.verb.getVerb(), verbNoun.nouns)
+                executeCommand(verbNoun.verb.getVerb(), verbNoun.getCandidateItems())
             }
         }
         finally {
@@ -381,7 +394,7 @@ class AdventureController {
         executeClosure(closure)
     }
 
-    private void executeCommand(String verb, List<Item> items) {
+    private void executeCommand(String verb, List<Item> candidateItems) {
         switch (verb) {
             case "NORTH" : move(Direction.NORTH); break
             case "SOUTH" : move(Direction.SOUTH); break
@@ -391,16 +404,16 @@ class AdventureController {
             case "DOWN" : move(Direction.DOWN); break
             case "LOOK" : look(); break
             case "EXITS" : exits(); break
-            case "EXAMINE {noun}" : examine(items); break
-            case "GET {noun}" : get(items); break
-            case "DROP {noun}" : drop(items); break
+            case "EXAMINE {noun}" : examine(candidateItems); break
+            case "GET {noun}" : get(candidateItems); break
+            case "DROP {noun}" : drop(candidateItems); break
             case "INVENTORY" : inventory(); break
-            case "TURN ON {noun}" : turnOn(items); break
-            case "TURN OFF {noun}" : turnOff(items); break
+            case "TURN ON {noun}" : turnOn(candidateItems); break
+            case "TURN OFF {noun}" : turnOff(candidateItems); break
             case "WAIT" : waitTurn(); break
-            case "OPEN {noun}" : open(items); break
-            case "CLOSE {noun}" : close(items); break
-            case "EAT {noun}" : eat(items); break
+            case "OPEN {noun}" : open(candidateItems); break
+            case "CLOSE {noun}" : close(candidateItems); break
+            case "EAT {noun}" : eat(candidateItems); break
             case "RESTART" : restart(); break
             default : throw new RuntimeException("Unexpected verb")
         }
@@ -916,11 +929,48 @@ class AdventureController {
 
     private static class VerbNoun {
         final Verb verb
-        List<Item> nouns
 
-        VerbNoun(Verb verb, List<Item> nouns) {
+        // Map of Score to a Map of Item to a Set of synonyms
+        //
+        // The Score is the number of words in the synonyms.
+        // The Items with the highest Score will be considered 'candidate items' (i.e. the item(s) that the player may have been trying to refer to.)
+        //
+        // Although we could always remove the lower scores, and we probably also don't need to keep a Set of synonyms,
+        // keeping this information is useful for debugging.  By keeping all the matches, we can see better what the
+        // parser has done.
+        final Map<Integer, Map<Item, Set<String>>> nouns = new HashMap<>()
+        Integer longestSynonym = 0
+
+        VerbNoun(Verb verb) {
             this.verb = verb
-            this.nouns = nouns
+        }
+
+        void addNoun(Item noun, String[] synonymWords) {
+            if (synonymWords.length > longestSynonym) {
+                longestSynonym = synonymWords.length
+            }
+
+            if (!nouns.containsKey(synonymWords.length)) {
+                nouns.put(synonymWords.length, new HashMap<>())
+            }
+
+            final itemSynonymMap = nouns.get(synonymWords.length)
+            if (!itemSynonymMap.containsKey(noun)) {
+                itemSynonymMap.put(noun, new HashSet<>())
+            }
+
+            final synonymSet = itemSynonymMap.get(noun)
+            final synonym = synonymWords.join(" ")
+            synonymSet.add(synonym)
+        }
+
+        List<Item> getCandidateItems() {
+            final candidateItems = this.nouns.get(this.longestSynonym)
+            if (candidateItems == null) {
+                return null
+            }
+
+            candidateItems.keySet().toList()
         }
     }
 }
