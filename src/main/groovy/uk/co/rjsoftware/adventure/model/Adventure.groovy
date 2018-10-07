@@ -37,7 +37,7 @@ class Adventure {
             }
         }
 
-        // todo: now fixup the player reference
+        // now fixup the player reference
         if (this.player != null) {
             adventureCopy.player = adventureCopy.getItem(this.player.getName())
         }
