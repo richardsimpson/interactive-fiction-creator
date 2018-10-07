@@ -103,7 +103,6 @@ class AdventureController {
     }
 
     // TODO: Extract the parser into another class
-    // TODO: Support nouns that are more than one word (e.g. 'booby trapped box' or 'expensive chocolates')
 
     private VerbNoun determineVerbNoun(String[] inputWords) {
         iterateWords(inputWords)
