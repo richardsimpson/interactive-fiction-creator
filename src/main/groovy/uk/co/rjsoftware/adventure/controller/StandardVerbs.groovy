@@ -30,17 +30,15 @@ class StandardVerbs {
                                              GET, DROP, INVENTORY, TURNON, TURNOFF, WAIT, OPEN, CLOSE, EAT,
                                              RESTART]
 
-    // TODO: Add verbs (or should these just be custom verbs):
-    //          READ, SEARCH, TASTE, WEAR, LOCK, UNLOCK, DRINK, LIE ON / LIE UPON / LIE DOWN ON / LIE DOWN UPON
-    //          SIT ON / SIT UPON / SIT DOWN ON / SIT DOWN UPON, HIT, PUSH, PULL, THROW, TOUCH, KILL, TIE, UNTIE,
-    //          CLIMB INTO / CLIMB OUT, USE, GIVE
-    //          SPEAK TO / SPEAK / TALK TO / TALK, LISTEN TO, MOVE, SMELL / SNIFF, KNOCK, SHOW, BUY,
+    // TODO: Add these verbs:
+    //          NW, NE, SW, SE, IN, OUT
+    //          WEAR, LOCK, UNLOCK, USE, GIVE,
+    //          SPEAK TO / TALK TO / ASK / TELL / ORDER
     //
-    //          INSERT
-    //
-    //          PUT {noun} IN {noun}
-
-    // Add diagonal directions
+    // TODO: Add these verbs:  (or should these just be custom verbs):
+    //          DRINK, LIE ON, SIT ON, HIT, PUSH, PULL, TOUCH
+    //          TIE, UNTIE, THROW, KILL, CLIMB INTO / CLIMB OUT
+    //          PUT {noun} IN {noun}, INSERT, SMELL, KNOCK, MOVE,
 
     // add inventory limit (items have weight, and player can only carry so much).  worn items should not add to total weight
 
