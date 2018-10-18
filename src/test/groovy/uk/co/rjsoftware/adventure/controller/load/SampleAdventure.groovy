@@ -5,7 +5,7 @@ adventure {
     introduction "Welcome to the Adventure!"
 
     player "player"
-    
+
     verb ("Watch", "Watch", "WATCH {noun}") {
         synonyms "LOOK AT {noun}", "VIEW {noun}"
     }
@@ -19,6 +19,8 @@ adventure {
         afterLeaveRoom { say("afterLeaveRoomScript") }
         beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript") }
         afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript") }
+
+        exit direction: EAST, room: "landing"
 
         item ("player")
 
@@ -63,10 +65,6 @@ adventure {
         afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript2") }
 
         exit direction: WEST, room: "bedroom"
-    }
-
-    room ("bedroom") {
-        exit direction: EAST, room: "landing"
     }
 
     room("roomWithDescriptionClosure") {

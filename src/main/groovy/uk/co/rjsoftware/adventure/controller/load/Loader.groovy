@@ -40,8 +40,8 @@ abstract class AdventureLoaderScript extends Script {
     }
 
     Adventure getAdventure() {
-        // Resolve the player forward reference, if one exists
-        this.adventureDelegate.resolvePlayerForwardReference()
+        // Resolve any forward references, such as adventure.player, or any room exits.
+        this.adventureDelegate.resolveForwardReferences()
 
         return this.adventureDelegate.getAdventure()
     }
@@ -51,6 +51,7 @@ abstract class AdventureLoaderScript extends Script {
 class AdventureDelegate {
     private final Adventure adventure = new Adventure("")
     private String playerForwardReference
+    private List<RoomDelegate> roomDelegates = new ArrayList<>()
 
     private void title(String title) {
         this.adventure.setTitle(StringUtils.sanitiseString(title))
@@ -107,7 +108,9 @@ class AdventureDelegate {
             this.adventure.addRoom(room)
         }
 
-        closure.delegate = new RoomDelegate(room, this.adventure)
+        final RoomDelegate roomDelegate = new RoomDelegate(room, this.adventure)
+        this.roomDelegates.add(roomDelegate)
+        closure.delegate = roomDelegate
         closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
     }
@@ -124,9 +127,13 @@ class AdventureDelegate {
         }
     }
 
-    void resolvePlayerForwardReference() {
+    void resolveForwardReferences() {
         if (this.playerForwardReference != null) {
             player(this.playerForwardReference)
+        }
+
+        for (RoomDelegate roomDelegate : this.roomDelegates) {
+            roomDelegate.resolveForwardRoomReferences()
         }
     }
 
@@ -156,6 +163,8 @@ class VerbDelegate {
 class RoomDelegate {
     private Room room
     private final Adventure adventure
+
+    private final List<LinkedHashMap> forwardRoomReferences = new ArrayList<>()
 
     private Direction NORTH = Direction.NORTH
     private Direction EAST = Direction.EAST
@@ -197,14 +206,26 @@ class RoomDelegate {
         this.room.setAfterEnterRoomFirstTime(closure)
     }
 
-    private void exit(LinkedHashMap linkedHashMap) {
+    private boolean exit(LinkedHashMap linkedHashMap) {
         Room room = this.adventure.getRoom((String)linkedHashMap.get("room"))
 
         if (room == null) {
-            throw new RuntimeException("Cannot reference a room before it is defined")
+            this.forwardRoomReferences.add(linkedHashMap)
+            false
         }
+        else {
+            this.room.addExit((Direction)linkedHashMap.get("direction"), room)
+            true
+        }
+    }
 
-        this.room.addExit((Direction)linkedHashMap.get("direction"), room)
+    void resolveForwardRoomReferences() {
+        for (LinkedHashMap linkedHashMap : this.forwardRoomReferences) {
+            final boolean ableToResolve = exit(linkedHashMap)
+            if (!ableToResolve) {
+                throw new RuntimeException("Room '${this.room.name}' contains an exit to a room named '${linkedHashMap.get("room")}', which does not exist.")
+            }
+        }
     }
 
     private void item(String itemId, Optional<Closure> closure) {

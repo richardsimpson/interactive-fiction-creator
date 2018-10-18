@@ -19,6 +19,8 @@ adventure {
              window was set high into the wall.
              To the south, was the round green toilet."""
 
+        exit direction: SOUTH, room: "round green toilet"
+
         beforeEnterRoomFirstTime {
             executeAfterTurns(3) {
                 if (playerInRoom("tunnel like hall")) {
@@ -186,10 +188,6 @@ adventure {
                 remarked to no one in particular"""
         }
 
-    }
-
-    room ("tunnel like hall") {
-        exit direction: SOUTH, room: "round green toilet"
     }
 
 }
