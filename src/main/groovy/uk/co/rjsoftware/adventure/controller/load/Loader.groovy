@@ -40,6 +40,9 @@ abstract class AdventureLoaderScript extends Script {
     }
 
     Adventure getAdventure() {
+        // Resolve the player forward reference, if one exists
+        this.adventureDelegate.resolvePlayerForwardReference()
+
         return this.adventureDelegate.getAdventure()
     }
 }
@@ -47,6 +50,7 @@ abstract class AdventureLoaderScript extends Script {
 @TypeChecked
 class AdventureDelegate {
     private final Adventure adventure = new Adventure("")
+    private String playerForwardReference
 
     private void title(String title) {
         this.adventure.setTitle(StringUtils.sanitiseString(title))
@@ -112,10 +116,18 @@ class AdventureDelegate {
         Item item = this.adventure.getItem(itemName)
 
         if (item == null) {
-            throw new RuntimeException(("Cannot locate player item named '" + itemName + "'"))
+            this.playerForwardReference = itemName
         }
+        else {
+            this.adventure.setPlayer(item)
+            this.playerForwardReference = null
+        }
+    }
 
-        this.adventure.setPlayer(item)
+    void resolvePlayerForwardReference() {
+        if (this.playerForwardReference != null) {
+            player(this.playerForwardReference)
+        }
     }
 
     Adventure getAdventure() {

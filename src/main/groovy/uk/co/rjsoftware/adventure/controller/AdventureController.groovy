@@ -103,6 +103,7 @@ class AdventureController {
     }
 
     // TODO: Extract the parser into another class
+    // TODO: Allow the adventure to override all of the standard responses.
 
     private VerbNoun determineVerbNoun(String[] inputWords) {
         iterateWords(inputWords)

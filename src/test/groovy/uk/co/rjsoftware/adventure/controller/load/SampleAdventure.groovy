@@ -4,6 +4,8 @@ adventure {
     title "Adventure Game"
     introduction "Welcome to the Adventure!"
 
+    player "player"
+    
     verb ("Watch", "Watch", "WATCH {noun}") {
         synonyms "LOOK AT {noun}", "VIEW {noun}"
     }
@@ -77,7 +79,5 @@ adventure {
             }
         }
     }
-    
-    player "player"
 
 }

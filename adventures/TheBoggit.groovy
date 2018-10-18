@@ -6,6 +6,8 @@ adventure {
         Time crawled slowly past."""
     getText "This magnificent act, to put it plainly, was done!"
 
+    player "thePlayer"
+
     //id, friendlyName, command { synonyms }
     // both friendlyName and synonyms are optional.
     verb ("ClimbInto", "Climb into", "CLIMB INTO {noun}") {}
@@ -46,7 +48,7 @@ adventure {
             }
         }
 
-        item ("player")
+        item ("thePlayer")
 
         item ("chest") {
             synonyms "large, wooden chest", "chest"
