@@ -3,7 +3,7 @@ package uk.co.rjsoftware.adventure.view
 import groovy.transform.TypeChecked
 
 @TypeChecked
-interface MainWindow {
+interface IPlayerAppView {
 
     void say(String outputText)
 

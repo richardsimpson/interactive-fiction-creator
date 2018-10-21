@@ -4,7 +4,7 @@ import groovy.transform.TypeChecked
 import org.junit.Before
 import org.junit.Test
 import uk.co.rjsoftware.adventure.controller.AdventureController
-import uk.co.rjsoftware.adventure.controller.MainWindowForTesting
+import uk.co.rjsoftware.adventure.controller.IPlayerAppViewForTesting
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.Direction
 import uk.co.rjsoftware.adventure.model.Item
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals
 class ScriptingTest {
 
     private AdventureController controller
-    private MainWindowForTesting mainWindow
+    private IPlayerAppViewForTesting mainWindow
 
     private Room study = new Room("study", "This is your study.")
     private Room livingRoom = new Room("livingRoom", "This is the living room.")
@@ -72,7 +72,7 @@ class ScriptingTest {
         dummy.setOpen(false)
         dummy2.setOpen(false)
 
-        this.mainWindow = new MainWindowForTesting()
+        this.mainWindow = new IPlayerAppViewForTesting()
         this.controller = new AdventureController(mainWindow)
         this.controller.loadAdventure(adventure)
 

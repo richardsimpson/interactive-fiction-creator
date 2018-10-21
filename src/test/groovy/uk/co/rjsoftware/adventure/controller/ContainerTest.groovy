@@ -15,7 +15,7 @@ class ContainerTest {
 
     private AdventureController classUnderTest
     private Item player = new Item("player")
-    private MainWindowForTesting mainWindow
+    private IPlayerAppViewForTesting mainWindow
 
     private Room livingRoom = new Room("livingRoom", "This is the living room.")
 
@@ -60,7 +60,7 @@ class ContainerTest {
 
         adventure.addRoom(livingRoom)
 
-        this.mainWindow = new MainWindowForTesting()
+        this.mainWindow = new IPlayerAppViewForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(adventure)
         this.player = this.classUnderTest.getPlayer()

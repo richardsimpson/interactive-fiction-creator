@@ -17,7 +17,7 @@ import javafx.stage.Stage
 import java.nio.file.Paths
 
 @TypeChecked
-class MainWindowView implements MainWindow {
+class PlayerAppView implements IPlayerAppView {
 
     @FXML private TextArea outputTextArea = null
 

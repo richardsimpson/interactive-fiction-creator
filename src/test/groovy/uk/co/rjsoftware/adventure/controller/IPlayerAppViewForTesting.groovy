@@ -5,10 +5,10 @@ import uk.co.rjsoftware.adventure.view.CommandEvent
 import uk.co.rjsoftware.adventure.view.CommandListener
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
-import uk.co.rjsoftware.adventure.view.MainWindow
+import uk.co.rjsoftware.adventure.view.IPlayerAppView
 
 @TypeChecked
-class MainWindowForTesting implements MainWindow {
+class IPlayerAppViewForTesting implements IPlayerAppView {
 
     private List<CommandListener> commandListeners = new ArrayList()
     private List<LoadListener> loadListeners = new ArrayList()

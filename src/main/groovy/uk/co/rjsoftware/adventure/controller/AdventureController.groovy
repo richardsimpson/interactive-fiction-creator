@@ -7,7 +7,7 @@ import uk.co.rjsoftware.adventure.model.*
 import uk.co.rjsoftware.adventure.utils.StringUtils
 import uk.co.rjsoftware.adventure.view.CommandEvent
 import uk.co.rjsoftware.adventure.view.LoadEvent
-import uk.co.rjsoftware.adventure.view.MainWindow
+import uk.co.rjsoftware.adventure.view.IPlayerAppView
 
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList
 @TypeChecked
 class AdventureController {
 
-    private final MainWindow mainWindow
+    private final IPlayerAppView view
 
     private Adventure originalAdventure
     private Adventure adventure
@@ -38,10 +38,10 @@ class AdventureController {
 
     final ScriptRuntimeDelegate scriptRuntimeDelegate = new ScriptRuntimeDelegate(this)
 
-    AdventureController(MainWindow mainWindow) {
-        this.mainWindow = mainWindow
-        mainWindow.addCommandListener(this.&executeCommand)
-        mainWindow.addLoadListener(this.&loadAdventureInternal)
+    AdventureController(IPlayerAppView view) {
+        this.view = view
+        view.addCommandListener(this.&executeCommand)
+        view.addLoadListener(this.&loadAdventureInternal)
     }
 
     private void loadAdventureInternal(LoadEvent event) {
@@ -96,7 +96,7 @@ class AdventureController {
         }
 
         // initialise the view
-        this.mainWindow.loadAdventure(this.adventure.getTitle(), this.adventure.getIntroduction())
+        this.view.loadAdventure(this.adventure.getTitle(), this.adventure.getIntroduction())
 
         movePlayerToInternal((Room)this.player.getParent())
         say("")
@@ -814,11 +814,11 @@ class AdventureController {
     //
 
     void say(String outputText) {
-        this.mainWindow.say(StringUtils.sanitiseString(outputText))
+        this.view.say(StringUtils.sanitiseString(outputText))
     }
 
     void sayWithoutLineBreak(String outputText) {
-        this.mainWindow.sayWithoutLineBreak(StringUtils.sanitiseString(outputText))
+        this.view.sayWithoutLineBreak(StringUtils.sanitiseString(outputText))
     }
 
     boolean isSwitchedOn(String itemId) {

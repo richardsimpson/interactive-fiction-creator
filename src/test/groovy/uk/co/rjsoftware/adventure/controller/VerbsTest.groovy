@@ -15,7 +15,7 @@ class VerbsTest {
 
     private AdventureController classUnderTest
     private Item player = new Item("player")
-    private MainWindowForTesting mainWindow
+    private IPlayerAppViewForTesting mainWindow
 
     private String waitText = "This is the wait text"
     private String getText = "This is the get text"
@@ -118,7 +118,7 @@ class VerbsTest {
         this.adventure.addRoom(landing)
         this.adventure.addRoom(cellar)
 
-        this.mainWindow = new MainWindowForTesting()
+        this.mainWindow = new IPlayerAppViewForTesting()
         this.classUnderTest = new AdventureController(mainWindow)
         this.classUnderTest.loadAdventure(this.adventure)
         this.player = this.classUnderTest.getPlayer()
