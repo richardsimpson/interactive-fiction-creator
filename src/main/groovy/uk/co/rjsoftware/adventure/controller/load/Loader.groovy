@@ -6,6 +6,7 @@ import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.ContentVisibility
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.model.Direction
+import uk.co.rjsoftware.adventure.model.Exit
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.utils.StringUtils
@@ -164,7 +165,7 @@ class RoomDelegate {
     private Room room
     private final Adventure adventure
 
-    private final List<LinkedHashMap> forwardRoomReferences = new ArrayList<>()
+    private final Map<Direction, Tuple2<String, Optional<Closure>>> forwardRoomReferences = new HashMap<>()
 
     private Direction NORTH = Direction.NORTH
     private Direction EAST = Direction.EAST
@@ -206,24 +207,44 @@ class RoomDelegate {
         this.room.setAfterEnterRoomFirstTime(closure)
     }
 
-    private boolean exit(LinkedHashMap linkedHashMap) {
-        Room room = this.adventure.getRoom((String)linkedHashMap.get("room"))
+    private boolean exit(Direction direction, String destination, Optional<Closure> closure) {
+        Exit exit = this.room.getExit(direction)
+        if (exit == null) {
+            exit = new Exit(direction)
+            this.room.addExit(exit)
+        }
 
+        Room room = this.adventure.getRoom(destination)
         if (room == null) {
-            this.forwardRoomReferences.add(linkedHashMap)
+            this.forwardRoomReferences.put(direction, new Tuple2<>(destination, closure))
             false
         }
         else {
-            this.room.addExit((Direction)linkedHashMap.get("direction"), room)
+            exit.setDestination(room)
+
+            closure.ifPresent {clo ->
+                clo.delegate = new ExitDelegate(exit)
+                clo.resolveStrategy = Closure.DELEGATE_ONLY
+                clo()
+            }
+
             true
         }
     }
 
+    private void exit(Direction direction, String destination, Closure closure) {
+        exit(direction, destination, Optional.of(closure))
+    }
+
+    private void exit(Direction direction, String destination) {
+        exit(direction, destination, Optional.empty())
+    }
+
     void resolveForwardRoomReferences() {
-        for (LinkedHashMap linkedHashMap : this.forwardRoomReferences) {
-            final boolean ableToResolve = exit(linkedHashMap)
+        for (Map.Entry<Direction, Tuple2<String, Optional<Closure>>> entry : this.forwardRoomReferences) {
+            final boolean ableToResolve = exit(entry.key, entry.value.getFirst(), entry.value.getSecond())
             if (!ableToResolve) {
-                throw new RuntimeException("Room '${this.room.name}' contains an exit to a room named '${linkedHashMap.get("room")}', which does not exist.")
+                throw new RuntimeException("Room '${this.room.name}' contains an exit to a room named '${entry.value.getFirst()}', which does not exist.")
             }
         }
     }
@@ -260,6 +281,20 @@ class RoomDelegate {
         this.room.addVerb(customVerb, closure)
     }
 
+}
+
+@TypeChecked
+class ExitDelegate {
+
+    private final Exit exit
+
+    ExitDelegate(Exit exit) {
+        this.exit = exit
+    }
+
+    private void scenery(Boolean scenery) {
+        this.exit.setScenery(scenery)
+    }
 }
 
 @TypeChecked

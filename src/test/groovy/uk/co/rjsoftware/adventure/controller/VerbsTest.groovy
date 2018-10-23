@@ -72,16 +72,16 @@ class VerbsTest {
         //                |      |
         //            garden    cellar
 
-        study.addExit(Direction.EAST, livingRoom)
-        livingRoom.addExit(Direction.NORTH, kitchen)
-        livingRoom.addExit(Direction.SOUTH, garden)
-        livingRoom.addExit(Direction.EAST, diningRoom)
-        livingRoom.addExit(Direction.WEST, study)
-        livingRoom.addExit(Direction.UP, landing)
-        livingRoom.addExit(Direction.DOWN, cellar)
-        kitchen.addExit(Direction.SOUTH, livingRoom)
-        diningRoom.addExit(Direction.WEST, livingRoom)
-        garden.addExit(Direction.NORTH, livingRoom)
+        study.addExit(new Exit(Direction.EAST, livingRoom))
+        livingRoom.addExit(new Exit(Direction.NORTH, kitchen))
+        livingRoom.addExit(new Exit(Direction.SOUTH, garden))
+        livingRoom.addExit(new Exit(Direction.EAST, diningRoom))
+        livingRoom.addExit(new Exit(Direction.WEST, study))
+        livingRoom.addExit(new Exit(Direction.UP, landing))
+        livingRoom.addExit(new Exit(Direction.DOWN, cellar))
+        kitchen.addExit(new Exit(Direction.SOUTH, livingRoom))
+        diningRoom.addExit(new Exit(Direction.WEST, livingRoom))
+        garden.addExit(new Exit(Direction.NORTH, livingRoom))
 
         for (Verb verb : StandardVerbs.getVerbs()) {
             verbs.put(verb.getVerb(), verb)
@@ -213,6 +213,30 @@ class VerbsTest {
 
             assertMessagesAreCorrect([
                     livingRoom.getDescription(),
+                    "From here you can go North, South, East, West, Up, Down",
+                    "You can also see:",
+                    "lamp",
+                    "newspaper",
+                    ""
+            ])
+        }
+    }
+
+    @Test
+    void testLook_WhenExitsAreScenery() {
+        for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
+            setup()
+
+            livingRoom.getExits().values().forEach {Exit exit ->
+                exit.setScenery(true)
+            }
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect([
+                    livingRoom.getDescription(),
                     "You can also see:",
                     "lamp",
                     "newspaper",
@@ -225,6 +249,29 @@ class VerbsTest {
     void testLook_WhenThereAreNoItemsInTheRoom() {
         for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
             setup()
+
+            mainWindow.fireCommand(new CommandEvent("west"))
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect([
+                    study.getDescription(),
+                    "From here you can go East",
+                    ""
+            ])
+        }
+    }
+
+    @Test
+    void testLook_WhenThereAreNoItemsInTheRoom_AndExitsAreScenery() {
+        for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
+            setup()
+
+            study.getExits().values().forEach {Exit exit ->
+                exit.setScenery(true)
+            }
 
             mainWindow.fireCommand(new CommandEvent("west"))
 

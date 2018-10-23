@@ -6,7 +6,7 @@ import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
 @TypeChecked
 class Room implements ItemContainer, VerbContainer {
 
-    private final Map<Direction, Room> exits = new TreeMap()
+    private final Map<Direction, Exit> exits = new TreeMap()
     private final Map<String, Closure> customVerbs = new HashMap()
     private final Map<String, Item> items = new TreeMap<String, Item>()
     private String name
@@ -39,8 +39,9 @@ class Room implements ItemContainer, VerbContainer {
     Room copy() {
         final Room roomCopy = new Room(this.name)
 
-        // NOTE: Don't assign the exits here - need to do that in Adventure.copy, after all the rooms copies
-        //       have been created
+        for (Exit exit : this.exits.values()) {
+            roomCopy.addExit(exit.copy())
+        }
         roomCopy.customVerbs.putAll(customVerbs)
         for (Map.Entry<String, Item> entry : this.items) {
             roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
@@ -76,15 +77,15 @@ class Room implements ItemContainer, VerbContainer {
         this.descriptionClosure = closure
     }
 
-    void addExit(Direction direction, Room room) {
-        this.exits.put(direction, room)
+    void addExit(Exit exit) {
+        this.exits.put(exit.getDirection(), exit)
     }
 
-    Map<Direction, Room> getExits() {
+    Map<Direction, Exit> getExits() {
         this.exits
     }
 
-    Room getExit(Direction direction) {
+    Exit getExit(Direction direction) {
         this.exits.get(direction)
     }
 

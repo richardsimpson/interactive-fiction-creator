@@ -19,7 +19,9 @@ adventure {
              window was set high into the wall.
              To the south, was the round green toilet."""
 
-        exit direction: SOUTH, room: "round green toilet"
+        exit(SOUTH, "round green toilet") {
+            scenery true
+        }
 
         beforeEnterRoomFirstTime {
             executeAfterTurns(3) {
@@ -116,8 +118,8 @@ adventure {
     room ("round green toilet") {
         description """
             Bimbo was in the round green toilet.  Furnished  with a basin, the obligatory bowl and a rather
-            decrepid medicine cabinet, the room was floored with cream tiles"""
-        exit direction: NORTH, room: "tunnel like hall"
+            decrepid medicine cabinet, the room was floored with cream tiles."""
+        exit(NORTH, "tunnel like hall")
 
         item ("toilet") {
             description "The toilet looked a bit dubious"

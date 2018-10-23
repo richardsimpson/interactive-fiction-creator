@@ -32,8 +32,9 @@ class Adventure {
         // now fixup the room references (exits)
         for (Room room : this.rooms) {
             final Room roomCopy = adventureCopy.getRoom(room.name)
-            for (Map.Entry<Direction, Room> entry : room.exits) {
-                roomCopy.addExit(entry.key, adventureCopy.getRoom(entry.value.name))
+            for (Exit exit : room.exits.values()) {
+                final Exit exitCopy = roomCopy.getExit(exit.getDirection())
+                exitCopy.setDestination(adventureCopy.getRoom(exit.getDestination().name))
             }
         }
 

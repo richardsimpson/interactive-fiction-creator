@@ -7,6 +7,7 @@ import uk.co.rjsoftware.adventure.controller.AdventureController
 import uk.co.rjsoftware.adventure.controller.MainWindowForTesting
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.Direction
+import uk.co.rjsoftware.adventure.model.Exit
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.CommandEvent
@@ -53,8 +54,8 @@ class ScriptingTest {
         // study -------- livingRoom
         //
 
-        study.addExit(Direction.EAST, livingRoom)
-        livingRoom.addExit(Direction.WEST, study)
+        study.addExit(new Exit(Direction.EAST, livingRoom))
+        livingRoom.addExit(new Exit(Direction.WEST, study))
 
         final Adventure adventure = new Adventure("intro")
 
@@ -412,6 +413,7 @@ class ScriptingTest {
         assertMessagesAreCorrect([
                 "You open the dummy",
                 "This is your study.",
+                "From here you can go East",
                 "You can also see:",
                 "dummy2",
                 ""
