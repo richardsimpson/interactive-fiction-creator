@@ -59,7 +59,9 @@ class LoaderTest {
         assertEquals(1, bedroom.getExits().size())
         final Exit exitToLanding = bedroom.getExit(Direction.EAST)
         assertEquals(landing, exitToLanding.getDestination())
-        assertFalse(exitToLanding.isScenery())
+        assertTrue(exitToLanding.isScenery())
+        assertEquals("prefix", exitToLanding.getPrefix())
+        assertEquals("suffix", exitToLanding.getSuffix())
 
         assertEquals("landing", landing.getName())
         assertEquals("custom description2", landing.getDescription())
@@ -71,7 +73,7 @@ class LoaderTest {
         assertEquals(1, landing.getExits().size())
         final Exit exitToBedroom = landing.getExit(Direction.WEST)
         assertEquals(bedroom, exitToBedroom.getDestination())
-        assertTrue(exitToBedroom.isScenery())
+        assertFalse(exitToBedroom.isScenery())
 
         assertEquals(3, bedroom.getItems().size())
 

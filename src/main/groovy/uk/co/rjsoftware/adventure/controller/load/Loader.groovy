@@ -295,6 +295,14 @@ class ExitDelegate {
     private void scenery(Boolean scenery) {
         this.exit.setScenery(scenery)
     }
+
+    private void prefix(String prefix) {
+        this.exit.setPrefix(prefix)
+    }
+
+    private void suffix(String suffix) {
+        this.exit.setSuffix(suffix)
+    }
 }
 
 @TypeChecked

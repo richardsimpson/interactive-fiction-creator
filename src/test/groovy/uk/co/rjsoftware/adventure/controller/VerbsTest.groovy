@@ -223,6 +223,76 @@ class VerbsTest {
     }
 
     @Test
+    void testLook_WithPrefix() {
+        for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
+            setup()
+            livingRoom.getExits().values().forEach {Exit exit ->
+                exit.setPrefix("p")
+            }
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect([
+                    livingRoom.getDescription(),
+                    "From here you can go p North, p South, p East, p West, p Up, p Down",
+                    "You can also see:",
+                    "lamp",
+                    "newspaper",
+                    ""
+            ])
+        }
+    }
+
+    @Test
+    void testLook_WithSuffix() {
+        for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
+            setup()
+            livingRoom.getExits().values().forEach {Exit exit ->
+                exit.setSuffix("s")
+            }
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect([
+                    livingRoom.getDescription(),
+                    "From here you can go North s, South s, East s, West s, Up s, Down s",
+                    "You can also see:",
+                    "lamp",
+                    "newspaper",
+                    ""
+            ])
+        }
+    }
+
+    @Test
+    void testLook_WithPrefixAndSuffix() {
+        for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
+            setup()
+            livingRoom.getExits().values().forEach {Exit exit ->
+                exit.setPrefix("p")
+                exit.setSuffix("s")
+            }
+
+            this.mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+
+            assertMessagesAreCorrect([
+                    livingRoom.getDescription(),
+                    "From here you can go p North s, p South s, p East s, p West s, p Up s, p Down s",
+                    "You can also see:",
+                    "lamp",
+                    "newspaper",
+                    ""
+            ])
+        }
+    }
+
+    @Test
     void testLook_WhenExitsAreScenery() {
         for (String verbString : this.verbs.get("LOOK").getSynonyms()) {
             setup()
@@ -293,6 +363,52 @@ class VerbsTest {
 
         assertMessagesAreCorrect([
                 "From here you can go North, South, East, West, Up, Down",
+                ""
+        ])
+    }
+
+    @Test
+    void testExits_WithPrefix() {
+        livingRoom.getExits().values().forEach {Exit exit ->
+            exit.setPrefix("p")
+        }
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("exits"))
+
+        assertMessagesAreCorrect([
+                "From here you can go p North, p South, p East, p West, p Up, p Down",
+                ""
+        ])
+    }
+
+    @Test
+    void testExits_WithSuffix() {
+        livingRoom.getExits().values().forEach {Exit exit ->
+            exit.setSuffix("s")
+        }
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("exits"))
+
+        assertMessagesAreCorrect([
+                "From here you can go North s, South s, East s, West s, Up s, Down s",
+                ""
+        ])
+    }
+
+    @Test
+    void testExits_WithPrefixAndSuffix() {
+        livingRoom.getExits().values().forEach {Exit exit ->
+            exit.setPrefix("p")
+            exit.setSuffix("s")
+        }
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("exits"))
+
+        assertMessagesAreCorrect([
+                "From here you can go p North s, p South s, p East s, p West s, p Up s, p Down s",
                 ""
         ])
     }

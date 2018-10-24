@@ -9,6 +9,16 @@ class StringUtils {
         str.stripIndent().trim()
     }
 
+    // TODO: Use this everywhere you check if a string is null or ""
+    static Boolean isEmpty(String str) {
+        (str == null) || (str.isEmpty())
+    }
+
+    // TODO: Use this everywhere you check if a string is NOT null or ""
+    static Boolean hasValue(String str) {
+        !isEmpty(str)
+    }
+
 }
 
 
