@@ -5,6 +5,7 @@ import org.junit.Test
 import uk.co.rjsoftware.adventure.model.*
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 @TypeChecked
@@ -56,7 +57,11 @@ class LoaderTest {
         verifyClosure("beforeEnterRoomFirstTimeScript", bedroom.getBeforeEnterRoomFirstTime())
         verifyClosure("afterEnterRoomFirstTimeScript", bedroom.getAfterEnterRoomFirstTime())
         assertEquals(1, bedroom.getExits().size())
-        assertEquals(landing, bedroom.getExit(Direction.EAST))
+        final Exit exitToLanding = bedroom.getExit(Direction.EAST)
+        assertEquals(landing, exitToLanding.getDestination())
+        assertTrue(exitToLanding.isScenery())
+        assertEquals("prefix", exitToLanding.getPrefix())
+        assertEquals("suffix", exitToLanding.getSuffix())
 
         assertEquals("landing", landing.getName())
         assertEquals("custom description2", landing.getDescription())
@@ -66,7 +71,9 @@ class LoaderTest {
         verifyClosure("beforeEnterRoomFirstTimeScript2", landing.getBeforeEnterRoomFirstTime())
         verifyClosure("afterEnterRoomFirstTimeScript2", landing.getAfterEnterRoomFirstTime())
         assertEquals(1, landing.getExits().size())
-        assertEquals(bedroom, landing.getExit(Direction.WEST))
+        final Exit exitToBedroom = landing.getExit(Direction.WEST)
+        assertEquals(bedroom, exitToBedroom.getDestination())
+        assertFalse(exitToBedroom.isScenery())
 
         assertEquals(3, bedroom.getItems().size())
 

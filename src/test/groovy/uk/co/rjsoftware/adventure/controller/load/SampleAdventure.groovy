@@ -20,7 +20,11 @@ adventure {
         beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript") }
         afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript") }
 
-        exit direction: EAST, room: "landing"
+        exit(EAST, "landing") {
+            scenery true
+            prefix "prefix"
+            suffix "suffix"
+        }
 
         item ("player")
 
@@ -64,7 +68,7 @@ adventure {
         beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript2") }
         afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript2") }
 
-        exit direction: WEST, room: "bedroom"
+        exit(WEST, "bedroom")
     }
 
     room("roomWithDescriptionClosure") {

@@ -430,6 +430,9 @@ class AdventureController {
         }
         else {
             say(this.currentRoom.getDescription())
+
+            exits()
+
             if (!this.currentRoom.getItems().isEmpty()) {
                 boolean firstItemOutput = false
 
@@ -447,21 +450,34 @@ class AdventureController {
     }
 
     private void exits() {
-        final List<String> validExits = this.currentRoom.getExits().keySet().stream()
-                .map {direction -> direction.getDescription()}
+        final String exitsMessage = getExitsMessage()
+        if (!exitsMessage.isEmpty()) {
+            say(exitsMessage)
+        }
+    }
+
+    private String getExitsMessage() {
+        final List<String> validExits = this.currentRoom.getExits().values().stream()
+                .filter {exit -> !exit.isScenery()}
+                .map {exit -> exit.getDescription()}
                 .collect(toList())
 
-        say("From here you can go " + validExits.join(", "))
+        String descriptions = validExits.join(", ")
+
+        if (!descriptions.isEmpty()) {
+            descriptions = "From here you can go " + descriptions
+        }
+        descriptions
     }
 
     private void move(Direction direction) {
-        final Room newRoom = this.currentRoom.getExit(direction)
+        final Exit exit = this.currentRoom.getExit(direction)
 
-        if (newRoom == null) {
+        if (exit == null || exit.getDestination() == null) {
             say("You cannot go that way.")
         }
         else {
-            movePlayerToInternal(newRoom)
+            movePlayerToInternal(exit.getDestination())
         }
     }
 
