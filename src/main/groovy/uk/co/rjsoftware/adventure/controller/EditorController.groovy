@@ -1,18 +1,11 @@
 package uk.co.rjsoftware.adventure.controller
 
-import groovy.transform.TailRecursive
+
 import groovy.transform.TypeChecked
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
-import uk.co.rjsoftware.adventure.utils.StringUtils
-import uk.co.rjsoftware.adventure.view.CommandEvent
-import uk.co.rjsoftware.adventure.view.EditorAppView
-import uk.co.rjsoftware.adventure.view.IPlayerAppView
+import uk.co.rjsoftware.adventure.view.editor.EditorAppView
 import uk.co.rjsoftware.adventure.view.LoadEvent
-
-import java.util.concurrent.CopyOnWriteArrayList
-
-import static java.util.stream.Collectors.toList
 
 @TypeChecked
 class EditorController {

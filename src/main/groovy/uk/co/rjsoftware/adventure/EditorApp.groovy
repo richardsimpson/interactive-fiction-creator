@@ -6,12 +6,10 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
-import uk.co.rjsoftware.adventure.controller.AdventureController
 import uk.co.rjsoftware.adventure.controller.EditorController
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.Adventure
-import uk.co.rjsoftware.adventure.view.EditorAppView
-import uk.co.rjsoftware.adventure.view.PlayerAppView
+import uk.co.rjsoftware.adventure.view.editor.EditorAppView
 
 import java.nio.file.Paths
 
