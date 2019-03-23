@@ -20,6 +20,7 @@ import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
+import uk.co.rjsoftware.adventure.view.editor.components.MoveComponent
 import uk.co.rjsoftware.adventure.view.editor.components.ResizeComponent
 import uk.co.rjsoftware.adventure.view.editor.treeitems.AdventureTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.CustomTreeItem
@@ -38,9 +39,10 @@ class EditorAppView {
     @FXML private MenuItem loadMenuItem = null
 
     private ResizeComponent resizeComponent = new ResizeComponent()
+    private MoveComponent moveComponent = new MoveComponent()
 
     @FXML void initialize() {
-        this.pane.setOnMouseClicked(this.&clickOnEditorPane)
+        this.pane.setOnMouseClicked(this.&onMouseClickedEditorPane)
     }
 
     private Stage primaryStage = null
@@ -60,20 +62,28 @@ class EditorAppView {
             @Override
             public void changed(ObservableValue<? extends TreeItem<CustomTreeItem>> observable, TreeItem<CustomTreeItem> oldValue,
                                 TreeItem<CustomTreeItem> newValue) {
+
                 final CustomComponent component = newValue.getValue().getComponent()
+
+                // Add the component to the editor view, if it's not already there
                 if (component.getParent() != EditorAppView.this.pane) {
                     component.setLayoutX(100)
                     component.setLayoutY(100)
 
-                    component.setOnMouseClicked(EditorAppView.this.&clickOnComponent)
+                    component.setOnMousePressed(EditorAppView.this.&onMousePressedComponent)
+                    component.setOnMouseReleased(EditorAppView.this.&onMouseReleasedComponent)
                     EditorAppView.this.pane.getChildren().add(component)
                 }
             }
         });
+
+        resizeComponent.setOnMousePressed(this.&onMousePressedResizeComponent)
+        resizeComponent.setOnMouseReleased(this.&onMouseReleasedResizeComponent)
+
     }
 
-    private void clickOnComponent(MouseEvent event) {
-        println("component clicked")
+    private void onMousePressedComponent(MouseEvent event) {
+        println("component pressed")
 
         final Region region = event.getSource() as Region
 
@@ -81,11 +91,51 @@ class EditorAppView {
         this.pane.getChildren().remove(resizeComponent)
 
         // add the resize component, over the selected item
-        resizeComponent.setComponentToResize(region)
+        resizeComponent.setComponentToResize(region, event.getX(), event.getY())
         this.pane.getChildren().add(resizeComponent)
+
+        //add the move component over the selected item
+        moveComponent.setComponentToMove(resizeComponent, region, event.getX(), event.getY())
+        this.pane.getChildren().add(moveComponent)
     }
 
-    private void clickOnEditorPane(MouseEvent event) {
+    private void onMouseReleasedComponent(MouseEvent event) {
+        println("component released")
+
+        //move the component
+        moveComponent.mouseReleased()
+
+        // update the resize component location to match the new location of the component being moved.
+        resizeComponent.updateLocation()
+
+        // remove the move component
+        this.pane.getChildren().remove(moveComponent)
+    }
+
+    private void onMousePressedResizeComponent(MouseEvent event) {
+        println("resize component pressed")
+
+        final Region region = resizeComponent.getComponentToResize()
+
+        //add the move component over the selected item
+        moveComponent.setComponentToMove(resizeComponent, region, event.getX(), event.getY())
+        this.pane.getChildren().add(moveComponent)
+    }
+
+    private void onMouseReleasedResizeComponent(MouseEvent event) {
+        println("resize component released")
+
+        //move the component
+        moveComponent.mouseReleased()
+
+        // update the resize component location to match the new location of the component being moved.
+        resizeComponent.updateLocation()
+
+        // remove the move component
+        this.pane.getChildren().remove(moveComponent)
+    }
+
+    private void onMouseClickedEditorPane(MouseEvent event) {
         if (event.target == this.pane) {
             println("pane clicked")
             this.pane.getChildren().remove(resizeComponent)

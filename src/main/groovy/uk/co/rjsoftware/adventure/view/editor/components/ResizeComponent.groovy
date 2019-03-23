@@ -1,9 +1,6 @@
 package uk.co.rjsoftware.adventure.view.editor.components
 
 import groovy.transform.TypeChecked
-import javafx.scene.Node
-import javafx.scene.control.Control
-import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Border
@@ -27,6 +24,11 @@ class ResizeComponent extends AnchorPane {
     private final Rectangle dragNodeSE = new Rectangle(DRAG_NODE_SIZE, DRAG_NODE_SIZE, Color.BLACK)
     private final Rectangle dragNodeSW = new Rectangle(DRAG_NODE_SIZE, DRAG_NODE_SIZE, Color.BLACK)
     private final Rectangle dragNodeNW = new Rectangle(DRAG_NODE_SIZE, DRAG_NODE_SIZE, Color.BLACK)
+
+    private double currentX
+    private double currentY
+    private double offsetX
+    private double offsetY
 
     private Region componentToResize
 
@@ -92,13 +94,24 @@ class ResizeComponent extends AnchorPane {
         this.getChildren().add(dragNodeNW)
     }
 
-    void setComponentToResize(Region node) {
+    void setComponentToResize(Region node, double offsetX, double offsetY) {
         componentToResize = node
-        setLayoutX(node.getLayoutX())
-        setLayoutY(node.getLayoutY())
+
+        this.offsetX = offsetX
+        this.offsetY = offsetY
+
+        currentX = node.getLayoutX()
+        currentY = node.getLayoutY()
+
+        setLayoutX(currentX)
+        setLayoutY(currentY)
         setMinSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
         setMaxSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
         setPrefSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
+    }
+
+    Region getComponentToResize() {
+        this.componentToResize
     }
 
     private void nodeOnMousePressed(MouseEvent event) {
@@ -108,6 +121,10 @@ class ResizeComponent extends AnchorPane {
     private void nodeOnMouseReleased(MouseEvent event) {
         println("node released")
     }
+
+    //
+    // Dragging of corner nodes
+    //
 
     private void nodeNOnMouseDragged(MouseEvent event) {
         final double currentWidth = componentToResize.getWidth()
@@ -275,5 +292,10 @@ class ResizeComponent extends AnchorPane {
 
         AnchorPane.setTopAnchor(dragNodeW, heightOffset)
         AnchorPane.setBottomAnchor(dragNodeW, heightOffset)
+    }
+
+    void updateLocation() {
+        setLayoutX(componentToResize.getLayoutX())
+        setLayoutY(componentToResize.getLayoutY())
     }
 }
