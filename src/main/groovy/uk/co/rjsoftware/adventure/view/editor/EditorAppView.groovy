@@ -40,6 +40,7 @@ class EditorAppView {
 
     private ResizeComponent resizeComponent = new ResizeComponent()
     private MoveComponent moveComponent = new MoveComponent()
+    private boolean currentlyDraggingNode
 
     @FXML void initialize() {
         this.pane.setOnMouseClicked(this.&onMouseClickedEditorPane)
@@ -115,24 +116,34 @@ class EditorAppView {
     private void onMousePressedResizeComponent(MouseEvent event) {
         println("resize component pressed")
 
-        final Region region = resizeComponent.getComponentToResize()
+        if (resizeComponent.isCurrentlyDraggingNode()) {
+            this.currentlyDraggingNode = true
+        }
+        else {
+            final Region region = resizeComponent.getComponentToResize()
 
-        //add the move component over the selected item
-        moveComponent.setComponentToMove(resizeComponent, region, event.getX(), event.getY())
-        this.pane.getChildren().add(moveComponent)
+            //add the move component over the selected item
+            moveComponent.setComponentToMove(resizeComponent, region, event.getX(), event.getY())
+            this.pane.getChildren().add(moveComponent)
+        }
     }
 
     private void onMouseReleasedResizeComponent(MouseEvent event) {
         println("resize component released")
 
-        //move the component
-        moveComponent.mouseReleased()
+        if (this.currentlyDraggingNode) {
+            this.currentlyDraggingNode = false
+        }
+        else {
+            //move the component
+            moveComponent.mouseReleased()
 
-        // update the resize component location to match the new location of the component being moved.
-        resizeComponent.updateLocation()
+            // update the resize component location to match the new location of the component being moved.
+            resizeComponent.updateLocation()
 
-        // remove the move component
-        this.pane.getChildren().remove(moveComponent)
+            // remove the move component
+            this.pane.getChildren().remove(moveComponent)
+        }
     }
 
     private void onMouseClickedEditorPane(MouseEvent event) {

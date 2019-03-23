@@ -32,6 +32,8 @@ class ResizeComponent extends AnchorPane {
 
     private Region componentToResize
 
+    private boolean currentlyDraggingNode
+
     ResizeComponent() {
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)))
 
@@ -116,10 +118,12 @@ class ResizeComponent extends AnchorPane {
 
     private void nodeOnMousePressed(MouseEvent event) {
         println("node pressed")
+        this.currentlyDraggingNode = true
     }
 
     private void nodeOnMouseReleased(MouseEvent event) {
         println("node released")
+        this.currentlyDraggingNode = false
     }
 
     //
@@ -127,6 +131,7 @@ class ResizeComponent extends AnchorPane {
     //
 
     private void nodeNOnMouseDragged(MouseEvent event) {
+        println("nodeN dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -139,6 +144,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeEOnMouseDragged(MouseEvent event) {
+        println("nodeE dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -150,6 +156,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeSOnMouseDragged(MouseEvent event) {
+        println("nodeS dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -161,6 +168,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeWOnMouseDragged(MouseEvent event) {
+        println("nodeW dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -173,6 +181,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeNEOnMouseDragged(MouseEvent event) {
+        println("nodeNE dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -186,6 +195,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeSEOnMouseDragged(MouseEvent event) {
+        println("nodeSE dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -198,6 +208,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeSWOnMouseDragged(MouseEvent event) {
+        println("nodeSW dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -211,6 +222,7 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void nodeNWOnMouseDragged(MouseEvent event) {
+        println("nodeNW dragged")
         final double currentWidth = componentToResize.getWidth()
         final double currentHeight = componentToResize.getHeight()
         final double currentX = componentToResize.getLayoutX()
@@ -297,5 +309,9 @@ class ResizeComponent extends AnchorPane {
     void updateLocation() {
         setLayoutX(componentToResize.getLayoutX())
         setLayoutY(componentToResize.getLayoutY())
+    }
+
+    boolean isCurrentlyDraggingNode() {
+        this.currentlyDraggingNode
     }
 }

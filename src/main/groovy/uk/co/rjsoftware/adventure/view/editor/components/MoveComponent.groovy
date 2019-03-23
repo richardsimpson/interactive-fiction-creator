@@ -34,11 +34,21 @@ class MoveComponent extends AnchorPane {
         setPrefSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
 
         componentToMove.setOnMouseDragged(this.&onMouseDraggedComponent)
-        resizeComponent.setOnMouseDragged(this.&onMouseDraggedComponent)
+        resizeComponent.setOnMouseDragged(this.&onMouseDraggedResizeComponent)
     }
 
     private void onMouseDraggedComponent(MouseEvent event) {
         println("component dragged")
+
+        final double newX = currentX + event.getX() - this.offsetX
+        final double newY = currentY + event.getY() - this.offsetY
+
+        setLayoutX(newX)
+        setLayoutY(newY)
+    }
+
+    private void onMouseDraggedResizeComponent(MouseEvent event) {
+        println("resize component dragged")
 
         final double newX = currentX + event.getX() - this.offsetX
         final double newY = currentY + event.getY() - this.offsetY
