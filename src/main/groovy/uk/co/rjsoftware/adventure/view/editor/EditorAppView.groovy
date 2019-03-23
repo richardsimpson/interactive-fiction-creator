@@ -38,12 +38,10 @@ class EditorAppView {
 
     @FXML private MenuItem loadMenuItem = null
 
-    private ResizeComponent resizeComponent = new ResizeComponent()
-    private MoveComponent moveComponent = new MoveComponent()
-    private boolean currentlyDraggingNode
+    private ResizeComponent resizeComponent
 
     @FXML void initialize() {
-        this.pane.setOnMouseClicked(this.&onMouseClickedEditorPane)
+        resizeComponent = new ResizeComponent(this.pane)
     }
 
     private Stage primaryStage = null
@@ -71,86 +69,11 @@ class EditorAppView {
                     component.setLayoutX(100)
                     component.setLayoutY(100)
 
-                    component.setOnMousePressed(EditorAppView.this.&onMousePressedComponent)
-                    component.setOnMouseReleased(EditorAppView.this.&onMouseReleasedComponent)
+                    resizeComponent.registerComponent(component)
                     EditorAppView.this.pane.getChildren().add(component)
                 }
             }
         });
-
-        resizeComponent.setOnMousePressed(this.&onMousePressedResizeComponent)
-        resizeComponent.setOnMouseReleased(this.&onMouseReleasedResizeComponent)
-
-    }
-
-    private void onMousePressedComponent(MouseEvent event) {
-        println("component pressed")
-
-        final Region region = event.getSource() as Region
-
-        // remove the existing resize component, if any
-        this.pane.getChildren().remove(resizeComponent)
-
-        // add the resize component, over the selected item
-        resizeComponent.setComponentToResize(region, event.getX(), event.getY())
-        this.pane.getChildren().add(resizeComponent)
-
-        //add the move component over the selected item
-        moveComponent.setComponentToMove(resizeComponent, region, event.getX(), event.getY())
-        this.pane.getChildren().add(moveComponent)
-    }
-
-    private void onMouseReleasedComponent(MouseEvent event) {
-        println("component released")
-
-        //move the component
-        moveComponent.mouseReleased()
-
-        // update the resize component location to match the new location of the component being moved.
-        resizeComponent.updateLocation()
-
-        // remove the move component
-        this.pane.getChildren().remove(moveComponent)
-    }
-
-    private void onMousePressedResizeComponent(MouseEvent event) {
-        println("resize component pressed")
-
-        if (resizeComponent.isCurrentlyDraggingNode()) {
-            this.currentlyDraggingNode = true
-        }
-        else {
-            final Region region = resizeComponent.getComponentToResize()
-
-            //add the move component over the selected item
-            moveComponent.setComponentToMove(resizeComponent, region, event.getX(), event.getY())
-            this.pane.getChildren().add(moveComponent)
-        }
-    }
-
-    private void onMouseReleasedResizeComponent(MouseEvent event) {
-        println("resize component released")
-
-        if (this.currentlyDraggingNode) {
-            this.currentlyDraggingNode = false
-        }
-        else {
-            //move the component
-            moveComponent.mouseReleased()
-
-            // update the resize component location to match the new location of the component being moved.
-            resizeComponent.updateLocation()
-
-            // remove the move component
-            this.pane.getChildren().remove(moveComponent)
-        }
-    }
-
-    private void onMouseClickedEditorPane(MouseEvent event) {
-        if (event.target == this.pane) {
-            println("pane clicked")
-            this.pane.getChildren().remove(resizeComponent)
-        }
     }
 
     private void loadAdventureInternal() {

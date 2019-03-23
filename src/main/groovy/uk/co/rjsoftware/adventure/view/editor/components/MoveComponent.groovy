@@ -16,7 +16,6 @@ class MoveComponent extends AnchorPane {
 
     MoveComponent() {
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED, null, null)))
-
     }
 
     void setComponentToMove(ResizeComponent resizeComponent, Region node, double offsetX, double offsetY) {
@@ -34,21 +33,11 @@ class MoveComponent extends AnchorPane {
         setPrefSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
 
         componentToMove.setOnMouseDragged(this.&onMouseDraggedComponent)
-        resizeComponent.setOnMouseDragged(this.&onMouseDraggedResizeComponent)
+        resizeComponent.setOnMouseDragged(this.&onMouseDraggedComponent)
     }
 
     private void onMouseDraggedComponent(MouseEvent event) {
         println("component dragged")
-
-        final double newX = currentX + event.getX() - this.offsetX
-        final double newY = currentY + event.getY() - this.offsetY
-
-        setLayoutX(newX)
-        setLayoutY(newY)
-    }
-
-    private void onMouseDraggedResizeComponent(MouseEvent event) {
-        println("resize component dragged")
 
         final double newX = currentX + event.getX() - this.offsetX
         final double newY = currentY + event.getY() - this.offsetY
