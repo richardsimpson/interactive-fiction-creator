@@ -22,14 +22,14 @@ class RoomComponent extends CustomComponent {
 
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT)
 
-        this.name.textProperty().set(room.getName())
+        this.name.setText(room.getName())
         this.name.setFont(Font.font("Helvetica", FontWeight.BOLD, 20))
 
         this.label.setWrapText(true)
         this.label.setMaxWidth(200)
 
         this.label.setFont(Font.font("Arial", FontPosture.ITALIC, 13))
-        this.label.textProperty().set(room.getDescription())
+        this.label.setText(room.getDescription())
 
         this.getChildren().add(name)
         this.getChildren().add(label)

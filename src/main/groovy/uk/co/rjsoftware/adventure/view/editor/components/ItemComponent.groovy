@@ -18,7 +18,7 @@ class ItemComponent extends CustomComponent {
 
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT)
 
-        this.button.textProperty().set(item.getName())
+        this.button.setText(item.getName())
         this.getChildren().add(button)
     }
 

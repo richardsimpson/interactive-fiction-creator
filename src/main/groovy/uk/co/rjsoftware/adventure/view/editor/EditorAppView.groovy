@@ -6,14 +6,22 @@ import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
+import javafx.scene.Scene
+import javafx.scene.control.Button
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.scene.layout.Region
 import javafx.stage.FileChooser
+import javafx.stage.Modality
 import javafx.stage.Stage
+import uk.co.rjsoftware.adventure.controller.EditorController
+import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
@@ -38,10 +46,20 @@ class EditorAppView {
 
     @FXML private MenuItem loadMenuItem = null
 
+    @FXML private Button button = null
+
     private ResizeComponent resizeComponent
+
+    private Adventure adventure
 
     @FXML void initialize() {
         resizeComponent = new ResizeComponent(this.pane)
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            void handle(ActionEvent event) {
+                showEditRoomDialog()
+            }
+        })
+
     }
 
     private Stage primaryStage = null
@@ -100,6 +118,8 @@ class EditorAppView {
     }
 
     void loadAdventure(Adventure adventure) {
+        this.adventure = adventure
+
         // add the adventure rooms / items to the treeView
         final TreeItem<CustomTreeItem> root = new TreeItem<>(new AdventureTreeItem(adventure));
         root.setExpanded(true);
@@ -124,5 +144,25 @@ class EditorAppView {
         for (Map.Entry<String, Item> entry : item.getItems()) {
             populateTreeView(itemTreeItem, entry.getValue())
         }
+    }
+
+    private showEditRoomDialog() {
+        // Load root layout from fxml file
+        final FXMLLoader loader = new FXMLLoader()
+        loader.setLocation(getClass().getResource("../editRoom.fxml"))
+        final AnchorPane rootLayout = loader.load()
+
+        // Show the scene containing the root layout
+        final Scene scene = new Scene(rootLayout)
+        final Stage stage = new Stage()
+        stage.initOwner(primaryStage)
+        stage.initModality(Modality.WINDOW_MODAL)
+        stage.setResizable(false)
+        stage.setScene(scene)
+        stage.show()
+
+        // initialise the view after showing the scene
+        final EditRoomView editRoomView = loader.getController()
+        editRoomView.init(stage, adventure.getRoom("tunnel like hall"))
     }
 }
