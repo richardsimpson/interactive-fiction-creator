@@ -37,7 +37,6 @@ class Item implements ItemContainer, VerbContainer {
     private ItemContainer parent
 
     private final Map<String, Closure> customVerbs = new HashMap()
-    // TODO: Change items to be a list?  Is the key ever used?
     private final Map<Integer, Item> items = new TreeMap()
     private boolean itemExamined = false
 

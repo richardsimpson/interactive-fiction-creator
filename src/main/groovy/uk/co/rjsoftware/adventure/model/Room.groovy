@@ -9,7 +9,6 @@ class Room implements ItemContainer, VerbContainer {
     private final int id
     private final Map<Direction, Exit> exits = new TreeMap()
     private final Map<String, Closure> customVerbs = new HashMap()
-    // TODO: Change items to be a list?  Is the key ever used?
     private final Map<Integer, Item> items = new TreeMap<Integer, Item>()
     private String name
     private String description
