@@ -60,7 +60,7 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     }
 
     Item(String name) {
-        this(name, "")
+        this(name, name)
     }
 
     Item copy(ItemContainer parent) {
@@ -107,6 +107,10 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
 
     String getName() {
         this.name
+    }
+
+    void setName(String name) {
+        this.name = name
     }
 
     String getDisplayName() {
