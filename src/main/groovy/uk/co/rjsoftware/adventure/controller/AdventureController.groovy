@@ -83,8 +83,8 @@ class AdventureController {
             rooms.put(room.getName().toUpperCase(), room)
         }
 
-        for (Map.Entry<Integer, Item> itemEntry : this.adventure.getAllItems()) {
-            nouns.put(itemEntry.value.getName().toUpperCase(), itemEntry.value)
+        for (Item item : this.adventure.getAllItems()) {
+            nouns.put(item.getName().toUpperCase(), item)
         }
 
         this.player = this.adventure.getPlayer()
@@ -436,7 +436,7 @@ class AdventureController {
             if (!this.currentRoom.getItems().isEmpty()) {
                 boolean firstItemOutput = false
 
-                for (Item item : this.currentRoom.getItems().values()) {
+                for (Item item : this.currentRoom.getItems()) {
                     if (item.isVisible() && !item.isScenery() && item != this.player) {
                         if (!firstItemOutput) {
                             firstItemOutput = true
@@ -610,7 +610,7 @@ class AdventureController {
             say("Nothing")
         }
         else {
-            for (Item item : this.player.getItems().values()) {
+            for (Item item : this.player.getItems()) {
                 say(item.getDisplayName())
             }
         }

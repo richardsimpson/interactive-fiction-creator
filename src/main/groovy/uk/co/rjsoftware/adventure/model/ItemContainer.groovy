@@ -5,7 +5,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 interface ItemContainer {
 
-    Map<Integer, Item> getItems()
+    Set<Item> getItems()
 
     void addItem(Item item)
 

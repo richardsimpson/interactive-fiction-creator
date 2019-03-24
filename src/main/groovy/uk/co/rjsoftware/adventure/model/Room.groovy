@@ -6,10 +6,10 @@ import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
 @TypeChecked
 class Room implements ItemContainer, VerbContainer {
 
-    private final int id
-    private final Map<Direction, Exit> exits = new TreeMap()
-    private final Map<String, Closure> customVerbs = new HashMap()
-    private final Map<Integer, Item> items = new TreeMap<Integer, Item>()
+    private final UUID id
+    private final Map<Direction, Exit> exits = new TreeMap<>()
+    private final Map<String, Closure> customVerbs = new HashMap<>()
+    private final Set<Item> items = new TreeSet<>()
     private String name
     private String description
     private Closure descriptionClosure
@@ -19,12 +19,13 @@ class Room implements ItemContainer, VerbContainer {
     private Closure beforeEnterRoomFirstTime
     private Closure afterEnterRoomFirstTime
 
-    Room(int id, String name, String description,
+    Room(String name, String description,
          Closure beforeEnterRoom = null, Closure afterEnterRoom = null,
          Closure afterLeaveRoom = null,
          Closure beforeEnterRoomFirstTime = null, Closure afterEnterRoomFirstTime = null) {
 
-        this.id = id
+        this.id = UUID.randomUUID()
+
         this.name = name
         this.description = description
         this.beforeEnterRoom = beforeEnterRoom
@@ -34,19 +35,20 @@ class Room implements ItemContainer, VerbContainer {
         this.afterEnterRoomFirstTime = afterEnterRoomFirstTime
     }
 
-    Room(int id, String name) {
-        this(id, name, "")
+    Room(String name) {
+        this(name, "")
     }
 
     Room copy() {
-        final Room roomCopy = new Room(this.id, this.name)
+        final Room roomCopy = new Room(this.name)
 
         for (Exit exit : this.exits.values()) {
             roomCopy.addExit(exit.copy())
         }
         roomCopy.customVerbs.putAll(customVerbs)
-        for (Map.Entry<Integer, Item> entry : this.items) {
-            roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
+        for (Item item : this.items) {
+//            roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
+            item.copy(roomCopy)
         }
         roomCopy.description = this.description
         roomCopy.descriptionClosure = this.descriptionClosure
@@ -59,7 +61,7 @@ class Room implements ItemContainer, VerbContainer {
         roomCopy
     }
 
-    int getId() {
+    UUID getId() {
         this.id
     }
 
@@ -97,42 +99,44 @@ class Room implements ItemContainer, VerbContainer {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.put(item.getId(), item)
+            this.items.add(item)
             item.setParent(this)
         }
     }
 
     Item getItemByName(String itemName) {
-        this.items.values().find {item ->
+        this.items.find {item ->
             item.getName().equals(itemName)
         }
     }
 
-    Item getItemById(int id) {
-        this.items.get(id)
-    }
+    void removeItem(Item itemToRemove) {
+        final Item item = this.items.find {item ->
+            item.getName().equals(itemToRemove.getName())
+        }
 
-    void removeItem(Item item) {
-        if (contains(item)) {
-            this.items.remove(item.getId())
+        if (item != null) {
+            this.items.remove(item)
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.containsKey(item.getId())
+        this.items.find {existingItem ->
+            existingItem.getName().equals(item.getName())
+        } != null
     }
 
-    Map<Integer, Item> getItems() {
+    Set<Item> getItems() {
         this.items
     }
 
-    Map<Integer, Item> getAllItems() {
-        final Map<Integer, Item> items = new HashMap<>()
-        items.putAll(this.items)
+    Set<Item> getAllItems() {
+        final Set<Item> items = new HashSet<>()
+        items.addAll(this.items)
 
-        for (Item item : this.items.values()) {
-            items.putAll(item.getAllItems())
+        for (Item item : this.items) {
+            items.addAll(item.getAllItems())
         }
 
         items

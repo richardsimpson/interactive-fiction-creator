@@ -14,15 +14,15 @@ import static org.junit.Assert.assertTrue
 class ContainerTest {
 
     private AdventureController classUnderTest
-    private Item player = new Item(1, "player")
+    private Item player = new Item("player")
     private IPlayerAppViewForTesting mainWindow
 
-    private Room livingRoom = new Room(1, "livingRoom", "This is the living room.")
+    private Room livingRoom = new Room("livingRoom", "This is the living room.")
 
-    private Item chest = new Item(2, "chest", "chest", "This is the chest.")
+    private Item chest = new Item("chest", "chest", "This is the chest.")
 
-    private Item goldCoin = new Item(3, "coin", "gold coin", ["coin"], "This coin is gold.")
-    private Item notepad = new Item(4, "notepad", "notepad", "A notebook with strange writing on it.")
+    private Item goldCoin = new Item("coin", "gold coin", ["coin"], "This coin is gold.")
+    private Item notepad = new Item("notepad", "notepad", "A notebook with strange writing on it.")
 
     private final Map<String, Verb> verbs = new HashMap()
 

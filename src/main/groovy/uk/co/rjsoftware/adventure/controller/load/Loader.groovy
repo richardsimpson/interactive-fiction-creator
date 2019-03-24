@@ -101,11 +101,11 @@ class AdventureDelegate {
         verb(id, id, command)
     }
 
-    private void room(int id, String roomName, Closure closure) {
-        Room room = this.adventure.getRoomById(id)
+    private void room(String roomName, Closure closure) {
+        Room room = this.adventure.getRoomByName(roomName)
 
         if (room == null) {
-            room = new Room(id, roomName)
+            room = new Room(roomName)
             this.adventure.addRoom(room)
         }
 
@@ -249,10 +249,10 @@ class RoomDelegate {
         }
     }
 
-    private void item(int id, String itemName, String itemDisplayName, Optional<Closure> closure) {
-        Item item = this.room.getItemById(id)
+    private void item(String itemName, String itemDisplayName, Optional<Closure> closure) {
+        Item item = this.room.getItemByName(itemName)
         if (item == null) {
-            item = new Item(id, itemName, itemDisplayName)
+            item = new Item(itemName, itemDisplayName)
             this.room.addItem(item)
         }
 
@@ -263,20 +263,20 @@ class RoomDelegate {
         }
     }
 
-    private void item(int id, String itemName, Closure closure) {
-        item(id, itemName, itemName, Optional.of(closure))
+    private void item(String itemName, Closure closure) {
+        item(itemName, itemName, Optional.of(closure))
     }
 
-    private void item(int id, String itemName) {
-        item(id, itemName, itemName, Optional.empty())
+    private void item(String itemName) {
+        item(itemName, itemName, Optional.empty())
     }
 
-    private void item(int id, String itemName, String itemDisplayName, Closure closure) {
-        item(id, itemName, itemDisplayName, Optional.of(closure))
+    private void item(String itemName, String itemDisplayName, Closure closure) {
+        item(itemName, itemDisplayName, Optional.of(closure))
     }
 
-    private void item(int id, String itemName, String itemDisplayName) {
-        item(id, itemName, itemDisplayName, Optional.empty())
+    private void item(String itemName, String itemDisplayName) {
+        item(itemName, itemDisplayName, Optional.empty())
     }
 
     private void verb(String verbId, Closure closure) {

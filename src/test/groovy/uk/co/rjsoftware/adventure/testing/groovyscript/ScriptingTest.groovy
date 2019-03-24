@@ -22,15 +22,15 @@ class ScriptingTest {
     private AdventureController controller
     private IPlayerAppViewForTesting mainWindow
 
-    private Room study = new Room(1, "study", "This is your study.")
-    private Room livingRoom = new Room(2, "livingRoom", "This is the living room.")
+    private Room study = new Room("study", "This is your study.")
+    private Room livingRoom = new Room("livingRoom", "This is the living room.")
 
-    private Item tv = new Item(1, "tv", "TV", ["television"], "A 28\" TV")
-    private Item chest = new Item(2, "chest", "chest", "This is the chest.")
-    private Item dummy = new Item(3, "dummy", "dummy", "This is the dummy item.")
-    private Item dummy2 = new Item(4, "dummy2", "dummy2", "This is the second dummy item.")
-    private Item boobyTrappedBox = new Item(5, "box", "booby trapped box", ["box"], "This box will explode when opened.")
-    private Item player = new Item(6, "player")
+    private Item tv = new Item("tv", "TV", ["television"], "A 28\" TV")
+    private Item chest = new Item("chest", "chest", "This is the chest.")
+    private Item dummy = new Item("dummy", "dummy", "This is the dummy item.")
+    private Item dummy2 = new Item("dummy2", "dummy2", "This is the second dummy item.")
+    private Item boobyTrappedBox = new Item("box", "booby trapped box", ["box"], "This box will explode when opened.")
+    private Item player = new Item("player")
 
     @Before
     void before() {

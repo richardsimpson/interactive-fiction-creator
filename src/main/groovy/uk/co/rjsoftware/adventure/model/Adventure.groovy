@@ -31,7 +31,7 @@ class Adventure {
 
         // now fixup the room references (exits)
         for (Room room : this.rooms) {
-            final Room roomCopy = adventureCopy.getRoomById(room.getId())
+            final Room roomCopy = adventureCopy.getRoomByName(room.getName())
             for (Exit exit : room.exits.values()) {
                 final Exit exitCopy = roomCopy.getExit(exit.getDirection())
                 exitCopy.setDestination(adventureCopy.getRoomByName(exit.getDestination().name))
@@ -81,30 +81,24 @@ class Adventure {
         this.rooms
     }
 
-    Room getRoomById(int id) {
-        this.rooms.find {room ->
-            room.getId().equals(id)
-        }
-    }
-
     Room getRoomByName(String roomName) {
         this.rooms.find {room ->
             room.getName().equals(roomName)
         }
     }
 
-    Map<Integer, Item> getAllItems() {
-        final Map<Integer, Item> items = new HashMap<>()
+    Set<Item> getAllItems() {
+        final Set<Item> items = new HashSet<>()
 
         for (Room room : getRooms()) {
-            items.putAll(room.getAllItems())
+            items.addAll(room.getAllItems())
         }
 
         items
     }
 
     Item getItemByName(String itemName) {
-        getAllItems().values().find {item ->
+        getAllItems().find {item ->
             item.getName().equals(itemName)
         }
     }

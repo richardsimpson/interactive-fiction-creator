@@ -12,14 +12,14 @@ import static org.junit.Assert.*
 class VerbsWithDuplicateObjectsTest {
 
     private AdventureController classUnderTest
-    private Item player = new Item(1, "player")
+    private Item player = new Item("player")
     private IPlayerAppViewForTesting mainWindow
 
-    private Room livingRoom = new Room(1, "livingRoom", "This is the living room.")
+    private Room livingRoom = new Room("livingRoom", "This is the living room.")
 
-    private Item redBox = new Item(2, "redBox", "red box", ["box"], "This is the red box.")
+    private Item redBox = new Item("redBox", "red box", ["box"], "This is the red box.")
 
-    private Item blueBox = new Item(3, "blueBox", "blue box", ["box"], "This is the blue box.")
+    private Item blueBox = new Item("blueBox", "blue box", ["box"], "This is the blue box.")
 
     private final Map<String, Verb> verbs = new HashMap()
 
