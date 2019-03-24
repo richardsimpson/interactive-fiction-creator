@@ -7,6 +7,7 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
+import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.MenuItem
@@ -150,19 +151,10 @@ class EditorAppView {
         // Load root layout from fxml file
         final FXMLLoader loader = new FXMLLoader()
         loader.setLocation(getClass().getResource("../editRoom.fxml"))
-        final AnchorPane rootLayout = loader.load()
-
-        // Show the scene containing the root layout
-        final Scene scene = new Scene(rootLayout)
-        final Stage stage = new Stage()
-        stage.initOwner(primaryStage)
-        stage.initModality(Modality.WINDOW_MODAL)
-        stage.setResizable(false)
-        stage.setScene(scene)
-        stage.show()
+        final Parent rootLayout = loader.load()
 
         // initialise the view after showing the scene
         final EditRoomView editRoomView = loader.getController()
-        editRoomView.init(stage, adventure.getRoom("tunnel like hall"))
+        editRoomView.init(rootLayout, primaryStage, adventure.getRoom("tunnel like hall"))
     }
 }
