@@ -66,7 +66,7 @@ class ScriptRuntimeDelegate {
     }
 
     Item getItem(String itemName) {
-        adventureController.getItem(itemName)
+        adventureController.getItemByName(itemName)
     }
 
     Room getRoom(String roomName) {

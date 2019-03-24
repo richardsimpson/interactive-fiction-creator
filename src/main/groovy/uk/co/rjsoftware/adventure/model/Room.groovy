@@ -6,9 +6,11 @@ import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
 @TypeChecked
 class Room implements ItemContainer, VerbContainer {
 
+    private final int id
     private final Map<Direction, Exit> exits = new TreeMap()
     private final Map<String, Closure> customVerbs = new HashMap()
-    private final Map<String, Item> items = new TreeMap<String, Item>()
+    // TODO: Change items to be a list?  Is the key ever used?
+    private final Map<Integer, Item> items = new TreeMap<Integer, Item>()
     private String name
     private String description
     private Closure descriptionClosure
@@ -18,11 +20,12 @@ class Room implements ItemContainer, VerbContainer {
     private Closure beforeEnterRoomFirstTime
     private Closure afterEnterRoomFirstTime
 
-    Room(String name, String description,
+    Room(int id, String name, String description,
          Closure beforeEnterRoom = null, Closure afterEnterRoom = null,
          Closure afterLeaveRoom = null,
          Closure beforeEnterRoomFirstTime = null, Closure afterEnterRoomFirstTime = null) {
 
+        this.id = id
         this.name = name
         this.description = description
         this.beforeEnterRoom = beforeEnterRoom
@@ -32,18 +35,18 @@ class Room implements ItemContainer, VerbContainer {
         this.afterEnterRoomFirstTime = afterEnterRoomFirstTime
     }
 
-    Room(String name) {
-        this(name, "")
+    Room(int id, String name) {
+        this(id, name, "")
     }
 
     Room copy() {
-        final Room roomCopy = new Room(this.name)
+        final Room roomCopy = new Room(this.id, this.name)
 
         for (Exit exit : this.exits.values()) {
             roomCopy.addExit(exit.copy())
         }
         roomCopy.customVerbs.putAll(customVerbs)
-        for (Map.Entry<String, Item> entry : this.items) {
+        for (Map.Entry<Integer, Item> entry : this.items) {
             roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
         }
         roomCopy.description = this.description
@@ -55,6 +58,10 @@ class Room implements ItemContainer, VerbContainer {
         roomCopy.afterEnterRoomFirstTime = this.afterEnterRoomFirstTime
 
         roomCopy
+    }
+
+    int getId() {
+        this.id
     }
 
     String getName() {
@@ -91,32 +98,38 @@ class Room implements ItemContainer, VerbContainer {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.put(item.getId().toUpperCase(), item)
+            this.items.put(item.getId(), item)
             item.setParent(this)
         }
     }
 
-    Item getItem(String itemId) {
-        this.items.get(itemId.toUpperCase())
+    Item getItemByName(String itemName) {
+        this.items.values().find {item ->
+            item.getName().equals(itemName)
+        }
+    }
+
+    Item getItemById(int id) {
+        this.items.get(id)
     }
 
     void removeItem(Item item) {
         if (contains(item)) {
-            this.items.remove(item.getId().toUpperCase())
+            this.items.remove(item.getId())
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.containsKey(item.getId().toUpperCase())
+        this.items.containsKey(item.getId())
     }
 
-    Map<String, Item> getItems() {
+    Map<Integer, Item> getItems() {
         this.items
     }
 
-    Map<String, Item> getAllItems() {
-        final Map<String, Item> items = new HashMap<>()
+    Map<Integer, Item> getAllItems() {
+        final Map<Integer, Item> items = new HashMap<>()
         items.putAll(this.items)
 
         for (Item item : this.items.values()) {

@@ -22,15 +22,15 @@ class ScriptingTest {
     private AdventureController controller
     private IPlayerAppViewForTesting mainWindow
 
-    private Room study = new Room("study", "This is your study.")
-    private Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room study = new Room(1, "study", "This is your study.")
+    private Room livingRoom = new Room(2, "livingRoom", "This is the living room.")
 
-    private Item tv = new Item("tv", ["TV", "television"], "A 28\" TV")
-    private Item chest = new Item("chest", ["chest"], "This is the chest.")
-    private Item dummy = new Item("dummy", ["dummy"], "This is the dummy item.")
-    private Item dummy2 = new Item("dummy2", ["dummy2"], "This is the second dummy item.")
-    private Item boobyTrappedBox = new Item("booby trapped box", ["booby trapped box", "box"], "This box will explode when opened.")
-    private Item player = new Item("player")
+    private Item tv = new Item(1, "tv", "TV", ["television"], "A 28\" TV")
+    private Item chest = new Item(2, "chest", "chest", "This is the chest.")
+    private Item dummy = new Item(3, "dummy", "dummy", "This is the dummy item.")
+    private Item dummy2 = new Item(4, "dummy2", "dummy2", "This is the second dummy item.")
+    private Item boobyTrappedBox = new Item(5, "box", "booby trapped box", ["box"], "This box will explode when opened.")
+    private Item player = new Item(6, "player")
 
     @Before
     void before() {
@@ -81,11 +81,11 @@ class ScriptingTest {
         // during the loading process
         this.study = this.controller.getRoom(this.study.name)
         this.livingRoom = this.controller.getRoom(this.livingRoom.name)
-        this.tv = this.controller.getItem(this.tv.id)
-        this.chest = this.controller.getItem(this.chest.id)
-        this.dummy = this.controller.getItem(this.dummy.id)
-        this.dummy2 = this.controller.getItem(this.dummy2.id)
-        this.boobyTrappedBox = this.controller.getItem(this.boobyTrappedBox.id)
+        this.tv = this.controller.getItemByName(this.tv.getName())
+        this.chest = this.controller.getItemByName(this.chest.getName())
+        this.dummy = this.controller.getItemByName(this.dummy.getName())
+        this.dummy2 = this.controller.getItemByName(this.dummy2.getName())
+        this.boobyTrappedBox = this.controller.getItemByName(this.boobyTrappedBox.getName())
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
@@ -457,7 +457,7 @@ class ScriptingTest {
     @Test
     void testGetItem() {
         dummy.setOnOpen {
-            say(getItem('tv').getName())
+            say(getItem('tv').getDisplayName())
         }
 
         assertEquals(livingRoom, this.controller.getCurrentRoom())
@@ -613,7 +613,7 @@ class ScriptingTest {
         mainWindow.fireCommand(new CommandEvent(""))
 
         assertEquals(0, this.controller.getTurnCounter())
-        assertFalse(this.controller.getItem(this.boobyTrappedBox.id).isOpen())
+        assertFalse(this.controller.getItemByName(this.boobyTrappedBox.getName()).isOpen())
     }
 
 

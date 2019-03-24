@@ -46,8 +46,8 @@ class LoaderTest {
         assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], verbMap.get("Watch").getSynonyms())
         assertEquals(["THROW {noun}"], verbMap.get("Throw").getSynonyms())
 
-        final Room bedroom = adventure.getRoom("bedroom")
-        final Room landing = adventure.getRoom("landing")
+        final Room bedroom = adventure.getRoomByName("bedroom")
+        final Room landing = adventure.getRoomByName("landing")
 
         assertEquals("bedroom", bedroom.getName())
         assertEquals("custom description", bedroom.getDescription())
@@ -77,8 +77,8 @@ class LoaderTest {
 
         assertEquals(3, bedroom.getItems().size())
 
-        final Item lamp = bedroom.getItem("lamp")
-        assertEquals(["lampshade", "lamp", "shade"], lamp.getSynonyms())
+        final Item lamp = bedroom.getItemByName("lamp")
+        assertEquals(["lamp", "lampshade", "shade"], lamp.getSynonyms())
         assertEquals("description", lamp.getDescription())
         assertEquals(true, lamp.isVisible())
         assertEquals(false, lamp.isScenery())
@@ -90,8 +90,8 @@ class LoaderTest {
         assertEquals("extraMessageWhenSwitchedOn", lamp.getExtraMessageWhenSwitchedOn())
         assertEquals("extraMessageWhenSwitchedOff", lamp.getExtraMessageWhenSwitchedOff())
 
-        final Item tv = bedroom.getItem("TV")
-        assertEquals(["television", "tv"], tv.getSynonyms())
+        final Item tv = bedroom.getItemByName("tv")
+        assertEquals(["tv", "television"], tv.getSynonyms())
         assertEquals("description", tv.getDescription())
         assertEquals(true, tv.isVisible())
         assertEquals(false, tv.isScenery())
@@ -109,8 +109,8 @@ class LoaderTest {
         verifyClosure("watchVerb", tv.getVerbClosure(verbMap.get("Watch")))
         verifyClosure("throwVerb", tv.getVerbClosure(verbMap.get("Throw")))
 
-        final Room roomWithDescriptionClosure = adventure.getRoom("roomWithDescriptionClosure")
-        final Item itemWithDescriptionClosure = roomWithDescriptionClosure.getItem("itemWithDescriptionClosure")
+        final Room roomWithDescriptionClosure = adventure.getRoomByName("roomWithDescriptionClosure")
+        final Item itemWithDescriptionClosure = roomWithDescriptionClosure.getItemByName("itemWithDescriptionClosure")
         verifyClosure("roomDescriptionClosure", roomWithDescriptionClosure.getDescriptionClosure())
         verifyClosure("itemDescriptionClosure", itemWithDescriptionClosure.getDescriptionClosure())
 

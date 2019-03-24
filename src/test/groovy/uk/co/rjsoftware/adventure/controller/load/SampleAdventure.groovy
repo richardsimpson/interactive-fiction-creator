@@ -12,7 +12,7 @@ adventure {
 
     verb ("Throw", "THROW {noun}")
 
-    room ("bedroom") {
+    room (1, "bedroom") {
         description "custom description"
         beforeEnterRoom { say("beforeEnterRoomScript") }
         afterEnterRoom { say("afterEnterRoomScript") }
@@ -26,10 +26,10 @@ adventure {
             suffix "suffix"
         }
 
-        item ("player")
+        item (1, "player")
 
-        item ("lamp") {
-            synonyms "lampshade", "lamp", "shade"
+        item (2, "lamp") {
+            synonyms "lampshade", "shade"
             description "description"
             visible true
             scenery false
@@ -42,8 +42,8 @@ adventure {
             extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
         }
 
-        item("tv") {
-            synonyms "television", "tv"
+        item(3, "tv") {
+            synonyms "television"
             description "description"
             visible true
             scenery false
@@ -60,7 +60,7 @@ adventure {
         }
     }
 
-    room ("landing") {
+    room (2, "landing") {
         description "custom description2"
         beforeEnterRoom { say("beforeEnterRoomScript2") }
         afterEnterRoom { say("afterEnterRoomScript2") }
@@ -71,11 +71,11 @@ adventure {
         exit(WEST, "bedroom")
     }
 
-    room("roomWithDescriptionClosure") {
+    room (3, "roomWithDescriptionClosure") {
         description {
             say "roomDescriptionClosure"
         }
-        item("itemWithDescriptionClosure") {
+        item(4, "itemWithDescriptionClosure") {
             description {
                 say "itemDescriptionClosure"
             }

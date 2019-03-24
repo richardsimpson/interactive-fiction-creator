@@ -83,8 +83,8 @@ class AdventureController {
             rooms.put(room.getName().toUpperCase(), room)
         }
 
-        for (Map.Entry<String, Item> itemEntry : this.adventure.getAllItems()) {
-            nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
+        for (Map.Entry<Integer, Item> itemEntry : this.adventure.getAllItems()) {
+            nouns.put(itemEntry.value.getName().toUpperCase(), itemEntry.value)
         }
 
         this.player = this.adventure.getPlayer()
@@ -351,7 +351,7 @@ class AdventureController {
 
     private void askUserToDisambiguate(Verb verb, List<Item> items) {
         final List<Item> sortedItems = items.toSorted({item ->
-            item.getName()
+            item.getDisplayName()
         })
         this.disambiguating = true
         this.disambiguatingVerb = verb
@@ -359,7 +359,7 @@ class AdventureController {
 
         say(verb.getFriendlyName() + " what?")
         for (int index = 0; index < sortedItems.size(); index++) {
-            say((index+1).toString() + ") " + sortedItems.get(index).getName())
+            say((index+1).toString() + ") " + sortedItems.get(index).getDisplayName())
         }
     }
 
@@ -537,7 +537,7 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isGettable()) {
-            say("You cannot pick up the " + item.getName())
+            say("You cannot pick up the " + item.getDisplayName())
         }
         else {
             this.currentRoom.removeItem(item)
@@ -571,12 +571,12 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isDroppable()) {
-            say("You cannot drop the " + item.getName())
+            say("You cannot drop the " + item.getDisplayName())
         }
         else {
             this.player.removeItem(item)
             this.currentRoom.addItem(item)
-            say("You drop the " + item.getName())
+            say("You drop the " + item.getDisplayName())
         }
     }
 
@@ -611,7 +611,7 @@ class AdventureController {
         }
         else {
             for (Item item : this.player.getItems().values()) {
-                say(item.getName())
+                say(item.getDisplayName())
             }
         }
     }
@@ -631,17 +631,17 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isSwitchable()) {
-            say("You can't turn on the " + item.getName())
+            say("You can't turn on the " + item.getDisplayName())
         }
         else {
             if (item.isSwitchedOn()) {
-                say(item.getName() + " is already on")
+                say(item.getDisplayName() + " is already on")
             }
             else {
                 item.switchOn()
                 String message = item.getSwitchOnMessage()
                 if (message == null) {
-                    message = "You turn on the " + item.getName()
+                    message = "You turn on the " + item.getDisplayName()
                 }
                 say(message)
             }
@@ -663,17 +663,17 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isSwitchable()) {
-            say("You can't turn off the " + item.getName())
+            say("You can't turn off the " + item.getDisplayName())
         }
         else {
             if (item.isSwitchedOff()) {
-                say(item.getName() + " is already off")
+                say(item.getDisplayName() + " is already off")
             }
             else {
                 item.switchOff()
                 String message = item.getSwitchOffMessage()
                 if (message == null) {
-                    message = "You turn off the " + item.getName()
+                    message = "You turn off the " + item.getDisplayName()
                 }
                 say(message)
             }
@@ -705,16 +705,16 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isOpenable()) {
-            say("You cannot open the " + item.getName())
+            say("You cannot open the " + item.getDisplayName())
         }
         else if (item.isOpen()) {
-            say(item.getName() + " is already open")
+            say(item.getDisplayName() + " is already open")
         }
         else {
             item.setOpen(true)
             String message = item.getOpenMessage()
             if (message == null) {
-                message = "You open the " + item.getName()
+                message = "You open the " + item.getDisplayName()
             }
             say(message)
 
@@ -740,16 +740,16 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isCloseable()) {
-            say("You cannot close the " + item.getName())
+            say("You cannot close the " + item.getDisplayName())
         }
         else if (!item.isOpen()) {
-            say(item.getName() + " is already closed")
+            say(item.getDisplayName() + " is already closed")
         }
         else {
             item.setOpen(false)
             String message = item.getCloseMessage()
             if (message == null) {
-                message = "You close the " + item.getName()
+                message = "You close the " + item.getDisplayName()
             }
             say(message)
 
@@ -775,7 +775,7 @@ class AdventureController {
         final Item item = items.get(0)
 
         if (!item.isEdible()) {
-            say("You cannot eat the " + item.getName())
+            say("You cannot eat the " + item.getDisplayName())
         }
         else {
             this.player.removeItem(item)
@@ -783,7 +783,7 @@ class AdventureController {
 
             String message = item.getEatMessage()
             if (message == null) {
-                message = "You eat the " + item.getName()
+                message = "You eat the " + item.getDisplayName()
             }
             say(message)
 
@@ -838,12 +838,12 @@ class AdventureController {
     }
 
     boolean isSwitchedOn(String itemId) {
-        final Item item = getItem(itemId)
+        final Item item = getItemByName(itemId)
         item.isSwitchedOn()
     }
 
     boolean isOpen(String itemId) {
-        final Item item = getItem(itemId)
+        final Item item = getItemByName(itemId)
         item.isOpen()
     }
 
@@ -852,7 +852,7 @@ class AdventureController {
     }
 
     void setVisible(String itemId, boolean visible) {
-        final Item item = getItem(itemId)
+        final Item item = getItemByName(itemId)
         item.setVisible(visible)
     }
 
@@ -866,10 +866,10 @@ class AdventureController {
     }
 
     void moveItemTo(String itemName, String itemContainerName) {
-        final Item item = getItem(itemName)
+        final Item item = getItemByName(itemName)
         ItemContainer container = getRoomOrNull(itemContainerName)
         if (container == null) {
-            container = getItemOrNull(itemContainerName)
+            container = getItemByNameOrNull(itemContainerName)
         }
         if (container == null) {
             throw new RuntimeException("Specified itemContainer does not exist")
@@ -877,8 +877,8 @@ class AdventureController {
         item.setParent(container)
     }
 
-    Item getItem(String itemId) {
-        final Item item = getItemOrNull(itemId)
+    Item getItemByName(String itemName) {
+        final Item item = getItemByNameOrNull(itemName)
 
         if (item == null) {
             throw new RuntimeException("Specified item does not exist.")
@@ -887,8 +887,8 @@ class AdventureController {
         item
     }
 
-    private Item getItemOrNull(String itemId) {
-        this.adventure.getItem(itemId)
+    private Item getItemByNameOrNull(String itemName) {
+        this.adventure.getItemByName(itemName)
     }
 
     Room getRoom(String roomName) {

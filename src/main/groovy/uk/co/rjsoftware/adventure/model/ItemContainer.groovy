@@ -5,11 +5,11 @@ import groovy.transform.TypeChecked
 @TypeChecked
 interface ItemContainer {
 
-    Map<String, Item> getItems()
+    Map<Integer, Item> getItems()
 
     void addItem(Item item)
 
-    Item getItem(String itemName)
+    Item getItemByName(String itemName)
 
     void removeItem(Item item)
 

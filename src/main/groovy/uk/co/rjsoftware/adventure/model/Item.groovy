@@ -5,7 +5,9 @@ import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
 
 @TypeChecked
 class Item implements ItemContainer, VerbContainer {
-    private final String id
+    private final int id
+    private String name
+    private String displayName
     private final List<String> synonyms = new ArrayList<>()
     private String description
     private Closure descriptionClosure
@@ -35,29 +37,37 @@ class Item implements ItemContainer, VerbContainer {
     private ItemContainer parent
 
     private final Map<String, Closure> customVerbs = new HashMap()
-    private final Map<String, Item> items = new TreeMap()
+    // TODO: Change items to be a list?  Is the key ever used?
+    private final Map<Integer, Item> items = new TreeMap()
     private boolean itemExamined = false
 
-    Item(String id, List<String> synonyms, String description) {
+    Item(int id, String name, String displayName, List<String> synonyms, String description) {
         this.id = id
+        this.name = name
+        this.displayName = displayName
+        this.synonyms.add(displayName)
         this.synonyms.addAll(synonyms)
         this.description = description
     }
 
-    Item(String id, String name, String description) {
-        this(id, [name], description)
+    Item(int id, String name, String displayName, String description) {
+        this(id, name, displayName, [], description)
     }
 
-    Item(String id, String name) {
+    Item(int id, String name, String displayName) {
+        this(id, name, displayName, "")
+    }
+
+    Item(int id, String name) {
         this(id, name, "")
     }
 
-    Item(String id) {
-        this(id, id)
-    }
+//    Item(String id) {
+//        this(id, id)
+//    }
 
     Item copy(ItemContainer parent) {
-        final Item itemCopy = new Item(this.id, synonyms, description)
+        final Item itemCopy = new Item(this.id, this.name, this.displayName, synonyms, description)
 
         itemCopy.descriptionClosure = this.descriptionClosure
         itemCopy.visible = this.visible
@@ -86,7 +96,7 @@ class Item implements ItemContainer, VerbContainer {
         itemCopy.parent = parent
 
         itemCopy.customVerbs.putAll(this.customVerbs)
-        for (Map.Entry<String, Item> entry : this.items) {
+        for (Map.Entry<Integer, Item> entry : this.items) {
             itemCopy.items.put(entry.key, entry.value.copy(itemCopy))
         }
         itemCopy.itemExamined = this.itemExamined
@@ -94,12 +104,16 @@ class Item implements ItemContainer, VerbContainer {
         itemCopy
     }
 
-    String getId() {
+    int getId() {
         this.id
     }
 
     String getName() {
-        this.synonyms.get(0)
+        this.name
+    }
+
+    String getDisplayName() {
+        this.displayName
     }
 
     List<String> getSynonyms() {
@@ -235,7 +249,7 @@ class Item implements ItemContainer, VerbContainer {
             }
 
             for (Item item : this.items.values()) {
-                result += System.lineSeparator() + item.getName()
+                result += System.lineSeparator() + item.getDisplayName()
             }
         }
 
@@ -243,7 +257,7 @@ class Item implements ItemContainer, VerbContainer {
     }
 
     String getLookDescription() {
-        String result = this.getName()
+        String result = this.getDisplayName()
 
         if (shouldShowContents()) {
             result += ", containing:"
@@ -253,7 +267,7 @@ class Item implements ItemContainer, VerbContainer {
             }
 
             for (Item item : this.items.values()) {
-                result += System.lineSeparator() + "    " + item.getName()
+                result += System.lineSeparator() + "    " + item.getDisplayName()
             }
         }
 
@@ -333,12 +347,12 @@ class Item implements ItemContainer, VerbContainer {
     ContentVisibility getContentVisibility() { this.contentVisibility }
     void setContentVisibility(ContentVisibility contentVisibility) { this.contentVisibility = contentVisibility }
 
-    Map<String, Item> getItems() {
+    Map<Integer, Item> getItems() {
         this.items
     }
 
-    Map<String, Item> getAllItems() {
-        final Map<String, Item> items = new HashMap<>()
+    Map<Integer, Item> getAllItems() {
+        final Map<Integer, Item> items = new HashMap<>()
         items.putAll(this.items)
 
         for (Item item : this.items.values()) {
@@ -350,24 +364,26 @@ class Item implements ItemContainer, VerbContainer {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.put(item.getId().toUpperCase(), item)
+            this.items.put(item.getId(), item)
             item.setParent(this)
         }
     }
 
-    Item getItem(String itemId) {
-        this.items.get(itemId.toUpperCase())
+    Item getItemByName(String itemName) {
+        this.items.values().find {item ->
+            item.getName().equals(itemName)
+        }
     }
 
     void removeItem(Item item) {
         if (contains(item)) {
-            this.items.remove(item.getId().toUpperCase())
+            this.items.remove(item.id)
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.containsKey(item.getId().toUpperCase())
+        this.items.containsKey(item.id)
     }
 
     void setItemExamined(boolean itemExamined) {

@@ -8,28 +8,19 @@ import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
-import javafx.scene.input.MouseEvent
-import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
-import javafx.scene.layout.Region
 import javafx.stage.FileChooser
-import javafx.stage.Modality
 import javafx.stage.Stage
-import uk.co.rjsoftware.adventure.controller.EditorController
-import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
-import uk.co.rjsoftware.adventure.view.editor.components.MoveComponent
 import uk.co.rjsoftware.adventure.view.editor.components.ResizeComponent
 import uk.co.rjsoftware.adventure.view.editor.treeitems.AdventureTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.CustomTreeItem
@@ -129,7 +120,7 @@ class EditorAppView {
             final TreeItem<CustomTreeItem> roomTreeItem = new TreeItem<>(new RoomTreeItem(room))
             root.getChildren().add(roomTreeItem)
 
-            for (Map.Entry<String, Item> entry : room.getItems()) {
+            for (Map.Entry<Integer, Item> entry : room.getItems()) {
                 populateTreeView(roomTreeItem, entry.getValue())
             }
         }
@@ -142,7 +133,7 @@ class EditorAppView {
         final TreeItem<CustomTreeItem> itemTreeItem = new TreeItem<>(new ItemTreeItem(item))
         parent.getChildren().add(itemTreeItem)
 
-        for (Map.Entry<String, Item> entry : item.getItems()) {
+        for (Map.Entry<Integer, Item> entry : item.getItems()) {
             populateTreeView(itemTreeItem, entry.getValue())
         }
     }
@@ -155,6 +146,6 @@ class EditorAppView {
 
         // initialise the view after showing the scene
         final EditRoomView editRoomView = loader.getController()
-        editRoomView.init(rootLayout, primaryStage, adventure.getRoom("tunnel like hall"))
+        editRoomView.init(rootLayout, primaryStage, adventure.getRoomByName("tunnel like hall"))
     }
 }

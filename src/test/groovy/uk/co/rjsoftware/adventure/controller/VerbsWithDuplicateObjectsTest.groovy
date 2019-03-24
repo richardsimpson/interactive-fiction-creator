@@ -12,14 +12,14 @@ import static org.junit.Assert.*
 class VerbsWithDuplicateObjectsTest {
 
     private AdventureController classUnderTest
-    private Item player = new Item("player")
+    private Item player = new Item(1, "player")
     private IPlayerAppViewForTesting mainWindow
 
-    private Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room livingRoom = new Room(1, "livingRoom", "This is the living room.")
 
-    private Item redBox = new Item("redbox", ["red box", "box"], "This is the red box.")
+    private Item redBox = new Item(2, "redBox", "red box", ["box"], "This is the red box.")
 
-    private Item blueBox = new Item("bluebox", ["blue box", "box"], "This is the blue box.")
+    private Item blueBox = new Item(3, "blueBox", "blue box", ["box"], "This is the blue box.")
 
     private final Map<String, Verb> verbs = new HashMap()
 
@@ -50,8 +50,8 @@ class VerbsWithDuplicateObjectsTest {
         // get room and item references back from the AdventureController, as that now copies the adventure
         // during the loading process
         this.livingRoom = this.classUnderTest.getRoom(this.livingRoom.name)
-        this.redBox = this.classUnderTest.getItem(this.redBox.id)
-        this.blueBox = this.classUnderTest.getItem(this.blueBox.id)
+        this.redBox = this.classUnderTest.getItemByName(this.redBox.getName())
+        this.blueBox = this.classUnderTest.getItemByName(this.blueBox.getName())
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {

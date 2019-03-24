@@ -13,7 +13,7 @@ adventure {
     verb ("ClimbInto", "Climb into", "CLIMB INTO {noun}") {}
     verb ("ClimbOut", "Climb out", "CLIMB OUT")
 
-    room ("tunnel like hall") {
+    room (1, "tunnel like hall") {
         description """
              Bimbo stood in his comfortable tunnel like hall.  To the east was the round green door and a small
              window was set high into the wall.
@@ -52,10 +52,10 @@ adventure {
             }
         }
 
-        item ("thePlayer")
+        item (1, "thePlayer")
 
-        item ("chest") {
-            synonyms "large, wooden chest", "chest"
+        item (2, "chest", "large, wooden chest") {
+            synonyms "chest"
             description {
                 if (isOpen("chest")) {
                     say("The chest was both heavy and open")
@@ -81,7 +81,7 @@ adventure {
             }
         }
 
-        item ("door") {
+        item (3, "door") {
             description """
                 Examining the door, Bimbo saw that it had a combination lock.  A small plate below it
                 bore the words,
@@ -90,17 +90,17 @@ adventure {
             scenery true
         }
 
-        item ("window") {
+        item (4, "window") {
             description "Bimbo couldn't reach the window"
             scenery true
         }
     }
 
-    room ("inside chest") {
+    room (2, "inside chest") {
         description "Bimbo was in the large wooden chest"
 
-        item ("diary") {
-            synonyms "old, dusty diary", "diary"
+        item (5, "diary", "old, dusty diary") {
+            synonyms "diary"
             description """
                 The diary was blank, save for some birthdays
                 
@@ -115,34 +115,34 @@ adventure {
 
     }
 
-    room ("round green toilet") {
+    room (3, "round green toilet") {
         description """
             Bimbo was in the round green toilet.  Furnished  with a basin, the obligatory bowl and a rather
             decrepid medicine cabinet, the room was floored with cream tiles."""
         exit(NORTH, "tunnel like hall")
 
-        item ("toilet") {
+        item (6, "toilet") {
             description "The toilet looked a bit dubious"
             scenery true
         }
 
-        item ("basin") {
+        item (7, "basin") {
             description "The basin contained some ancient mouthwash stains but little else"
             scenery true
         }
 
-        item ("cabinet") {
+        item (8, "cabinet") {
             description "The cabinet was a hefty, steel structure, securely welded shut"
             scenery true
         }
 
-        item ("tiles") {
+        item (9, "tiles") {
             description "The tiles were a bit wet but otherwise uninteresting"
             scenery true
         }
     }
 
-    room ("game over") {
+    room (4, "game over") {
         description {
             say("""
                 Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
@@ -157,9 +157,9 @@ adventure {
         }
     }
 
-    room ("hiddenRoom") {
-        item ("card") {
-            synonyms "small card", "card"
+    room (5, "hiddenRoom") {
+        item (10, "card", "small card") {
+            synonyms "card"
             description """
                 On the card, in large, type-writer runes, were the words,
                 I wish thee to accompany some er, 'friends' on an adventure.  See you soon.
@@ -168,8 +168,8 @@ adventure {
                 P.S. These chocs will self destruct in 10 minutes"""
         }
 
-        item ("expensiveChocolates") {
-            synonyms "box of expensive chocolates", "chocolates", "chocs"
+        item (11, "expensiveChocolates", "box of expensive chocolates") {
+            synonyms "chocolates", "chocs"
             description """
                 The chocolates were small and brown.  They probably contained milk chocolate, milk solids
                 (20% minimum) and vegetable fat."""
@@ -183,8 +183,8 @@ adventure {
             }
         }
 
-        item ("wreckedChocolates") {
-            synonyms "wrecked box of chocolates", "chocolates", "chocs"
+        item (12, "wreckedChocolates", "wrecked box of chocolates") {
+            synonyms "chocolates", "chocs"
             description """
                 Bimbo examined the chocolates.  "The cleaning elf is gonna kill that old wizard one day!" he
                 remarked to no one in particular"""

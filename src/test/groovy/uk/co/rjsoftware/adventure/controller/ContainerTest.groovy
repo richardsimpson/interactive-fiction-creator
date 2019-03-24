@@ -14,15 +14,15 @@ import static org.junit.Assert.assertTrue
 class ContainerTest {
 
     private AdventureController classUnderTest
-    private Item player = new Item("player")
+    private Item player = new Item(1, "player")
     private IPlayerAppViewForTesting mainWindow
 
-    private Room livingRoom = new Room("livingRoom", "This is the living room.")
+    private Room livingRoom = new Room(1, "livingRoom", "This is the living room.")
 
-    private Item chest = new Item("chest", "chest", "This is the chest.")
+    private Item chest = new Item(2, "chest", "chest", "This is the chest.")
 
-    private Item goldCoin = new Item("coin", ["gold coin", "coin"], "This coin is gold.")
-    private Item notepad = new Item("notepad", ["notepad"], "A notebook with strange writing on it.")
+    private Item goldCoin = new Item(3, "coin", "gold coin", ["coin"], "This coin is gold.")
+    private Item notepad = new Item(4, "notepad", "notepad", "A notebook with strange writing on it.")
 
     private final Map<String, Verb> verbs = new HashMap()
 
@@ -68,9 +68,9 @@ class ContainerTest {
         // get room and item references back from the AdventureController, as that now copies the adventure
         // during the loading process
         this.livingRoom = this.classUnderTest.getRoom(this.livingRoom.name)
-        this.chest = this.classUnderTest.getItem(this.chest.id)
-        this.goldCoin = this.classUnderTest.getItem(this.goldCoin.id)
-        this.notepad = this.classUnderTest.getItem(this.notepad.id)
+        this.chest = this.classUnderTest.getItemByName(this.chest.getName())
+        this.goldCoin = this.classUnderTest.getItemByName(this.goldCoin.getName())
+        this.notepad = this.classUnderTest.getItemByName(this.notepad.getName())
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
@@ -204,7 +204,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }
@@ -224,7 +224,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }
@@ -243,7 +243,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }
@@ -264,9 +264,9 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName() + ", containing:",
-                    "    " + goldCoin.getName(),
-                    "    " + notepad.getName(),
+                    chest.getDisplayName() + ", containing:",
+                    "    " + goldCoin.getDisplayName(),
+                    "    " + notepad.getDisplayName(),
                     ""
             ])
         }
@@ -285,7 +285,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }
@@ -306,7 +306,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }
@@ -341,8 +341,8 @@ class ContainerTest {
 
             assertMessagesAreCorrect([
                     "This is the chest.  It contains:",
-                    goldCoin.getName(),
-                    notepad.getName(),
+                    goldCoin.getDisplayName(),
+                    notepad.getDisplayName(),
                     ""
             ])
         }
@@ -379,8 +379,8 @@ class ContainerTest {
 
             assertMessagesAreCorrect([
                     "This is the chest.  It contains:",
-                    goldCoin.getName(),
-                    notepad.getName(),
+                    goldCoin.getDisplayName(),
+                    notepad.getDisplayName(),
                     ""
             ])
         }
@@ -457,9 +457,9 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName() + ", containing:",
-                    "    " + goldCoin.getName(),
-                    "    " + notepad.getName(),
+                    chest.getDisplayName() + ", containing:",
+                    "    " + goldCoin.getDisplayName(),
+                    "    " + notepad.getDisplayName(),
                     ""
             ])
         }
@@ -479,7 +479,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }
@@ -501,7 +501,7 @@ class ContainerTest {
             assertMessagesAreCorrect([
                     "This is the living room.",
                     "You can also see:",
-                    chest.getName(),
+                    chest.getDisplayName(),
                     ""
             ])
         }

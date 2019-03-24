@@ -31,16 +31,16 @@ class Adventure {
 
         // now fixup the room references (exits)
         for (Room room : this.rooms) {
-            final Room roomCopy = adventureCopy.getRoom(room.name)
+            final Room roomCopy = adventureCopy.getRoomById(room.getId())
             for (Exit exit : room.exits.values()) {
                 final Exit exitCopy = roomCopy.getExit(exit.getDirection())
-                exitCopy.setDestination(adventureCopy.getRoom(exit.getDestination().name))
+                exitCopy.setDestination(adventureCopy.getRoomByName(exit.getDestination().name))
             }
         }
 
         // now fixup the player reference
         if (this.player != null) {
-            adventureCopy.player = adventureCopy.getItem(this.player.getName())
+            adventureCopy.player = adventureCopy.getItemByName(this.player.getName())
         }
         adventureCopy
     }
@@ -62,7 +62,7 @@ class Adventure {
             return this.player
         }
 
-        getItem("player")
+        getItemByName("player")
     }
 
     void setPlayer(Item player) {
@@ -81,14 +81,20 @@ class Adventure {
         this.rooms
     }
 
-    Room getRoom(String roomName) {
+    Room getRoomById(int id) {
+        this.rooms.find {room ->
+            room.getId().equals(id)
+        }
+    }
+
+    Room getRoomByName(String roomName) {
         this.rooms.find {room ->
             room.getName().equals(roomName)
         }
     }
 
-    Map<String, Item> getAllItems() {
-        final Map<String, Item> items = new HashMap<>()
+    Map<Integer, Item> getAllItems() {
+        final Map<Integer, Item> items = new HashMap<>()
 
         for (Room room : getRooms()) {
             items.putAll(room.getAllItems())
@@ -97,8 +103,10 @@ class Adventure {
         items
     }
 
-    Item getItem(String itemName) {
-        getAllItems().get(itemName.toUpperCase())
+    Item getItemByName(String itemName) {
+        getAllItems().values().find {item ->
+            item.getName().equals(itemName)
+        }
     }
 
     void addCustomVerb(CustomVerb customVerb) {

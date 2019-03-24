@@ -101,11 +101,11 @@ class AdventureDelegate {
         verb(id, id, command)
     }
 
-    private void room(String roomName, Closure closure) {
-        Room room = this.adventure.getRoom(roomName)
+    private void room(int id, String roomName, Closure closure) {
+        Room room = this.adventure.getRoomById(id)
 
         if (room == null) {
-            room = new Room(roomName)
+            room = new Room(id, roomName)
             this.adventure.addRoom(room)
         }
 
@@ -117,7 +117,7 @@ class AdventureDelegate {
     }
 
     private void player(String itemName) {
-        Item item = this.adventure.getItem(itemName)
+        Item item = this.adventure.getItemByName(itemName)
 
         if (item == null) {
             this.playerForwardReference = itemName
@@ -214,7 +214,7 @@ class RoomDelegate {
             this.room.addExit(exit)
         }
 
-        Room room = this.adventure.getRoom(destination)
+        Room room = this.adventure.getRoomByName(destination)
         if (room == null) {
             this.forwardRoomReferences.put(direction, new Tuple2<>(destination, closure))
             false
@@ -249,10 +249,10 @@ class RoomDelegate {
         }
     }
 
-    private void item(String itemId, Optional<Closure> closure) {
-        Item item = this.room.getItem(itemId)
+    private void item(int id, String itemName, String itemDisplayName, Optional<Closure> closure) {
+        Item item = this.room.getItemById(id)
         if (item == null) {
-            item = new Item(itemId)
+            item = new Item(id, itemName, itemDisplayName)
             this.room.addItem(item)
         }
 
@@ -263,12 +263,20 @@ class RoomDelegate {
         }
     }
 
-    private void item(String itemId, Closure closure) {
-        item(itemId, Optional.of(closure))
+    private void item(int id, String itemName, Closure closure) {
+        item(id, itemName, itemName, Optional.of(closure))
     }
 
-    private void item(String itemId) {
-        item(itemId, Optional.empty())
+    private void item(int id, String itemName) {
+        item(id, itemName, itemName, Optional.empty())
+    }
+
+    private void item(int id, String itemName, String itemDisplayName, Closure closure) {
+        item(id, itemName, itemDisplayName, Optional.of(closure))
+    }
+
+    private void item(int id, String itemName, String itemDisplayName) {
+        item(id, itemName, itemDisplayName, Optional.empty())
     }
 
     private void verb(String verbId, Closure closure) {
@@ -321,7 +329,6 @@ class ItemDelegate {
     }
 
     private void synonyms(String... synonyms) {
-        this.item.clearSynonyms()
         for (String synonym : synonyms) {
             this.item.addSynonym(synonym)
         }

@@ -14,26 +14,26 @@ class VerbsTest {
     private Adventure adventure
 
     private AdventureController classUnderTest
-    private Item player = new Item("player")
+    private Item player = new Item(1, "player")
     private IPlayerAppViewForTesting mainWindow
 
     private String waitText = "This is the wait text"
     private String getText = "This is the get text"
 
-    private Room study = new Room("study", "This is your study.")
-    private Room livingRoom = new Room("livingRoom", "This is the living room.")
-    private Room garden = new Room("garden", "This is the garden.")
-    private Room kitchen = new Room("kitchen", "This is the kitchen.")
-    private Room diningRoom = new Room("diningRoom", "This is the dining room.")
-    private Room landing = new Room("landing", "This is the landing.")
-    private Room cellar = new Room("cellar", "This is the cellar.")
+    private Room study = new Room(1, "study", "This is your study.")
+    private Room livingRoom = new Room(2, "livingRoom", "This is the living room.")
+    private Room garden = new Room(3, "garden", "This is the garden.")
+    private Room kitchen = new Room(4, "kitchen", "This is the kitchen.")
+    private Room diningRoom = new Room(5, "diningRoom", "This is the dining room.")
+    private Room landing = new Room(6, "landing", "This is the landing.")
+    private Room cellar = new Room(7, "cellar", "This is the cellar.")
 
-    private Item lamp = new Item("lamp", "lamp", "A bedside lamp. with a simple on/off switch.")
-    private Item tv = new Item("tv", ["TV", "television"], "A 28\" TV")
-    private Item newspaper = new Item("paper", ["newspaper", "paper"], "The Daily Bugle.")
-    private Item remote = new Item("remote", "remote", "The TV remote")
-    private Item sandwich = new Item("sandwich", "sandwich", "A crusty old sandwich")
-    private Item donut = new Item("donut", "donut", "A delicious looking donut")
+    private Item lamp = new Item(2, "lamp", "lamp","A bedside lamp. with a simple on/off switch.")
+    private Item tv = new Item(3, "tv", "TV", ["television"], "A 28\" TV")
+    private Item newspaper = new Item(4, "paper", "newspaper", ["paper"], "The Daily Bugle.")
+    private Item remote = new Item(5, "remote", "remote", "The TV remote")
+    private Item sandwich = new Item(6, "sandwich", "sandwich", "A crusty old sandwich")
+    private Item donut = new Item(7, "donut", "donut", "A delicious looking donut")
 
     private CustomVerb watch = new CustomVerb("Watch", "Watch", ["WATCH {noun}"])
     private CustomVerb relax = new CustomVerb("Relax", "Relax", ["RELAX"])
@@ -135,12 +135,12 @@ class VerbsTest {
         this.landing = this.classUnderTest.getRoom(this.landing.name)
         this.cellar = this.classUnderTest.getRoom(this.cellar.name)
 
-        this.lamp = this.classUnderTest.getItem(this.lamp.id)
-        this.tv = this.classUnderTest.getItem(this.tv.id)
-        this.newspaper = this.classUnderTest.getItem(this.newspaper.id)
-        this.remote = this.classUnderTest.getItem(this.remote.id)
-        this.sandwich = this.classUnderTest.getItem(this.sandwich.id)
-        this.donut = this.classUnderTest.getItem(this.donut.id)
+        this.lamp = this.classUnderTest.getItemByName(this.lamp.getName())
+        this.tv = this.classUnderTest.getItemByName(this.tv.getName())
+        this.newspaper = this.classUnderTest.getItemByName(this.newspaper.getName())
+        this.remote = this.classUnderTest.getItemByName(this.remote.getName())
+        this.sandwich = this.classUnderTest.getItemByName(this.sandwich.getName())
+        this.donut = this.classUnderTest.getItemByName(this.donut.getName())
     }
 
     private void assertMessagesAreCorrect(List<String> expectedMessages) {
@@ -952,8 +952,8 @@ class VerbsTest {
             final newPlayer = this.classUnderTest.getPlayer()
             final newLivingRoom = this.classUnderTest.getRoom("livingRoom")
             final newKitchen = this.classUnderTest.getRoom("kitchen")
-            final newLamp = newLivingRoom.getItem("lamp")
-            final newTv = newLivingRoom.getItem("tv")
+            final newLamp = newLivingRoom.getItemByName("lamp")
+            final newTv = newLivingRoom.getItemByName("tv")
 
             assertEquals(newLivingRoom, this.classUnderTest.getCurrentRoom())
             assertFalse(newPlayer.contains(newspaper))

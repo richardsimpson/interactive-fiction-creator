@@ -4,7 +4,7 @@ adventure {
 
     verb ("Watch", "Watch", "WATCH {noun}") {}
 
-    room ("bedroom") {
+    room (1, "bedroom") {
         description "This is your bedroom.  Clothes are strewn across the floor, there is a TV, and a lamp sits on the bedsite table."
         afterEnterRoomFirstTime {
             executeAfterTurns(5) {
@@ -12,15 +12,15 @@ adventure {
             }
         }
 
-        item ("player")
+        item (1, "player")
 
-        item ("lamp") {
+        item (2, "lamp") {
             description "A bedside lamp. with a simple on/off switch"
             switchable true
         }
 
-        item("TV") {
-            synonyms "television", "tv"
+        item(3, "TV") {
+            synonyms "television"
             description "A 28\" TV."
             visible true
             scenery false
@@ -41,12 +41,12 @@ adventure {
         }
     }
 
-    room ("landing") {
+    room (2, "landing") {
         description "You are in the landing.  There is not much here, except for a coffee stained carpet"
         exit direction: WEST, room: "bedroom"
     }
 
-    room ("bedroom") {
+    room (3, "bedroom") {
         exit direction: EAST, room: "landing"
     }
 
