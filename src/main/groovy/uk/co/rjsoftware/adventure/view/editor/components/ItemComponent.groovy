@@ -18,12 +18,17 @@ class ItemComponent extends CustomComponent {
 
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT)
 
-        this.button.setText(item.getName())
         this.getChildren().add(button)
+
+        refresh()
     }
 
     String getText() {
         return item.getName()
     }
 
+    @Override
+    void refresh() {
+        this.button.setText(item.getName())
+    }
 }

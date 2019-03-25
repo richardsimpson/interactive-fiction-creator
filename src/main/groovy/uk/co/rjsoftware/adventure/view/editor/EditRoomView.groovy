@@ -30,6 +30,7 @@ import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.ResizeComponent
+import uk.co.rjsoftware.adventure.view.editor.components.RoomComponent
 import uk.co.rjsoftware.adventure.view.editor.treeitems.AdventureTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.CustomTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.ItemTreeItem
@@ -43,22 +44,25 @@ class EditRoomView extends AbstractModelDialogView {
     @FXML private TextField nameTextField
     @FXML private TextArea descriptionTextArea
 
-    private Room room = null
+    private RoomComponent roomComponent
+    private Room room
 
-    void init(Parent rootLayout, Stage owner, Room room) {
+    void init(Parent rootLayout, Stage owner, RoomComponent roomComponent) {
         super.init(rootLayout, owner)
 
-        this.room = room
+        this.roomComponent = roomComponent
+        this.room = roomComponent.getRoom()
+
         this.nameTextField.setText(room.getName())
         this.descriptionTextArea.setText((room.getDescription()))
     }
 
     @Override
     protected void save() {
-        // TODO: Enable name to be changed - it's currently used as a map key in AdventureController
         // TODO: Changing the room here does not change the view in the editor
-        //this.room.setName(this.nameTextField.getText())
+        this.room.setName(this.nameTextField.getText())
         this.room.setDescription(this.descriptionTextArea.getText())
+        this.roomComponent.refresh()
         close()
     }
 }

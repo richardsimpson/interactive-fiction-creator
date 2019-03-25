@@ -38,6 +38,7 @@ class ResizeComponent extends AnchorPane {
     private Region componentToResize
 
     private boolean currentlyDraggingNode
+    private boolean currentlyDraggingComponent
 
     private MoveComponent moveComponent = new MoveComponent()
 
@@ -105,13 +106,25 @@ class ResizeComponent extends AnchorPane {
         this.getChildren().add(dragNodeSE)
         this.getChildren().add(dragNodeSW)
         this.getChildren().add(dragNodeNW)
-
-        this.setOnMousePressed(this.&onMousePressedThis)
-        this.setOnMouseReleased(this.&onMouseReleasedThis)
     }
 
     void setComponentToResize(Region node, double offsetX, double offsetY) {
         componentToResize = node
+
+        final MultiEventHandler<MouseEvent> onMousePressedMultiEventHandler = new MultiEventHandler<>()
+        onMousePressedMultiEventHandler.addHandler(this.&onMousePressedThis)
+        onMousePressedMultiEventHandler.addBaseHandler(
+                ((MultiEventHandler)node.getOnMousePressed()).baseHandler
+        )
+
+        final MultiEventHandler<MouseEvent> onMouseReleasedMultiEventHandler = new MultiEventHandler<>()
+        onMouseReleasedMultiEventHandler.addHandler(this.&onMouseReleasedThis)
+        onMouseReleasedMultiEventHandler.addBaseHandler(
+                ((MultiEventHandler)node.getOnMouseReleased()).baseHandler
+        )
+
+        this.setOnMousePressed(onMousePressedMultiEventHandler)
+        this.setOnMouseReleased(onMouseReleasedMultiEventHandler)
 
         this.offsetX = offsetX
         this.offsetY = offsetY
@@ -325,14 +338,23 @@ class ResizeComponent extends AnchorPane {
     }
 
     void registerComponent(Region node) {
-        node.setOnMousePressed(this.&onMousePressedComponent)
-        node.setOnMouseReleased(this.&onMouseReleasedComponent)
+        final MultiEventHandler<MouseEvent> onMousePressedMultiEventHandler = new MultiEventHandler<>()
+        onMousePressedMultiEventHandler.addHandler(this.&onMousePressedComponent)
+        onMousePressedMultiEventHandler.addBaseHandler(node.getOnMousePressed())
+
+        final MultiEventHandler<MouseEvent> onMouseReleasedMultiEventHandler = new MultiEventHandler<>()
+        onMouseReleasedMultiEventHandler.addHandler(this.&onMouseReleasedComponent)
+        onMouseReleasedMultiEventHandler.addBaseHandler(node.getOnMouseReleased())
+
+        node.setOnMousePressed(onMousePressedMultiEventHandler)
+        node.setOnMouseReleased(onMouseReleasedMultiEventHandler)
     }
 
     private void onMousePressedComponent(MouseEvent event) {
-        println("component pressed")
-
         final Region region = event.getSource() as Region
+
+        println("component pressed")
+        currentlyDraggingComponent = true
 
         // remove the existing resize component, if any
         this.pane.getChildren().remove(this)
@@ -347,25 +369,32 @@ class ResizeComponent extends AnchorPane {
     }
 
     private void onMouseReleasedComponent(MouseEvent event) {
-        println("component released")
+        if (currentlyDraggingComponent) {
+            currentlyDraggingComponent = false
+            println("component released")
 
-        //move the component
-        moveComponent.mouseReleased()
+            //move the component
+            moveComponent.mouseReleased()
 
-        // update the resize component location to match the new location of the component being moved.
-        updateLocation()
+            // update the resize component location to match the new location of the component being moved.
+            updateLocation()
 
-        // remove the move component
-        this.pane.getChildren().remove(moveComponent)
+            // remove the move component
+            this.pane.getChildren().remove(moveComponent)
+        }
     }
 
     private void onMousePressedThis(MouseEvent event) {
         println("resize component pressed")
 
         if (!this.currentlyDraggingNode) {
-            //add the move component over the selected item
-            moveComponent.setComponentToMove(this, this.componentToResize, event.getX(), event.getY())
-            this.pane.getChildren().add(moveComponent)
+            if (event.primaryButtonDown) {
+                currentlyDraggingComponent = true
+
+                //add the move component over the selected item
+                moveComponent.setComponentToMove(this, this.componentToResize, event.getX(), event.getY())
+                this.pane.getChildren().add(moveComponent)
+            }
         }
     }
 
@@ -376,14 +405,18 @@ class ResizeComponent extends AnchorPane {
             this.currentlyDraggingNode = false
         }
         else {
-            //move the component
-            moveComponent.mouseReleased()
+            if (currentlyDraggingComponent) {
+                currentlyDraggingComponent = false
 
-            // update the resize component location to match the new location of the component being moved.
-            updateLocation()
+                //move the component
+                moveComponent.mouseReleased()
 
-            // remove the move component
-            this.pane.getChildren().remove(moveComponent)
+                // update the resize component location to match the new location of the component being moved.
+                updateLocation()
+
+                // remove the move component
+                this.pane.getChildren().remove(moveComponent)
+            }
         }
     }
 

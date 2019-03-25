@@ -18,12 +18,17 @@ class AdventureComponent extends CustomComponent {
 
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT)
 
-        this.button.setText(adventure.getTitle())
         this.getChildren().add(button)
+
+        refresh()
     }
 
     String getText() {
         return adventure.getTitle()
     }
 
+    @Override
+    void refresh() {
+        this.button.setText(adventure.getTitle())
+    }
 }

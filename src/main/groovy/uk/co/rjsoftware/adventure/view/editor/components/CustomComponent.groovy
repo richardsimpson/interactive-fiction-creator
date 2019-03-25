@@ -17,4 +17,7 @@ abstract class CustomComponent extends VBox {
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)))
         this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)))
     }
+
+    abstract void refresh()
+
 }

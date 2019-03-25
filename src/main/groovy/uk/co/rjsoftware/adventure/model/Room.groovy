@@ -69,6 +69,10 @@ class Room implements ItemContainer, VerbContainer {
         this.name
     }
 
+    void setName(String name) {
+        this.name = name
+    }
+
     String getDescription() {
         this.description
     }

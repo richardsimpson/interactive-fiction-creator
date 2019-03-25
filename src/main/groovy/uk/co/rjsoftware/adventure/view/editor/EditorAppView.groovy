@@ -38,20 +38,12 @@ class EditorAppView {
 
     @FXML private MenuItem loadMenuItem = null
 
-    @FXML private Button button = null
-
     private ResizeComponent resizeComponent
 
     private Adventure adventure
 
     @FXML void initialize() {
         resizeComponent = new ResizeComponent(this.pane)
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            void handle(ActionEvent event) {
-                showEditRoomDialog()
-            }
-        })
-
     }
 
     private Stage primaryStage = null
@@ -117,7 +109,7 @@ class EditorAppView {
         root.setExpanded(true);
 
         for (Room room : adventure.getRooms()) {
-            final TreeItem<CustomTreeItem> roomTreeItem = new TreeItem<>(new RoomTreeItem(room))
+            final TreeItem<CustomTreeItem> roomTreeItem = new TreeItem<>(new RoomTreeItem(room, this.primaryStage))
             root.getChildren().add(roomTreeItem)
 
             for (Item item : room.getItems()) {
@@ -138,14 +130,4 @@ class EditorAppView {
         }
     }
 
-    private showEditRoomDialog() {
-        // Load root layout from fxml file
-        final FXMLLoader loader = new FXMLLoader()
-        loader.setLocation(getClass().getResource("../editRoom.fxml"))
-        final Parent rootLayout = loader.load()
-
-        // initialise the view after showing the scene
-        final EditRoomView editRoomView = loader.getController()
-        editRoomView.init(rootLayout, primaryStage, adventure.getRoomByName("tunnel like hall"))
-    }
 }
