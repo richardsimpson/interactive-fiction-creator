@@ -59,7 +59,6 @@ class EditRoomView extends AbstractModelDialogView {
 
     @Override
     protected void save() {
-        // TODO: Changing the room here does not change the view in the editor
         this.room.setName(this.nameTextField.getText())
         this.room.setDescription(this.descriptionTextArea.getText())
         this.roomComponent.refresh()

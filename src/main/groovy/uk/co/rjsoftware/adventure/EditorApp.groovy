@@ -35,7 +35,6 @@ class EditorApp extends Application {
         final EditorAppView editorAppView = loader.getController()
         editorAppView.init(primaryStage)
 
-        // TODO: think of another word for 'player', then put the views and the controllers into different sub-packages
         // TODO: Immplement MVC for the editor.  The editor should not extract data from the model, rather, it
         // should be listening for changes in the model.  Actions in the editor (e.g. add room) need to be
         // passed to the controller, which then updates the model.
