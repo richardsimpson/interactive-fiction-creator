@@ -6,11 +6,10 @@ adventure {
 
     room ("bedroom") {
         description "This is your bedroom.  Clothes are strewn across the floor, there is a TV, and a lamp sits on the bedsite table."
-        afterEnterRoomFirstTime {
+        afterEnterRoomFirstTimeScript """
             executeAfterTurns(5) {
                 say('you decide you should tidy up')
-            }
-        }
+            }"""
 
         item ("player")
 
@@ -31,23 +30,25 @@ adventure {
             extraMessageWhenSwitchedOff "It is currently switched off."
 
             verb ("Watch") {
+                script """
                 if (isSwitchedOn('tv')) {
                     say("You watch the TV for a while.  It's showing a Western of some kind.")
                 }
                 else {
                     say("You watch the TV for a while.  It's just a black screen.")
                 }
+                """
             }
         }
     }
 
     room ("landing") {
         description "You are in the landing.  There is not much here, except for a coffee stained carpet"
-        exit direction: WEST, room: "bedroom"
+        exit(WEST, "bedroom")
     }
 
     room ("bedroom") {
-        exit direction: EAST, room: "landing"
+        exit(EAST, "landing")
     }
 
 }

@@ -56,11 +56,11 @@ class VerbsTest {
         sandwich.setEdible(true)
         donut.setEdible(true)
         donut.setEatMessage("eating donut")
-        donut.setOnEat {say('onEatScript')}
+        donut.setOnEatScript("say('onEatScript')")
 
-        tv.addVerb(watch) {say('You watch the TV for a while.')}
-        livingRoom.addVerb(relax) {say('You sit on the floor, and veg out in front of the TV.')}
-        garden.addVerb(relax) {say('You sunbathe for a while.  Difficult without anything to sit on though.')}
+        tv.addVerb(watch, "say('You watch the TV for a while.')")
+        livingRoom.addVerb(relax , "say('You sit on the floor, and veg out in front of the TV.')")
+        garden.addVerb(relax , "say('You sunbathe for a while.  Difficult without anything to sit on though.')")
 
         //           kitchen    landing
         //                |      |

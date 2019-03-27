@@ -21,10 +21,10 @@ adventure {
 
     room ("landing") {
         description "You are in the landing.  There is not much here, except for a coffee stained carpet"
-        exit direction: WEST, room: "bedroom"
+        exit(WEST, "bedroom")
     }
 
     room ("bedroom") {
-        exit direction: EAST, room: "landing"
+        exit(EAST, "landing")
     }
 }

@@ -2,6 +2,7 @@ package uk.co.rjsoftware.adventure.controller
 
 import groovy.transform.TailRecursive
 import groovy.transform.TypeChecked
+import uk.co.rjsoftware.adventure.controller.customscripts.ScriptExecutor
 import uk.co.rjsoftware.adventure.controller.load.Loader
 import uk.co.rjsoftware.adventure.model.*
 import uk.co.rjsoftware.adventure.utils.StringUtils
@@ -36,7 +37,6 @@ class AdventureController {
     private Map<String, Item> nouns = new HashMap<>()
     private Map<String, Room> rooms = new HashMap<>()
 
-    final ScriptRuntimeDelegate scriptRuntimeDelegate = new ScriptRuntimeDelegate(this)
 
     AdventureController(IPlayerAppView view) {
         this.view = view
@@ -390,8 +390,8 @@ class AdventureController {
             return
         }
 
-        final Closure closure = verbContainer.getVerbClosure(verb)
-        executeClosure(closure)
+        final String script = verbContainer.getVerbScript(verb)
+        executeScript(script)
     }
 
     private void executeCommand(String verb, List<Item> candidateItems) {
@@ -424,9 +424,9 @@ class AdventureController {
     //
 
     private void look() {
-        final Closure closure = this.currentRoom.getDescriptionClosure()
-        if (closure != null) {
-            executeClosure(closure)
+        final String script = this.currentRoom.getDescriptionScript()
+        if (script != null) {
+            executeScript(script)
         }
         else {
             say(this.currentRoom.getDescription())
@@ -484,8 +484,8 @@ class AdventureController {
     private void movePlayerToInternal(Room room) {
         // process leaving the previous room
         if (this.currentRoom != null) {
-            if (this.currentRoom.getAfterLeaveRoom() != null) {
-                executeClosure(this.currentRoom.getAfterLeaveRoom())
+            if (this.currentRoom.getAfterLeaveRoomScript() != null) {
+                executeScript(this.currentRoom.getAfterLeaveRoomScript())
             }
         }
 
@@ -499,25 +499,25 @@ class AdventureController {
         }
 
         if (firstVisit) {
-            if (this.currentRoom.getBeforeEnterRoomFirstTime() != null) {
-                executeClosure(this.currentRoom.getBeforeEnterRoomFirstTime())
+            if (this.currentRoom.getBeforeEnterRoomFirstTimeScript() != null) {
+                executeScript(this.currentRoom.getBeforeEnterRoomFirstTimeScript())
             }
         }
 
-        if (this.currentRoom.getBeforeEnterRoom() != null) {
-            executeClosure(this.currentRoom.getBeforeEnterRoom())
+        if (this.currentRoom.getBeforeEnterRoomScript() != null) {
+            executeScript(this.currentRoom.getBeforeEnterRoomScript())
         }
 
         look()
 
         if (firstVisit) {
-            if (this.currentRoom.getAfterEnterRoomFirstTime() != null) {
-                executeClosure(this.currentRoom.getAfterEnterRoomFirstTime())
+            if (this.currentRoom.getAfterEnterRoomFirstTimeScript() != null) {
+                executeScript(this.currentRoom.getAfterEnterRoomFirstTimeScript())
             }
         }
 
-        if (this.currentRoom.getAfterEnterRoom() != null) {
-            executeClosure(this.currentRoom.getAfterEnterRoom())
+        if (this.currentRoom.getAfterEnterRoomScript() != null) {
+            executeScript(this.currentRoom.getAfterEnterRoomScript())
         }
 
     }
@@ -595,9 +595,9 @@ class AdventureController {
         final Item item = items.get(0)
 
         item.setItemExamined(true)
-        final Closure closure = item.getDescriptionClosure()
-        if (closure != null) {
-            executeClosure(closure)
+        final String script = item.getDescriptionScript()
+        if (script != null) {
+            executeScript(script)
         }
         else {
             say(item.getItemDescription())
@@ -718,8 +718,8 @@ class AdventureController {
             }
             say(message)
 
-            if (item.getOnOpen() != null) {
-                executeClosure(item.getOnOpen())
+            if (item.getOnOpenScript() != null) {
+                executeScript(item.getOnOpenScript())
             }
 
         }
@@ -753,8 +753,8 @@ class AdventureController {
             }
             say(message)
 
-            if (item.getOnClose() != null) {
-                executeClosure(item.getOnClose())
+            if (item.getOnCloseScript() != null) {
+                executeScript(item.getOnCloseScript())
             }
 
         }
@@ -787,16 +787,16 @@ class AdventureController {
             }
             say(message)
 
-            if (item.getOnEat() != null) {
-                executeClosure(item.getOnEat())
+            if (item.getOnEatScript() != null) {
+                executeScript(item.getOnEatScript())
             }
 
         }
     }
 
-    private void executeClosure(Closure closure) {
-        closure.delegate = scriptRuntimeDelegate
-        closure.call()
+    private void executeScript(String script) {
+        ScriptExecutor executor = new ScriptExecutor(this)
+        executor.executeScript(script)
     }
 
     private void restart() {

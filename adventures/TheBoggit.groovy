@@ -23,7 +23,7 @@ adventure {
             scenery true
         }
 
-        beforeEnterRoomFirstTime {
+        beforeEnterRoomFirstTimeScript '''
             executeAfterTurns(3) {
                 if (playerInRoom("tunnel like hall")) {
                     say("""
@@ -50,20 +50,20 @@ adventure {
                     moveItemTo("expensiveChocolates", "hiddenRoom")
                 }
             }
-        }
+'''
 
         item ("thePlayer")
 
         item ("chest", "large, wooden chest") {
             synonyms "chest"
-            description {
+            descriptionScript """
                 if (isOpen("chest")) {
                     say("The chest was both heavy and open")
                 }
                 else {
                     say("The chest was both heavy and closed")
                 }
-            }
+            """
             container true
             openable true
             closeable true
@@ -72,12 +72,14 @@ adventure {
             contentVisibility NEVER
 
             verb ("ClimbInto") {
+                script """
                 if (isOpen('chest')) {
                     movePlayerTo("inside chest")
                 }
                 else {
                     say("Bimbo could not climb into the chest at this time.")
                 }
+                """
             }
         }
 
@@ -110,7 +112,7 @@ adventure {
         }
 
         verb ("ClimbOut") {
-            movePlayerTo("tunnel like hall")
+            script "movePlayerTo('tunnel like hall')"
         }
 
     }
@@ -143,7 +145,7 @@ adventure {
     }
 
     room ("game over") {
-        description {
+        descriptionScript ''' 
             say("""
                 Shortly, the Grim Reaper, Death, arrived to claim Bimbo.
                 The end had come.
@@ -154,7 +156,7 @@ adventure {
                 And so, amid assorted whoops, cheers, rasps, gongs and whistles, the sun set on another improbable
                 chapter in Muddle Earth's sordid history....""")
             endGame()
-        }
+        '''
     }
 
     room ("hiddenRoom") {
@@ -178,9 +180,7 @@ adventure {
                 Bimbo ate the chocolates.  They really were very good though had a somewhat unusual flavour.
                 A few moments later, he exploded for no apparent reason.
                 """
-            onEat {
-                movePlayerTo('game over')
-            }
+            onEatScript "movePlayerTo('game over')"
         }
 
         item ("wreckedChocolates", "wrecked box of chocolates") {

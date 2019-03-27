@@ -1,15 +1,16 @@
-package uk.co.rjsoftware.adventure.controller
+package uk.co.rjsoftware.adventure.controller.customscripts
 
 import groovy.transform.TypeChecked
+import uk.co.rjsoftware.adventure.controller.AdventureController
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 
 @TypeChecked
-class ScriptRuntimeDelegate {
+abstract class AdventureScript extends Script {
 
-    private final AdventureController adventureController
+    private AdventureController adventureController = null
 
-    ScriptRuntimeDelegate(AdventureController adventureController) {
+    void setAdventureController(AdventureController adventureController) {
         this.adventureController = adventureController
     }
 
@@ -57,7 +58,7 @@ class ScriptRuntimeDelegate {
         !adventureController.playerInRoom(roomName)
     }
 
-    void movePlayerTo(String roomName) {
+    boolean movePlayerTo(String roomName) {
         adventureController.movePlayerTo(roomName)
     }
 

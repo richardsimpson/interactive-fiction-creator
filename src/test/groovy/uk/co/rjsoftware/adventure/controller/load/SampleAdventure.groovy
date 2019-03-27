@@ -14,11 +14,11 @@ adventure {
 
     room ("bedroom") {
         description "custom description"
-        beforeEnterRoom { say("beforeEnterRoomScript") }
-        afterEnterRoom { say("afterEnterRoomScript") }
-        afterLeaveRoom { say("afterLeaveRoomScript") }
-        beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript") }
-        afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript") }
+        beforeEnterRoomScript "beforeEnterRoomScript"
+        afterEnterRoomScript "afterEnterRoomScript"
+        afterLeaveRoomScript "afterLeaveRoomScript"
+        beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript"
+        afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript"
 
         exit(EAST, "landing") {
             scenery true
@@ -55,30 +55,35 @@ adventure {
             extraMessageWhenSwitchedOn "extraMessageWhenSwitchedOn"
             extraMessageWhenSwitchedOff "extraMessageWhenSwitchedOff"
 
-            verb ("Watch") { say("watchVerb") }
-            verb ("Throw") { say("throwVerb") }
+            verb ("Watch") {
+                script "say('watchVerb')"
+            }
+
+            verb ("Throw") {
+                script "say('throwVerb')"
+            }
         }
     }
 
     room ("landing") {
         description "custom description2"
-        beforeEnterRoom { say("beforeEnterRoomScript2") }
-        afterEnterRoom { say("afterEnterRoomScript2") }
-        afterLeaveRoom { say("afterLeaveRoomScript2") }
-        beforeEnterRoomFirstTime { say("beforeEnterRoomFirstTimeScript2") }
-        afterEnterRoomFirstTime { say("afterEnterRoomFirstTimeScript2") }
+        beforeEnterRoomScript "beforeEnterRoomScript2"
+        afterEnterRoomScript "afterEnterRoomScript2"
+        afterLeaveRoomScript "afterLeaveRoomScript2"
+        beforeEnterRoomFirstTimeScript "beforeEnterRoomFirstTimeScript2"
+        afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript2"
 
         exit(WEST, "bedroom")
     }
 
     room ("roomWithDescriptionClosure") {
-        description {
-            say "roomDescriptionClosure"
-        }
+        descriptionScript """
+            say 'roomDescriptionClosure'
+        """
         item("itemWithDescriptionClosure") {
-            description {
-                say "itemDescriptionClosure"
-            }
+            descriptionScript """
+                say 'itemDescriptionClosure'
+            """
         }
     }
 

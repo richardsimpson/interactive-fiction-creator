@@ -38,12 +38,8 @@ class ContainerTest {
         chest.setContainer(true)
         chest.setOpenMessage("The chest is now open")
         chest.setCloseMessage("The chest is now closed")
-        chest.setOnOpen {
-            say('onOpenScript')
-        }
-        chest.setOnClose {
-            say('onCloseScript')
-        }
+        chest.setOnOpenScript("say('onOpenScript')")
+        chest.setOnCloseScript("say('onCloseScript')")
     }
 
     private void setup() {

@@ -98,8 +98,10 @@ class Adventure {
     }
 
     Item getItemByName(String itemName) {
+        // TODO: Store the items in the room / item already in upper case.
+        final itemNameUpperCase = itemName.toUpperCase()
         getAllItems().find {item ->
-            item.getName().equals(itemName)
+            item.getName().toUpperCase().equals(itemNameUpperCase)
         }
     }
 

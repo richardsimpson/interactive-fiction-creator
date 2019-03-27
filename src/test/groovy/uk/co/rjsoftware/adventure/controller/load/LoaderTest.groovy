@@ -11,21 +11,6 @@ import static org.junit.Assert.assertTrue
 @TypeChecked
 class LoaderTest {
 
-    class ClosureChecker {
-        String lastMessage
-
-        void say(String message) {
-            lastMessage = message
-        }
-    }
-
-    private ClosureChecker checker = new ClosureChecker()
-
-    void verifyClosure(String expected, Closure closure) {
-        checker.tap(closure)
-        assertEquals(expected, checker.lastMessage)
-    }
-
     @Test
     void testLoadAdventure() {
         final File file = new File("/Users/richardsimpson/workspace/interactive-fiction-creator-groovy/src/test/groovy/uk/co/rjsoftware/adventure/controller/load/SampleAdventure.groovy")
@@ -37,6 +22,8 @@ class LoaderTest {
         assertEquals(3, adventure.getRooms().size())
 
         assertEquals(2, adventure.getCustomVerbs().size())
+        final CustomVerb watch = adventure.getCustomVerbs().get(0)
+        assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], watch.getSynonyms())
 
         final Map<String, CustomVerb> verbMap = new HashMap<>()
         for (CustomVerb verb : adventure.getCustomVerbs()) {
@@ -51,11 +38,11 @@ class LoaderTest {
 
         assertEquals("bedroom", bedroom.getName())
         assertEquals("custom description", bedroom.getDescription())
-        verifyClosure("beforeEnterRoomScript", bedroom.getBeforeEnterRoom())
-        verifyClosure("afterEnterRoomScript", bedroom.getAfterEnterRoom())
-        verifyClosure("afterLeaveRoomScript", bedroom.getAfterLeaveRoom())
-        verifyClosure("beforeEnterRoomFirstTimeScript", bedroom.getBeforeEnterRoomFirstTime())
-        verifyClosure("afterEnterRoomFirstTimeScript", bedroom.getAfterEnterRoomFirstTime())
+        assertEquals("beforeEnterRoomScript", bedroom.getBeforeEnterRoomScript())
+        assertEquals("afterEnterRoomScript", bedroom.getAfterEnterRoomScript())
+        assertEquals("afterLeaveRoomScript", bedroom.getAfterLeaveRoomScript())
+        assertEquals("beforeEnterRoomFirstTimeScript", bedroom.getBeforeEnterRoomFirstTimeScript())
+        assertEquals("afterEnterRoomFirstTimeScript", bedroom.getAfterEnterRoomFirstTimeScript())
         assertEquals(1, bedroom.getExits().size())
         final Exit exitToLanding = bedroom.getExit(Direction.EAST)
         assertEquals(landing, exitToLanding.getDestination())
@@ -65,11 +52,11 @@ class LoaderTest {
 
         assertEquals("landing", landing.getName())
         assertEquals("custom description2", landing.getDescription())
-        verifyClosure("beforeEnterRoomScript2", landing.getBeforeEnterRoom())
-        verifyClosure("afterEnterRoomScript2", landing.getAfterEnterRoom())
-        verifyClosure("afterLeaveRoomScript2", landing.getAfterLeaveRoom())
-        verifyClosure("beforeEnterRoomFirstTimeScript2", landing.getBeforeEnterRoomFirstTime())
-        verifyClosure("afterEnterRoomFirstTimeScript2", landing.getAfterEnterRoomFirstTime())
+        assertEquals("beforeEnterRoomScript2", landing.getBeforeEnterRoomScript())
+        assertEquals("afterEnterRoomScript2", landing.getAfterEnterRoomScript())
+        assertEquals("afterLeaveRoomScript2", landing.getAfterLeaveRoomScript())
+        assertEquals("beforeEnterRoomFirstTimeScript2", landing.getBeforeEnterRoomFirstTimeScript())
+        assertEquals("afterEnterRoomFirstTimeScript2", landing.getAfterEnterRoomFirstTimeScript())
         assertEquals(1, landing.getExits().size())
         final Exit exitToBedroom = landing.getExit(Direction.WEST)
         assertEquals(bedroom, exitToBedroom.getDestination())
@@ -106,13 +93,13 @@ class LoaderTest {
         assertTrue(tv.containsVerb(verbMap.get("Watch")))
         assertTrue(tv.containsVerb(verbMap.get("Throw")))
 
-        verifyClosure("watchVerb", tv.getVerbClosure(verbMap.get("Watch")))
-        verifyClosure("throwVerb", tv.getVerbClosure(verbMap.get("Throw")))
+        assertEquals("say('watchVerb')", tv.getVerbScript(verbMap.get("Watch")))
+        assertEquals("say('throwVerb')", tv.getVerbScript(verbMap.get("Throw")))
 
         final Room roomWithDescriptionClosure = adventure.getRoomByName("roomWithDescriptionClosure")
         final Item itemWithDescriptionClosure = roomWithDescriptionClosure.getItemByName("itemWithDescriptionClosure")
-        verifyClosure("roomDescriptionClosure", roomWithDescriptionClosure.getDescriptionClosure())
-        verifyClosure("itemDescriptionClosure", itemWithDescriptionClosure.getDescriptionClosure())
+        assertEquals("say 'roomDescriptionClosure'", roomWithDescriptionClosure.getDescriptionScript())
+        assertEquals("say 'itemDescriptionClosure'", itemWithDescriptionClosure.getDescriptionScript())
 
         assertEquals(bedroom, adventure.getPlayer().getParent())
     }

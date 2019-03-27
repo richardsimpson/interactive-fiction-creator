@@ -1,7 +1,6 @@
 package uk.co.rjsoftware.adventure.model
 
 import groovy.transform.TypeChecked
-import uk.co.rjsoftware.adventure.controller.ScriptRuntimeDelegate
 
 @TypeChecked
 class Item implements ItemContainer, VerbContainer, Comparable<Item> {
@@ -10,7 +9,7 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     private String displayName
     private final List<String> synonyms = new ArrayList<>()
     private String description
-    private Closure descriptionClosure
+    private String descriptionScript
     private boolean visible = true
     private boolean scenery
     private boolean gettable = true
@@ -27,16 +26,16 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     private boolean open
     private String openMessage
     private String closeMessage
-    private Closure onOpen
-    private Closure onClose
+    private String onOpenScript
+    private String onCloseScript
     private ContentVisibility contentVisibility = ContentVisibility.AFTER_EXAMINE
     private boolean edible
     private String eatMessage
-    private Closure onEat
+    private String onEatScript
 
     private ItemContainer parent
 
-    private final Map<String, Closure> customVerbs = new HashMap<>()
+    private final Map<String, String> customVerbs = new HashMap<>()
     private final Set<Item> items = new TreeSet<>()
     private boolean itemExamined = false
 
@@ -66,7 +65,7 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     Item copy(ItemContainer parent) {
         final Item itemCopy = new Item(this.name, this.displayName, synonyms, description)
 
-        itemCopy.descriptionClosure = this.descriptionClosure
+        itemCopy.descriptionScript = this.descriptionScript
         itemCopy.visible = this.visible
         itemCopy.scenery = this.scenery
         itemCopy.gettable = this.gettable
@@ -83,12 +82,12 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
         itemCopy.open = this.open
         itemCopy.openMessage = this.openMessage
         itemCopy.closeMessage = this.closeMessage
-        itemCopy.onOpen = this.onOpen
-        itemCopy.onClose = this.onClose
+        itemCopy.onOpenScript = this.onOpenScript
+        itemCopy.onCloseScript = this.onCloseScript
         itemCopy.contentVisibility = this.contentVisibility
         itemCopy.edible = this.edible
         itemCopy.eatMessage = this.eatMessage
-        itemCopy.onEat = this.onEat
+        itemCopy.onEatScript = this.onEatScript
 
         itemCopy.parent = parent
 
@@ -157,12 +156,12 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
         this.description = description
     }
 
-    Closure getDescriptionClosure() {
-        this.descriptionClosure
+    String getDescriptionScript() {
+        this.descriptionScript
     }
 
-    void setDescriptionClosure(Closure closure) {
-        this.descriptionClosure = closure
+    void setDescriptionScript(String script) {
+        this.descriptionScript = script
     }
 
     boolean isVisible() {
@@ -279,11 +278,11 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
         this.customVerbs.containsKey(verb.id)
     }
 
-    void addVerb(CustomVerb verb, @DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
-        this.customVerbs.put(verb.getId(), closure)
+    void addVerb(CustomVerb verb, String script) {
+        this.customVerbs.put(verb.getId(), script)
     }
 
-    Closure getVerbClosure(CustomVerb verb) {
+    String getVerbScript(CustomVerb verb) {
         this.customVerbs.get(verb.id)
     }
 
@@ -335,15 +334,11 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     String getCloseMessage() { this.closeMessage }
     void setCloseMessage(String closeMessage) { this.closeMessage = closeMessage }
 
-    Closure getOnOpen() { this.onOpen }
-    void setOnOpen(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
-        this.onOpen = closure
-    }
+    String getOnOpenScript() { this.onOpenScript }
+    void setOnOpenScript(String onOpenScript) { this.onOpenScript = onOpenScript }
 
-    Closure getOnClose() { this.onClose }
-    void setOnClose(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
-        this.onClose = closure
-    }
+    String getOnCloseScript() { this.onCloseScript }
+    void setOnCloseScript(String onCloseScript) { this.onCloseScript = onCloseScript }
 
     ContentVisibility getContentVisibility() { this.contentVisibility }
     void setContentVisibility(ContentVisibility contentVisibility) { this.contentVisibility = contentVisibility }
@@ -407,10 +402,8 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     String getEatMessage() { this.eatMessage }
     void setEatMessage(String eatMessage) { this.eatMessage = eatMessage }
 
-    Closure getOnEat() { this.onEat }
-    void setOnEat(@DelegatesTo(strategy=Closure.DELEGATE_ONLY, value=ScriptRuntimeDelegate) Closure closure) {
-        this.onEat = closure
-    }
+    String getOnEatScript() { this.onEatScript }
+    void setOnEatScript(String onEatScript) { this.onEatScript = onEatScript }
 
     @Override
     int compareTo(Item other) {
