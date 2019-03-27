@@ -8,7 +8,8 @@ class Room implements ItemContainer, VerbContainer {
     private final UUID id
     private final Map<Direction, Exit> exits = new TreeMap<>()
     private final Map<String, String> customVerbs = new HashMap<>()
-    private final Set<Item> items = new TreeSet<>()
+    // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
+    private final Map<String, Item> items = new TreeMap<>()
     private String name
     private String description
     private String descriptionScript
@@ -45,9 +46,8 @@ class Room implements ItemContainer, VerbContainer {
             roomCopy.addExit(exit.copy())
         }
         roomCopy.customVerbs.putAll(customVerbs)
-        for (Item item : this.items) {
-//            roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
-            item.copy(roomCopy)
+        for (Map.Entry<String, Item> entry : this.items) {
+            roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
         }
         roomCopy.description = this.description
         roomCopy.descriptionScript = this.descriptionScript
@@ -102,44 +102,36 @@ class Room implements ItemContainer, VerbContainer {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.add(item)
+            this.items.put(item.getName().toUpperCase(), item)
             item.setParent(this)
         }
     }
 
     Item getItemByName(String itemName) {
-        this.items.find {item ->
-            item.getName().equals(itemName)
-        }
+        this.items.get(itemName.toUpperCase())
     }
 
-    void removeItem(Item itemToRemove) {
-        final Item item = this.items.find {item ->
-            item.getName().equals(itemToRemove.getName())
-        }
-
-        if (item != null) {
-            this.items.remove(item)
+    void removeItem(Item item) {
+        if (contains(item)) {
+            this.items.remove(item.getName().toUpperCase())
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.find {existingItem ->
-            existingItem.getName().equals(item.getName())
-        } != null
+        this.items.containsKey(item.getName().toUpperCase())
     }
 
-    Set<Item> getItems() {
+    Map<String, Item> getItems() {
         this.items
     }
 
-    Set<Item> getAllItems() {
-        final Set<Item> items = new HashSet<>()
-        items.addAll(this.items)
+    Map<String, Item> getAllItems() {
+        final Map<String, Item> items = new HashMap<>()
+        items.putAll(this.items)
 
-        for (Item item : this.items) {
-            items.addAll(item.getAllItems())
+        for (Item item : this.items.values()) {
+            items.putAll(item.getAllItems())
         }
 
         items

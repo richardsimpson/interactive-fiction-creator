@@ -919,6 +919,64 @@ class VerbsTest {
         ])
     }
 
+    @Test
+    void testVerbsAndNounsCanBeReferencedIndependentOfCase() {
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("examine lamp"))
+
+        assertMessagesAreCorrect([
+                lamp.getDescription(),
+                ""
+        ])
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("EXAMINE LAMP"))
+
+        assertMessagesAreCorrect([
+                lamp.getDescription(),
+                ""
+        ])
+    }
+
+    @Test
+    void testNounsCanBeReferencedFromScriptsIndependentOfCase() {
+        // test lower case
+        tv.addVerb(watch, """
+            if (isSwitchedOn('tv')) {
+                say('You watch the TV for a while.  It is showing an old western.')
+            }
+            else {
+                say("You watch the TV for a while.  It's just a black screen.")
+            }
+        """)
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("watch tv"))
+
+        assertMessagesAreCorrect([
+                "You watch the TV for a while.  It's just a black screen.",
+                ""
+        ])
+
+        // test upper case
+        tv.addVerb(watch, """
+            if (isSwitchedOn('TV')) {
+                say('You watch the TV for a while.  It is showing an old western.')
+            }
+            else {
+                say("You watch the TV for a while.  It's just a black screen.")
+            }
+        """)
+
+        this.mainWindow.clearMessages()
+        mainWindow.fireCommand(new CommandEvent("watch tv"))
+
+        assertMessagesAreCorrect([
+                "You watch the TV for a while.  It's just a black screen.",
+                ""
+        ])
+    }
+
     // TODO: Add test where two object have the same custom verb defined
 
     @Test

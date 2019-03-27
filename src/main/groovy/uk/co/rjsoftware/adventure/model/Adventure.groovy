@@ -87,22 +87,18 @@ class Adventure {
         }
     }
 
-    Set<Item> getAllItems() {
-        final Set<Item> items = new HashSet<>()
+    Map<String, Item> getAllItems() {
+        final Map<String, Item> items = new HashMap<>()
 
         for (Room room : getRooms()) {
-            items.addAll(room.getAllItems())
+            items.putAll(room.getAllItems())
         }
 
         items
     }
 
     Item getItemByName(String itemName) {
-        // TODO: Store the items in the room / item already in upper case.
-        final itemNameUpperCase = itemName.toUpperCase()
-        getAllItems().find {item ->
-            item.getName().toUpperCase().equals(itemNameUpperCase)
-        }
+        getAllItems().get(itemName.toUpperCase())
     }
 
     void addCustomVerb(CustomVerb customVerb) {

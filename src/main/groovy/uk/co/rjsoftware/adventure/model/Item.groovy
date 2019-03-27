@@ -3,7 +3,7 @@ package uk.co.rjsoftware.adventure.model
 import groovy.transform.TypeChecked
 
 @TypeChecked
-class Item implements ItemContainer, VerbContainer, Comparable<Item> {
+class Item implements ItemContainer, VerbContainer {
     private final UUID id
     private String name
     private String displayName
@@ -36,7 +36,8 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     private ItemContainer parent
 
     private final Map<String, String> customVerbs = new HashMap<>()
-    private final Set<Item> items = new TreeSet<>()
+    // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
+    private final Map<String, Item> items = new TreeMap<>()
     private boolean itemExamined = false
 
     Item(String name, String displayName, List<String> synonyms, String description) {
@@ -92,8 +93,8 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
         itemCopy.parent = parent
 
         itemCopy.customVerbs.putAll(this.customVerbs)
-        for (Item item : this.items) {
-            itemCopy.items.add(item.copy(itemCopy))
+        for (Map.Entry<String, Item> entry : this.items) {
+            itemCopy.items.put(entry.key, entry.value.copy(itemCopy))
         }
         itemCopy.itemExamined = this.itemExamined
 
@@ -248,7 +249,7 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
                 result += System.lineSeparator() + "Nothing."
             }
 
-            for (Item item : this.items) {
+            for (Item item : this.items.values()) {
                 result += System.lineSeparator() + item.getDisplayName()
             }
         }
@@ -266,7 +267,7 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
                 result += System.lineSeparator() + "Nothing."
             }
 
-            for (Item item : this.items) {
+            for (Item item : this.items.values()) {
                 result += System.lineSeparator() + "    " + item.getDisplayName()
             }
         }
@@ -343,16 +344,16 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     ContentVisibility getContentVisibility() { this.contentVisibility }
     void setContentVisibility(ContentVisibility contentVisibility) { this.contentVisibility = contentVisibility }
 
-    Set<Item> getItems() {
+    Map<String, Item> getItems() {
         this.items
     }
 
-    Set<Item> getAllItems() {
-        final Set<Item> items = new TreeSet<>()
-        items.addAll(this.items)
+    Map<String, Item> getAllItems() {
+        final Map<String, Item> items = new HashMap<>()
+        items.putAll(this.items)
 
-        for (Item item : this.items) {
-            items.addAll(item.getAllItems())
+        for (Item item : this.items.values()) {
+            items.putAll(item.getAllItems())
         }
 
         items
@@ -360,32 +361,24 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.add(item)
+            this.items.put(item.getName().toUpperCase(), item)
             item.setParent(this)
         }
     }
 
     Item getItemByName(String itemName) {
-        this.items.find {item ->
-            item.getName().equals(itemName)
-        }
+        this.items.get(itemName.toUpperCase())
     }
 
-    void removeItem(Item itemToRemove) {
-        final Item item = this.items.find {item ->
-            item.getName().equals(itemToRemove.getName())
-        }
-
-        if (item != null) {
-            this.items.remove(item)
+    void removeItem(Item item) {
+        if (contains(item)) {
+            this.items.remove(item.getName().toUpperCase())
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.find {existingItem ->
-            existingItem.getName().equals(item.getName())
-        } != null
+        this.items.containsKey(item.getName().toUpperCase())
     }
 
     void setItemExamined(boolean itemExamined) {
@@ -405,8 +398,8 @@ class Item implements ItemContainer, VerbContainer, Comparable<Item> {
     String getOnEatScript() { this.onEatScript }
     void setOnEatScript(String onEatScript) { this.onEatScript = onEatScript }
 
-    @Override
-    int compareTo(Item other) {
-        return this.getDisplayName().compareTo(other.getDisplayName())
-    }
+//    @Override
+//    int compareTo(Item other) {
+//        return this.getDisplayName().compareTo(other.getDisplayName())
+//    }
 }

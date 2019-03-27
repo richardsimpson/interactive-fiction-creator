@@ -112,8 +112,8 @@ class EditorAppView {
             final TreeItem<CustomTreeItem> roomTreeItem = new TreeItem<>(new RoomTreeItem(room, this.primaryStage))
             root.getChildren().add(roomTreeItem)
 
-            for (Item item : room.getItems()) {
-                populateTreeView(roomTreeItem, item)
+            for (Map.Entry<String, Item> entry : room.getItems()) {
+                populateTreeView(roomTreeItem, entry.getValue())
             }
         }
 
@@ -125,8 +125,8 @@ class EditorAppView {
         final TreeItem<CustomTreeItem> itemTreeItem = new TreeItem<>(new ItemTreeItem(item))
         parent.getChildren().add(itemTreeItem)
 
-        for (Item childItem : item.getItems()) {
-            populateTreeView(itemTreeItem, childItem)
+        for (Map.Entry<String, Item> entry : item.getItems()) {
+            populateTreeView(itemTreeItem, entry.getValue())
         }
     }
 
