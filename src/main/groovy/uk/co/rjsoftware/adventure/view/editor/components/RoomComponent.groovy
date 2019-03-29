@@ -14,7 +14,6 @@ import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Room
-import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 import uk.co.rjsoftware.adventure.view.editor.EditRoomView
 
 @TypeChecked
@@ -69,7 +68,6 @@ class RoomComponent extends CustomComponent {
         this.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                // TODO: Why is this menu only shown once?  Try chaining to this event from the one in ResizeComponent
                 println("RoomComponent.onMousePressed called via event handler")
                 if (event.secondaryButtonDown) {
                     contextMenu.show(RoomComponent.this, event.getScreenX(), event.getScreenY())
