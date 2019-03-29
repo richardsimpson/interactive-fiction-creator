@@ -20,15 +20,15 @@ class ItemComponent extends CustomComponent {
 
         this.getChildren().add(button)
 
-        refresh()
+        onChanged()
     }
 
     String getText() {
         return item.getName()
     }
 
-    @Override
-    void refresh() {
+    void onChanged() {
         this.button.setText(item.getName())
+        fireChangeEvent()
     }
 }

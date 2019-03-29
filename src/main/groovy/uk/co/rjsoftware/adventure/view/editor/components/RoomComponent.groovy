@@ -14,6 +14,7 @@ import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Room
+import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 import uk.co.rjsoftware.adventure.view.editor.EditRoomView
 
 @TypeChecked
@@ -59,6 +60,7 @@ class RoomComponent extends CustomComponent {
                 // initialise the view after showing the scene
                 final EditRoomView editRoomView = loader.getController()
                 editRoomView.init(rootLayout, primaryStage, RoomComponent.this)
+                editRoomView.addChangeListener(RoomComponent.this.&onChanged)
             }
         });
         contextMenu.getItems().addAll(item1);
@@ -75,7 +77,7 @@ class RoomComponent extends CustomComponent {
             }
         })
 
-        refresh()
+        onChanged()
     }
 
     String getText() {
@@ -86,9 +88,10 @@ class RoomComponent extends CustomComponent {
         this.room
     }
 
-    @Override
-    void refresh() {
+    void onChanged() {
         this.name.setText(room.getName())
         this.description.setText(room.getDescription())
+        fireChangeEvent()
     }
+
 }

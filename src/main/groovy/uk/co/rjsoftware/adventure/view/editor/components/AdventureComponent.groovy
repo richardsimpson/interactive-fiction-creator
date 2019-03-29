@@ -20,15 +20,15 @@ class AdventureComponent extends CustomComponent {
 
         this.getChildren().add(button)
 
-        refresh()
+        onChanged()
     }
 
     String getText() {
         return adventure.getTitle()
     }
 
-    @Override
-    void refresh() {
+    void onChanged() {
         this.button.setText(adventure.getTitle())
+        fireChangeEvent()
     }
 }

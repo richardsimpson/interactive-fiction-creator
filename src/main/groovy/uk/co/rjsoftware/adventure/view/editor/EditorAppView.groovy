@@ -6,9 +6,6 @@ import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
-import javafx.scene.control.Button
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
@@ -35,6 +32,7 @@ class EditorAppView {
     @FXML private Pane pane = null
 
     @FXML private TreeView<CustomTreeItem> treeView = null
+    private TreeViewComparator treeViewComparator = new TreeViewComparator()
 
     @FXML private MenuItem loadMenuItem = null
 
@@ -109,19 +107,25 @@ class EditorAppView {
         root.setExpanded(true);
 
         for (Room room : adventure.getRooms()) {
-            final TreeItem<CustomTreeItem> roomTreeItem = new TreeItem<>(new RoomTreeItem(room, this.primaryStage))
-            root.getChildren().add(roomTreeItem)
+            final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
+            final RoomTreeItem roomTreeItem = new RoomTreeItem(room, treeItem, this.primaryStage)
+            treeItem.setValue(roomTreeItem)
+
+            root.getChildren().add(treeItem)
 
             for (Map.Entry<String, Item> entry : room.getItems()) {
-                populateTreeView(roomTreeItem, entry.getValue())
+                populateTreeView(treeItem, entry.getValue())
             }
         }
 
         this.treeView.setRoot(root)
-
+        // sort the TreeView when the name of a TreeView item changes
+        this.treeView.root.addEventHandler(TreeItem.valueChangedEvent(), this.&onValueChangedEventTreeView)
+        // initial sort
+        sortTreeView()
     }
 
-    void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
+    private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
         final TreeItem<CustomTreeItem> itemTreeItem = new TreeItem<>(new ItemTreeItem(item))
         parent.getChildren().add(itemTreeItem)
 
@@ -130,4 +134,20 @@ class EditorAppView {
         }
     }
 
+    private void onValueChangedEventTreeView(TreeItem.TreeModificationEvent<CustomTreeItem> event) {
+        sortTreeView()
+    }
+
+    private static class TreeViewComparator implements Comparator<TreeItem<CustomTreeItem>> {
+        @Override
+        int compare(TreeItem<CustomTreeItem> o1, TreeItem<CustomTreeItem> o2) {
+            return o1.getValue().toString().compareTo(o2.getValue().toString())
+        }
+    }
+
+    private void sortTreeView() {
+        this.treeView.getRoot().getChildren().sort(treeViewComparator)
+    }
+
 }
+

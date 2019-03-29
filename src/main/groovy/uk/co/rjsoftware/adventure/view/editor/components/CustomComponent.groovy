@@ -8,9 +8,12 @@ import javafx.scene.layout.BorderStroke
 import javafx.scene.layout.BorderStrokeStyle
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
+import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 
 @TypeChecked
 abstract class CustomComponent extends VBox {
+
+    private List<ChangeListener> changeListeners = new ArrayList<>()
 
     CustomComponent() {
         super(8)
@@ -18,6 +21,14 @@ abstract class CustomComponent extends VBox {
         this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)))
     }
 
-    abstract void refresh()
+    void addChangeListener(ChangeListener listener) {
+        this.changeListeners.add(listener)
+    }
+
+    protected void fireChangeEvent() {
+        for (ChangeListener listener : this.changeListeners) {
+            listener.changed()
+        }
+    }
 
 }
