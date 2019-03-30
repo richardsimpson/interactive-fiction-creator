@@ -151,11 +151,14 @@ class EditorAppView {
     }
 
     private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
-        final TreeItem<CustomTreeItem> itemTreeItem = new TreeItem<>(new ItemTreeItem(item))
-        parent.getChildren().add(itemTreeItem)
+        final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
+        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, this.primaryStage)
+        treeItem.setValue(itemTreeItem)
+
+        parent.getChildren().add(treeItem)
 
         for (Map.Entry<String, Item> entry : item.getItems()) {
-            populateTreeView(itemTreeItem, entry.getValue())
+            populateTreeView(treeItem, entry.getValue())
         }
     }
 
