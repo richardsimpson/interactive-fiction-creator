@@ -16,7 +16,6 @@ class EditRoomView extends AbstractModelDialogView {
     @FXML private TextArea descriptionTextArea
 
     private Room room
-    private List<ChangeListener> changeListeners = new ArrayList<>()
 
     void init(Parent rootLayout, Stage owner, Room room) {
         super.init(rootLayout, owner)
@@ -27,22 +26,9 @@ class EditRoomView extends AbstractModelDialogView {
         this.descriptionTextArea.setText(room.getDescription())
     }
 
-    @Override
-    protected void save() {
+    void doSave() {
         this.room.setName(this.nameTextField.getText())
         this.room.setDescription(this.descriptionTextArea.getText())
-        fireChangeEvent()
-        close()
-    }
-
-    void addChangeListener(ChangeListener listener) {
-        this.changeListeners.add(listener)
-    }
-
-    private void fireChangeEvent() {
-        for (ChangeListener listener : this.changeListeners) {
-            listener.changed()
-        }
     }
 
 }

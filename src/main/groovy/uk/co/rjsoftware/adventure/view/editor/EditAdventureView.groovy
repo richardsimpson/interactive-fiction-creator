@@ -19,7 +19,6 @@ class EditAdventureView extends AbstractModelDialogView {
     @FXML private TextArea getTextTextArea
 
     private Adventure adventure
-    private List<ChangeListener> changeListeners = new ArrayList<>()
 
     void init(Parent rootLayout, Stage owner, Adventure adventure) {
         super.init(rootLayout, owner)
@@ -32,25 +31,11 @@ class EditAdventureView extends AbstractModelDialogView {
         this.getTextTextArea.setText(adventure.getGetText())
     }
 
-    @Override
-    protected void save() {
+    void doSave() {
         this.adventure.setTitle(this.titleTextField.getText())
         this.adventure.setIntroduction(this.introductionTextArea.getText())
         this.adventure.setWaitText(this.waitTextTextArea.getText())
         this.adventure.setGetText(this.getTextTextArea.getText())
-        fireChangeEvent()
-        close()
-    }
-
-    // TODO: Move into a superclass (not the AbstractModelDialogView though)
-    void addChangeListener(ChangeListener listener) {
-        this.changeListeners.add(listener)
-    }
-
-    private void fireChangeEvent() {
-        for (ChangeListener listener : this.changeListeners) {
-            listener.changed()
-        }
     }
 
 }

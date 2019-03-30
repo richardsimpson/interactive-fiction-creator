@@ -12,6 +12,7 @@ import javafx.scene.control.TextField
 import javafx.stage.Modality
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Room
+import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 
 @TypeChecked
 abstract class AbstractModelDialogView {
@@ -20,6 +21,8 @@ abstract class AbstractModelDialogView {
     @FXML private Button okButton
 
     private Stage stage
+
+    private List<ChangeListener> changeListeners = new ArrayList<>()
 
     @FXML void initialize() {
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -46,11 +49,25 @@ abstract class AbstractModelDialogView {
         stage.show()
     }
 
-    protected void close() {
+    private void close() {
         stage.close()
     }
 
-    protected void save() {
-
+    private void save() {
+        doSave()
+        fireChangeEvent()
     }
+
+    abstract void doSave()
+
+    void addChangeListener(ChangeListener listener) {
+        this.changeListeners.add(listener)
+    }
+
+    private void fireChangeEvent() {
+        for (ChangeListener listener : this.changeListeners) {
+            listener.changed()
+        }
+    }
+
 }
