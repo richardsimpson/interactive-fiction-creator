@@ -6,10 +6,15 @@ import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
+import javafx.scene.Node
+import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
+import javafx.scene.control.TreeCell
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
+import javafx.scene.text.Text
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Adventure
@@ -123,6 +128,28 @@ class EditorAppView {
         this.treeView.root.addEventHandler(TreeItem.valueChangedEvent(), this.&onValueChangedEventTreeView)
         // initial sort
         sortTreeView()
+        this.treeView.setOnMousePressed(this.&onMousePressedTreeView)
+    }
+
+    private void onMousePressedTreeView(MouseEvent event) {
+        if (event.secondaryButtonDown) {
+            final TreeItem treeItem = treeView.getSelectionModel().getSelectedItem()
+            if (treeItem != null) {
+                println "Selected Item: " + treeItem.getValue()
+
+                Node node = event.getPickResult().getIntersectedNode();
+                // Accept clicks only on node cells, and not on empty spaces of the TreeView
+                if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
+                    String name = (String) ((TreeItem)treeView.getSelectionModel().getSelectedItem()).getValue();
+                    System.out.println("Node click: " + name);
+
+                    ContextMenu contextMenu = treeItem.getValue().getComponent().getContextMenu()
+                    if (contextMenu != null) {
+                        contextMenu.show(node, event.getScreenX(), event.getScreenY())
+                    }
+                }
+            }
+        }
     }
 
     private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {

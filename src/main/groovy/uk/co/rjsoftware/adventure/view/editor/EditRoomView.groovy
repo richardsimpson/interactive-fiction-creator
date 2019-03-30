@@ -8,8 +8,6 @@ import javafx.scene.control.TextField
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractModelDialogView
-import uk.co.rjsoftware.adventure.view.CommandEvent
-import uk.co.rjsoftware.adventure.view.CommandListener
 import uk.co.rjsoftware.adventure.view.editor.components.RoomComponent
 
 @TypeChecked

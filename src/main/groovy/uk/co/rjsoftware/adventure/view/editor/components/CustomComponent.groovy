@@ -1,6 +1,7 @@
 package uk.co.rjsoftware.adventure.view.editor.components
 
 import groovy.transform.TypeChecked
+import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.Border
@@ -29,6 +30,10 @@ abstract class CustomComponent extends VBox {
         for (ChangeListener listener : this.changeListeners) {
             listener.changed()
         }
+    }
+
+    ContextMenu getContextMenu() {
+        null
     }
 
 }

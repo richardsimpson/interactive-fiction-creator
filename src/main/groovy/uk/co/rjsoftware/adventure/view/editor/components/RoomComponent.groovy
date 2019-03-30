@@ -68,7 +68,7 @@ class RoomComponent extends CustomComponent {
         this.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                println("RoomComponent.onMousePressed called via event handler")
+                println("RoomComponent.onMousePressed called")
                 if (event.secondaryButtonDown) {
                     contextMenu.show(RoomComponent.this, event.getScreenX(), event.getScreenY())
                 };
@@ -92,4 +92,7 @@ class RoomComponent extends CustomComponent {
         fireChangeEvent()
     }
 
+    ContextMenu getContextMenu() {
+        this.contextMenu
+    }
 }
