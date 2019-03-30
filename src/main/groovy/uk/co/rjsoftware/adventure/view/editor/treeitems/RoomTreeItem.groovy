@@ -50,8 +50,6 @@ class RoomTreeItem implements CustomTreeItem {
                 final EditRoomView editRoomView = loader.getController()
                 editRoomView.init(rootLayout, primaryStage, room)
                 editRoomView.addChangeListener(RoomTreeItem.this.&onChanged)
-
-                // TODO: Stop creating a new room view on each menu click
             }
         });
         contextMenu.getItems().addAll(item1);

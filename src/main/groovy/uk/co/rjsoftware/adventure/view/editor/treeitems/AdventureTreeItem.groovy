@@ -48,8 +48,6 @@ class AdventureTreeItem implements CustomTreeItem {
                 final EditAdventureView editAdventureView = loader.getController()
                 editAdventureView.init(rootLayout, primaryStage, adventure)
                 editAdventureView.addChangeListener(AdventureTreeItem.this.&onChanged)
-
-                // TODO: Stop creating a new room view on each menu click
             }
         });
         contextMenu.getItems().addAll(item1);
