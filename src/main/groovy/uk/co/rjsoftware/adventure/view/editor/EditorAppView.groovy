@@ -7,11 +7,7 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.Node
-import javafx.scene.control.ContextMenu
-import javafx.scene.control.MenuItem
-import javafx.scene.control.TreeCell
-import javafx.scene.control.TreeItem
-import javafx.scene.control.TreeView
+import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
@@ -143,7 +139,7 @@ class EditorAppView {
                     String name = (String) ((TreeItem)treeView.getSelectionModel().getSelectedItem()).getValue();
                     System.out.println("Node click: " + name);
 
-                    ContextMenu contextMenu = treeItem.getValue().getComponent().getContextMenu()
+                    ContextMenu contextMenu = treeItem.getValue().getContextMenu()
                     if (contextMenu != null) {
                         contextMenu.show(node, event.getScreenX(), event.getScreenY())
                     }

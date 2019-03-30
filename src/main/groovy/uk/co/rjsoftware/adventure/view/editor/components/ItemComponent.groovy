@@ -29,6 +29,5 @@ class ItemComponent extends CustomComponent {
 
     void onChanged() {
         this.button.setText(item.getName())
-        fireChangeEvent()
     }
 }

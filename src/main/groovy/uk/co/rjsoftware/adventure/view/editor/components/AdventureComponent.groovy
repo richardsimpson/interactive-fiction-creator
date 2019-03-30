@@ -29,6 +29,5 @@ class AdventureComponent extends CustomComponent {
 
     void onChanged() {
         this.button.setText(adventure.getTitle())
-        fireChangeEvent()
     }
 }
