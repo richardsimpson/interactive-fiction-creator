@@ -46,7 +46,8 @@ class AdventureTreeItem implements CustomTreeItem {
 
                 // initialise the view after showing the scene
                 final EditAdventureView editAdventureView = loader.getController()
-                editAdventureView.init(rootLayout, primaryStage, adventure)
+                editAdventureView.init(rootLayout, primaryStage)
+                editAdventureView.setDomainObject(adventure)
                 editAdventureView.addChangeListener(AdventureTreeItem.this.&onChanged)
             }
         });

@@ -48,7 +48,8 @@ class RoomTreeItem implements CustomTreeItem {
 
                 // initialise the view after showing the scene
                 final EditRoomView editRoomView = loader.getController()
-                editRoomView.init(rootLayout, primaryStage, room)
+                editRoomView.init(rootLayout, primaryStage)
+                editRoomView.setDomainObject(room)
                 editRoomView.addChangeListener(RoomTreeItem.this.&onChanged)
             }
         });

@@ -2,16 +2,13 @@ package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
 import javafx.fxml.FXML
-import javafx.scene.Parent
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
-import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Adventure
-import uk.co.rjsoftware.adventure.model.Room
-import uk.co.rjsoftware.adventure.view.AbstractModelDialogView
+import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
 @TypeChecked
-class EditAdventureView extends AbstractModelDialogView {
+class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
     @FXML private TextField titleTextField
     @FXML private TextArea introductionTextArea
@@ -20,9 +17,7 @@ class EditAdventureView extends AbstractModelDialogView {
 
     private Adventure adventure
 
-    void init(Parent rootLayout, Stage owner, Adventure adventure) {
-        super.init(rootLayout, owner)
-
+    void setDomainObject(Adventure adventure) {
         this.adventure = adventure
 
         this.titleTextField.setText(adventure.getTitle())
