@@ -24,7 +24,7 @@ class EditRoomView extends AbstractModelDialogView {
         this.room = room
 
         this.nameTextField.setText(room.getName())
-        this.descriptionTextArea.setText((room.getDescription()))
+        this.descriptionTextArea.setText(room.getDescription())
     }
 
     @Override

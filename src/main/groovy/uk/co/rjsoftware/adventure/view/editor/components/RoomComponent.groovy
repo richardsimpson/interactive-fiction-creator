@@ -51,14 +51,6 @@ class RoomComponent extends CustomComponent {
         roomTreeItem.addChangeListener(this.&onChanged)
     }
 
-    String getText() {
-        return room.getName()
-    }
-
-    Room getRoom() {
-        this.room
-    }
-
     private void onChanged() {
         this.name.setText(room.getName())
         this.description.setText(room.getDescription())

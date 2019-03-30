@@ -20,6 +20,7 @@ import uk.co.rjsoftware.adventure.view.editor.components.RoomComponent
 @TypeChecked
 class RoomTreeItem implements CustomTreeItem {
 
+    private final Room room
     private final RoomComponent component
     private List<ChangeListener> changeListeners = new ArrayList<>()
     private TreeItem<CustomTreeItem> treeItem
@@ -29,6 +30,7 @@ class RoomTreeItem implements CustomTreeItem {
 
     RoomTreeItem(Room room, TreeItem<CustomTreeItem> treeItem,  Stage primaryStage) {
         this.treeItem = treeItem
+        this.room = room
         component = new RoomComponent(room, this)
 
         this.oldName = room.getName()
@@ -61,7 +63,7 @@ class RoomTreeItem implements CustomTreeItem {
     }
 
     private void onChanged() {
-        final String newName = this.component.getRoom().getName()
+        final String newName = this.room.getName()
         if (!oldName.equals(newName)) {
             oldName = newName
             TreeModificationEvent event = new TreeModificationEvent(TreeItem.valueChangedEvent(), treeItem);
@@ -74,7 +76,7 @@ class RoomTreeItem implements CustomTreeItem {
 
     @Override
     String toString() {
-        return component.getText()
+        return room.getName()
     }
 
     void addChangeListener(ChangeListener listener) {

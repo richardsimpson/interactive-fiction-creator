@@ -104,7 +104,9 @@ class EditorAppView {
         this.adventure = adventure
 
         // add the adventure rooms / items to the treeView
-        final TreeItem<CustomTreeItem> root = new TreeItem<>(new AdventureTreeItem(adventure));
+        final TreeItem<CustomTreeItem> root = new TreeItem<>()
+        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, root, this.primaryStage)
+        root.setValue(adventureTreeItem)
         root.setExpanded(true);
 
         for (Room room : adventure.getRooms()) {

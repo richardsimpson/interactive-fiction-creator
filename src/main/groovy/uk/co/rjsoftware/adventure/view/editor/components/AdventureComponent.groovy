@@ -23,10 +23,6 @@ class AdventureComponent extends CustomComponent {
         onChanged()
     }
 
-    String getText() {
-        return adventure.getTitle()
-    }
-
     void onChanged() {
         this.button.setText(adventure.getTitle())
     }
