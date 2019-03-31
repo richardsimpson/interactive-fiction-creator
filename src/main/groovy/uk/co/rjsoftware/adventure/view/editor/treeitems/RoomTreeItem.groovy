@@ -5,6 +5,7 @@ import javafx.scene.control.TreeItem
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.editor.EditRoomView
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.RoomComponent
 
@@ -15,7 +16,7 @@ class RoomTreeItem extends CustomTreeItem {
     private final RoomComponent component
 
     RoomTreeItem(Room room, TreeItem<CustomTreeItem> treeItem, Stage primaryStage) {
-        super(treeItem, primaryStage, "../../editRoom.fxml")
+        super(treeItem, primaryStage, EditRoomView.class)
         this.room = room
         component = new RoomComponent(room, this)
     }

@@ -10,7 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="809.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.co.rjsoftware.adventure.view.editor.EditItemView">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="809.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="okButton" layoutX="734.0" layoutY="579.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="OK" />
       <Button fx:id="cancelButton" layoutX="666.0" layoutY="579.0" mnemonicParsing="false" text="Cancel" />

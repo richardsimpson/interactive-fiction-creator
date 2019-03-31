@@ -18,16 +18,17 @@ abstract class CustomTreeItem {
 
     private final TreeItem<CustomTreeItem> treeItem
     private final Stage primaryStage
-    private final String pathToFXML
+    private final Class<? extends AbstractEditDomainObjectDialogView> dialogClass
 
     private ContextMenu contextMenu = new ContextMenu()
     private String oldName
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
-    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage primaryStage, String pathToFXML) {
+    // TODO: Rename primaryStage to owner
+    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage primaryStage, Class<? extends AbstractEditDomainObjectDialogView> dialogClass) {
         this.treeItem = treeItem
         this.primaryStage = primaryStage
-        this.pathToFXML = pathToFXML
+        this.dialogClass = dialogClass
 
         // set up the context menu
         MenuItem item1 = new MenuItem("Edit...");
@@ -37,14 +38,9 @@ abstract class CustomTreeItem {
 
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected onActionEditMenuItem(ActionEvent event) {
-        // Load root layout from fxml file
-        final FXMLLoader loader = new FXMLLoader()
-        loader.setLocation(getClass().getResource(pathToFXML))
-        final Parent rootLayout = loader.load()
+        final AbstractEditDomainObjectDialogView view = this.dialogClass.newInstance()
+        view.showModal(primaryStage)
 
-        // initialise the view after showing the scene
-        final AbstractEditDomainObjectDialogView view = loader.getController()
-        view.init(rootLayout, primaryStage)
         initialiseEditView(view)
 
         // toString() is used by the TreeItem to determine th text to display, so

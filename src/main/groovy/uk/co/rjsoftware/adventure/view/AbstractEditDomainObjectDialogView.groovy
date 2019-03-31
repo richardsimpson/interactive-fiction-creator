@@ -8,7 +8,7 @@ import javafx.scene.control.Button
 import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 
 @TypeChecked
-abstract class AbstractEditDomainObjectDialogView<T> extends AbstractModalDialogView {
+abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView {
 
     @FXML private Button cancelButton
     @FXML private Button okButton

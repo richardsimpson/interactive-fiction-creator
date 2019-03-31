@@ -5,6 +5,7 @@ import javafx.scene.control.TreeItem
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.editor.EditItemView
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.ItemComponent
 
@@ -15,7 +16,7 @@ class ItemTreeItem extends CustomTreeItem {
     private final ItemComponent component
 
     ItemTreeItem(Item item, TreeItem<CustomTreeItem> treeItem, Stage primaryStage) {
-        super(treeItem, primaryStage, "../../editItem.fxml")
+        super(treeItem, primaryStage, EditItemView.class)
         this.item = item
         component = new ItemComponent(item)
     }

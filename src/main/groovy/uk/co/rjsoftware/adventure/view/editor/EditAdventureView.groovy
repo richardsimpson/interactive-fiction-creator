@@ -17,6 +17,11 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
     private Adventure adventure
 
+    @Override
+    String fxmlLocation() {
+        return "../editAdventure.fxml"
+    }
+
     void setDomainObject(Adventure adventure) {
         this.adventure = adventure
 

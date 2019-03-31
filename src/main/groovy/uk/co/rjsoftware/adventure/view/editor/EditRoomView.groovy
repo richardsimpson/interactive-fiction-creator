@@ -15,6 +15,11 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
 
     private Room room
 
+    @Override
+    String fxmlLocation() {
+        return "../editRoom.fxml"
+    }
+
     void setDomainObject(Room room) {
         this.room = room
 

@@ -46,7 +46,6 @@ class ResizeComponent extends AnchorPane {
         this.pane = pane
         this.pane.setOnMouseClicked(this.&onMouseClickedParentPane)
 
-        this.moveComponent = moveComponent
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)))
 
         AnchorPane.setTopAnchor(dragNodeN, -DRAG_NODE_RADIUS)
