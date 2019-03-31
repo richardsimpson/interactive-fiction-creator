@@ -19,7 +19,7 @@ class PlayerApp extends Application {
 
     void start(Stage primaryStage) {
         PlayerAppView playerAppView = new PlayerAppView()
-        playerAppView.show(primaryStage)
+        playerAppView.show()
 
         final AdventureController controller = new AdventureController(playerAppView)
 

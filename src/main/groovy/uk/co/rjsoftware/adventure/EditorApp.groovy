@@ -19,7 +19,7 @@ class EditorApp extends Application {
 
     void start(Stage primaryStage) {
         EditorAppView editorAppView = new EditorAppView()
-        editorAppView.show(primaryStage)
+        editorAppView.show()
 
         // TODO: Immplement MVC for the editor.  The editor should not extract data from the model, rather, it
         // should be listening for changes in the model.  Actions in the editor (e.g. add room) need to be
