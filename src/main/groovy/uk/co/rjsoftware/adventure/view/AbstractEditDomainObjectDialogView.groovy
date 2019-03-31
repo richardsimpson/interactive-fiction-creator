@@ -17,6 +17,7 @@ abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView 
 
     AbstractEditDomainObjectDialogView(String fxmlLocation) {
         super(fxmlLocation)
+        setResizable(false)
     }
 
     @FXML void initialize() {

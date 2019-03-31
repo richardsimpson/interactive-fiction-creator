@@ -14,7 +14,8 @@ abstract class AbstractDialogView {
     private final String fxmlLocation
     private Stage stage
     private Stage owner
-    // TODO: Make resizeable a property
+
+    private boolean resizable = true
 
     static {
         // for simplicity, we're never going to use the primary stage, so we therefore have to
@@ -28,14 +29,15 @@ abstract class AbstractDialogView {
     }
 
     void show() {
-        this.stage = new Stage()
+        stage = new Stage()
 
         final Parent rootLayout = loadRoot()
 
         // create and show the dialog
         final Scene scene = new Scene(rootLayout)
-        this.stage.setScene(scene)
-        this.stage.show()
+        stage.setScene(scene)
+        stage.setResizable(this.resizable)
+        stage.show()
 
         onShow()
     }
@@ -47,10 +49,10 @@ abstract class AbstractDialogView {
 
         // create and show the dialog
         final Scene scene = new Scene(rootLayout)
-        this.stage = new Stage()
+        stage = new Stage()
         stage.initOwner(owner)
         stage.initModality(Modality.WINDOW_MODAL)
-        stage.setResizable(false)
+        stage.setResizable(this.resizable)
         stage.setScene(scene)
         stage.show()
 
@@ -83,6 +85,14 @@ abstract class AbstractDialogView {
      */
     Stage getStage() {
         this.stage
+    }
+
+    void setResizable(boolean resizable) {
+        this.resizable = resizable
+    }
+
+    boolean getResizable() {
+        resizable
     }
 
     void close() {
