@@ -17,17 +17,16 @@ import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 abstract class CustomTreeItem {
 
     private final TreeItem<CustomTreeItem> treeItem
-    private final Stage primaryStage
+    private final Stage owner
     private final Class<? extends AbstractEditDomainObjectDialogView> dialogClass
 
     private ContextMenu contextMenu = new ContextMenu()
     private String oldName
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
-    // TODO: Rename primaryStage to owner
-    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage primaryStage, Class<? extends AbstractEditDomainObjectDialogView> dialogClass) {
+    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage owner, Class<? extends AbstractEditDomainObjectDialogView> dialogClass) {
         this.treeItem = treeItem
-        this.primaryStage = primaryStage
+        this.owner = owner
         this.dialogClass = dialogClass
 
         // set up the context menu
@@ -39,7 +38,7 @@ abstract class CustomTreeItem {
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected onActionEditMenuItem(ActionEvent event) {
         final AbstractEditDomainObjectDialogView view = this.dialogClass.newInstance()
-        view.showModal(primaryStage)
+        view.showModal(owner)
 
         initialiseEditView(view)
 

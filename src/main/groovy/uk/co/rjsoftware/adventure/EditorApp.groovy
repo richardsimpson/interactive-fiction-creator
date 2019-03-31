@@ -21,19 +21,8 @@ class EditorApp extends Application {
     }
 
     void start(Stage primaryStage) {
-        // Load root layout from fxml file
-        final FXMLLoader loader = new FXMLLoader()
-        loader.setLocation(getClass().getResource("view/editorApp.fxml"))
-        final BorderPane rootLayout = loader.load()
-
-        // Show the scene containing the root layout
-        final Scene scene = new Scene(rootLayout)
-        primaryStage.setScene(scene)
-        primaryStage.show()
-
-        // initialise the view after showing the scene
-        final EditorAppView editorAppView = loader.getController()
-        editorAppView.init(primaryStage)
+        EditorAppView editorAppView = new EditorAppView()
+        editorAppView.show(primaryStage)
 
         // TODO: Immplement MVC for the editor.  The editor should not extract data from the model, rather, it
         // should be listening for changes in the model.  Actions in the editor (e.g. add room) need to be

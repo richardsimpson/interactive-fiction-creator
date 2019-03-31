@@ -6,9 +6,13 @@ import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
 import javafx.scene.Node
+import javafx.scene.Parent
+import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import javafx.stage.FileChooser
@@ -16,6 +20,7 @@ import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
+import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
@@ -28,7 +33,7 @@ import uk.co.rjsoftware.adventure.view.editor.treeitems.RoomTreeItem
 import java.nio.file.Paths
 
 @TypeChecked
-class EditorAppView {
+class EditorAppView extends AbstractDialogView {
 
     @FXML private Pane pane = null
 
@@ -41,17 +46,19 @@ class EditorAppView {
 
     private Adventure adventure
 
+    private List<LoadListener> loadListeners = new ArrayList()
+
     @FXML void initialize() {
         resizeComponent = new ResizeComponent(this.pane)
     }
 
-    private Stage primaryStage = null
+    @Override
+    String fxmlLocation() {
+        return "../editorApp.fxml"
+    }
 
-    private List<LoadListener> loadListeners = new ArrayList()
-
-    void init(Stage primaryStage) {
-        this.primaryStage = primaryStage
-
+    @Override
+    protected void onShow() {
         loadMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             void handle(ActionEvent event) {
                 loadAdventureInternal()
@@ -83,7 +90,7 @@ class EditorAppView {
         fileChooser.setInitialDirectory(new File(Paths.get("").toAbsolutePath().toString()))
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Adventures", "*.groovy"))
 
-        File file = fileChooser.showOpenDialog(this.primaryStage)
+        File file = fileChooser.showOpenDialog(getStage())
         if (file != null) {
             fireLoadCommand(new LoadEvent(file))
         }
@@ -105,13 +112,13 @@ class EditorAppView {
 
         // add the adventure rooms / items to the treeView
         final TreeItem<CustomTreeItem> root = new TreeItem<>()
-        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, root, this.primaryStage)
+        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, root, getStage())
         root.setValue(adventureTreeItem)
         root.setExpanded(true);
 
         for (Room room : adventure.getRooms()) {
             final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-            final RoomTreeItem roomTreeItem = new RoomTreeItem(room, treeItem, this.primaryStage)
+            final RoomTreeItem roomTreeItem = new RoomTreeItem(room, treeItem, getStage())
             treeItem.setValue(roomTreeItem)
 
             root.getChildren().add(treeItem)
@@ -152,7 +159,7 @@ class EditorAppView {
 
     private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
         final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, this.primaryStage)
+        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, getStage())
         treeItem.setValue(itemTreeItem)
 
         parent.getChildren().add(treeItem)

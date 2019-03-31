@@ -15,8 +15,8 @@ class AdventureTreeItem extends CustomTreeItem {
     private final Adventure adventure
     private final AdventureComponent component
 
-    AdventureTreeItem(Adventure adventure, TreeItem<CustomTreeItem> treeItem, Stage primaryStage) {
-        super(treeItem, primaryStage, EditAdventureView.class)
+    AdventureTreeItem(Adventure adventure, TreeItem<CustomTreeItem> treeItem, Stage owner) {
+        super(treeItem, owner, EditAdventureView.class)
         this.adventure = adventure
         component = new AdventureComponent(adventure)
     }

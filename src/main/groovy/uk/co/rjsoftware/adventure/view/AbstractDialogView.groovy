@@ -19,6 +19,7 @@ import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 abstract class AbstractDialogView {
 
     private Stage stage
+    private Stage owner
     // TODO: Make resizeable a property
 
     void show(Stage stage = null) {
@@ -44,6 +45,8 @@ abstract class AbstractDialogView {
     }
 
     void showModal(Stage owner) {
+        this.owner = owner
+
         // Load root layout from fxml file
         final FXMLLoader loader = new FXMLLoader()
         loader.setLocation(getClass().getResource(fxmlLocation()))
@@ -63,9 +66,26 @@ abstract class AbstractDialogView {
         onShow()
     }
 
+    // TODO: Make concrete, with an exception (so implementations don't have to be public
     abstract String fxmlLocation()
 
-    protected onShow() {
+    protected void onShow() {
+    }
+
+    /**
+     * @return
+     *     The stage that owns the stage for this component.  Can be null
+     */
+    Stage getOwner() {
+        this.owner
+    }
+
+    /**
+     * @return
+     *     Returns the stage for this component
+     */
+    Stage getStage() {
+        this.stage
     }
 
     void close() {
