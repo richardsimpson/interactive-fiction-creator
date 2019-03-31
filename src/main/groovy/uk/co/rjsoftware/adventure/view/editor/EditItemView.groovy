@@ -49,9 +49,8 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
 
     private Item item
 
-    @Override
-    String fxmlLocation() {
-        return "../editItem.fxml"
+    EditItemView() {
+        super("../editItem.fxml")
     }
 
     void setDomainObject(Item item) {

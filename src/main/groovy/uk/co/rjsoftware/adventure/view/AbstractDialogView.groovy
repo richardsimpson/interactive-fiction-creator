@@ -11,6 +11,7 @@ import javafx.stage.Stage
 @TypeChecked
 abstract class AbstractDialogView {
 
+    private final String fxmlLocation
     private Stage stage
     private Stage owner
     // TODO: Make resizeable a property
@@ -20,6 +21,10 @@ abstract class AbstractDialogView {
         // enable implicit exit, otherwise the app will never terminate.  This simplicity means that
         // the show() method never needs to be passed a stage - it can always create it's own.
         Platform.setImplicitExit(true)
+    }
+
+    AbstractDialogView(String fxmlLocation) {
+        this.fxmlLocation = fxmlLocation
     }
 
     void show() {
@@ -56,13 +61,10 @@ abstract class AbstractDialogView {
     private Parent loadRoot() {
         // Load root layout from fxml file
         final FXMLLoader loader = new FXMLLoader()
-        loader.setLocation(getClass().getResource(fxmlLocation()))
+        loader.setLocation(getClass().getResource(this.fxmlLocation))
         loader.setController(this)
         loader.load()
     }
-
-    // TODO: Make concrete, with an exception (so implementations don't have to be public
-    abstract String fxmlLocation()
 
     protected void onShow() {
     }

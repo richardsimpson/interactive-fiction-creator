@@ -15,6 +15,10 @@ abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView 
 
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
+    AbstractEditDomainObjectDialogView(String fxmlLocation) {
+        super(fxmlLocation)
+    }
+
     @FXML void initialize() {
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             void handle(ActionEvent event) {

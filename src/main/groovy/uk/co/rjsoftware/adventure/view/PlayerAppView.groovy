@@ -32,9 +32,8 @@ class PlayerAppView extends AbstractDialogView implements IPlayerAppView {
     @FXML void initialize() {
     }
 
-    @Override
-    String fxmlLocation() {
-        return "./playerApp.fxml"
+    PlayerAppView() {
+        super("./playerApp.fxml")
     }
 
     @Override

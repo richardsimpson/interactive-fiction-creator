@@ -47,9 +47,8 @@ class EditorAppView extends AbstractDialogView {
         resizeComponent = new ResizeComponent(this.pane)
     }
 
-    @Override
-    String fxmlLocation() {
-        return "../editorApp.fxml"
+    EditorAppView() {
+        super("../editorApp.fxml")
     }
 
     @Override
