@@ -74,8 +74,8 @@ class LoaderTest {
         assertEquals(false, lamp.isSwitchable())
         assertEquals("switchOnMessage", lamp.getSwitchOnMessage())
         assertEquals("switchOffMessage", lamp.getSwitchOffMessage())
-        assertEquals("extraMessageWhenSwitchedOn", lamp.getExtraMessageWhenSwitchedOn())
-        assertEquals("extraMessageWhenSwitchedOff", lamp.getExtraMessageWhenSwitchedOff())
+        assertEquals("extraDescriptionWhenSwitchedOn", lamp.getExtraDescriptionWhenSwitchedOn())
+        assertEquals("extraDescriptionWhenSwitchedOff", lamp.getExtraMessageWhenSwitchedOff())
 
         final Item tv = bedroom.getItemByName("tv")
         assertEquals(["tv", "television"], tv.getSynonyms())
@@ -87,8 +87,8 @@ class LoaderTest {
         assertEquals(true, tv.isSwitchable())
         assertEquals("switchOnMessage", tv.getSwitchOnMessage())
         assertEquals("switchOffMessage", tv.getSwitchOffMessage())
-        assertEquals("extraMessageWhenSwitchedOn", tv.getExtraMessageWhenSwitchedOn())
-        assertEquals("extraMessageWhenSwitchedOff", tv.getExtraMessageWhenSwitchedOff())
+        assertEquals("extraDescriptionWhenSwitchedOn", tv.getExtraDescriptionWhenSwitchedOn())
+        assertEquals("extraDescriptionWhenSwitchedOff", tv.getExtraMessageWhenSwitchedOff())
 
         assertTrue(tv.containsVerb(verbMap.get("Watch")))
         assertTrue(tv.containsVerb(verbMap.get("Throw")))

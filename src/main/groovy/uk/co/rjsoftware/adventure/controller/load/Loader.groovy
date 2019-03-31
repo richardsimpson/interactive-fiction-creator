@@ -378,7 +378,7 @@ class ItemDelegate {
     }
 
     private void extraMessageWhenSwitchedOn(String extraMessageWhenSwitchedOn) {
-        this.item.setExtraMessageWhenSwitchedOn(StringUtils.sanitiseString(extraMessageWhenSwitchedOn))
+        this.item.setExtraDescriptionWhenSwitchedOn(StringUtils.sanitiseString(extraMessageWhenSwitchedOn))
     }
 
     private void extraMessageWhenSwitchedOff(String extraMessageWhenSwitchedOff) {

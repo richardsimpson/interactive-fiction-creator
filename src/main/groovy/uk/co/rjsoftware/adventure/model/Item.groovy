@@ -19,9 +19,8 @@ class Item implements ItemContainer, VerbContainer {
     private boolean switchedOn
     private String switchOnMessage
     private String switchOffMessage
-    // TODO: Rename this to extraDescriptionWhenSwitchedOn/Off
-    private String extraMessageWhenSwitchedOn
-    private String extraMessageWhenSwitchedOff
+    private String extraDescriptionWhenSwitchedOn
+    private String extraDescriptionWhenSwitchedOff
 
     private boolean container
     private boolean openable = false
@@ -79,8 +78,8 @@ class Item implements ItemContainer, VerbContainer {
         itemCopy.switchedOn = this.switchedOn
         itemCopy.switchOnMessage = this.switchOnMessage
         itemCopy.switchOffMessage = this.switchOffMessage
-        itemCopy.extraMessageWhenSwitchedOn = this.extraMessageWhenSwitchedOn
-        itemCopy.extraMessageWhenSwitchedOff = this.extraMessageWhenSwitchedOff
+        itemCopy.extraDescriptionWhenSwitchedOn = this.extraDescriptionWhenSwitchedOn
+        itemCopy.extraDescriptionWhenSwitchedOff = this.extraDescriptionWhenSwitchedOff
         itemCopy.container = this.container
         itemCopy.openable = this.openable
         itemCopy.closeable = this.closeable
@@ -237,11 +236,11 @@ class Item implements ItemContainer, VerbContainer {
         }
 
         if (this.switchable) {
-            if (this.switchedOn && this.extraMessageWhenSwitchedOn != null) {
-                result += "  " + this.extraMessageWhenSwitchedOn
+            if (this.switchedOn && this.extraDescriptionWhenSwitchedOn != null) {
+                result += "  " + this.extraDescriptionWhenSwitchedOn
             }
-            else if (!this.switchedOn && this.extraMessageWhenSwitchedOff != null) {
-                result += "  " + this.extraMessageWhenSwitchedOff
+            else if (!this.switchedOn && this.extraDescriptionWhenSwitchedOff != null) {
+                result += "  " + this.extraDescriptionWhenSwitchedOff
             }
 
             // TODO: Check for other punctuation here (:,;?!)
@@ -315,11 +314,11 @@ class Item implements ItemContainer, VerbContainer {
     String getSwitchOffMessage() { this.switchOffMessage }
     void setSwitchOffMessage(String message) { this.switchOffMessage = message }
 
-    String getExtraMessageWhenSwitchedOn() { this.extraMessageWhenSwitchedOn }
-    void setExtraMessageWhenSwitchedOn(String message) { this.extraMessageWhenSwitchedOn = message }
+    String getExtraDescriptionWhenSwitchedOn() { this.extraDescriptionWhenSwitchedOn }
+    void setExtraDescriptionWhenSwitchedOn(String message) { this.extraDescriptionWhenSwitchedOn = message }
 
-    String getExtraMessageWhenSwitchedOff() { this.extraMessageWhenSwitchedOff }
-    void setExtraMessageWhenSwitchedOff(String message) { this.extraMessageWhenSwitchedOff = message }
+    String getExtraMessageWhenSwitchedOff() { this.extraDescriptionWhenSwitchedOff }
+    void setExtraMessageWhenSwitchedOff(String message) { this.extraDescriptionWhenSwitchedOff = message }
 
     //
     // Container

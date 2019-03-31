@@ -49,7 +49,7 @@ class VerbsTest {
         tv.setSwitchable(true)
         tv.setSwitchOnMessage("the TV flickers into life")
         tv.setSwitchOffMessage("the TV is now off")
-        tv.setExtraMessageWhenSwitchedOn("It is showing an old western.")
+        tv.setExtraDescriptionWhenSwitchedOn("It is showing an old western.")
         tv.setExtraMessageWhenSwitchedOff("It is currently switched off.")
         newspaper.setDroppable(false)
         remote.setVisible(false)
@@ -442,7 +442,7 @@ class VerbsTest {
             mainWindow.fireCommand(new CommandEvent(verbString.replaceAll("\\{noun}", "tv")))
 
             assertMessagesAreCorrect([
-                    tv.getDescription() + ".  " + tv.getExtraMessageWhenSwitchedOn(),
+                    tv.getDescription() + ".  " + tv.getExtraDescriptionWhenSwitchedOn(),
                     ""
             ])
         }

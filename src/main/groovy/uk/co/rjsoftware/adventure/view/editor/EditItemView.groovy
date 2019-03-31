@@ -30,8 +30,8 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
     @FXML private CheckBox switchedOnCheckBox
     @FXML private TextArea switchOnMessageTextArea
     @FXML private TextArea switchOffMessageTextArea
-    @FXML private TextArea extraMessageWhenSwitchedOnTextArea
-    @FXML private TextArea extraMessageWhenSwitchedOffTextArea
+    @FXML private TextArea extraDescriptionWhenSwitchedOnTextArea
+    @FXML private TextArea extraDescriptionWhenSwitchedOffTextArea
 
     // Container Tab
     @FXML private CheckBox openableCheckBox
@@ -70,8 +70,8 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
         this.switchedOnCheckBox.setSelected(item.isSwitchedOn())
         this.switchOnMessageTextArea.setText(item.getSwitchOnMessage())
         this.switchOffMessageTextArea.setText(item.getSwitchOffMessage())
-        this.extraMessageWhenSwitchedOnTextArea.setText(item.getExtraMessageWhenSwitchedOn())
-        this.extraMessageWhenSwitchedOffTextArea.setText(item.getExtraMessageWhenSwitchedOff())
+        this.extraDescriptionWhenSwitchedOnTextArea.setText(item.getExtraDescriptionWhenSwitchedOn())
+        this.extraDescriptionWhenSwitchedOffTextArea.setText(item.getExtraMessageWhenSwitchedOff())
 
         // Container Tab
         this.openableCheckBox.setSelected(item.isOpenable())
@@ -107,8 +107,8 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
         this.item.setSwitchedOn(switchedOnCheckBox.isSelected())
         this.item.setSwitchOnMessage(this.switchOnMessageTextArea.getText())
         this.item.setSwitchOffMessage(this.switchOffMessageTextArea.getText())
-        this.item.setExtraMessageWhenSwitchedOn(this.extraMessageWhenSwitchedOnTextArea.getText())
-        this.item.setExtraMessageWhenSwitchedOff(this.extraMessageWhenSwitchedOffTextArea.getText())
+        this.item.setExtraDescriptionWhenSwitchedOn(this.extraDescriptionWhenSwitchedOnTextArea.getText())
+        this.item.setExtraMessageWhenSwitchedOff(this.extraDescriptionWhenSwitchedOffTextArea.getText())
 
         // Container Tab
         this.item.setOpenable(openableCheckBox.isSelected())

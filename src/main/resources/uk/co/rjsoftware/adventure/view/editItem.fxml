@@ -66,10 +66,10 @@
                         <TextArea fx:id="switchOnMessageTextArea" layoutX="17.0" layoutY="59.0" prefHeight="94.0" prefWidth="762.0" />
                         <TextArea fx:id="switchOffMessageTextArea" layoutX="17.0" layoutY="178.0" prefHeight="94.0" prefWidth="762.0" />
                         <Label layoutX="17.0" layoutY="161.0" text="Switch Off Message:" />
-                        <Label layoutX="18.0" layoutY="279.0" text="Extra Message When Switched On:" />
-                        <TextArea fx:id="extraMessageWhenSwitchedOnTextArea" layoutX="17.0" layoutY="296.0" prefHeight="94.0" prefWidth="762.0" />
-                        <Label layoutX="18.0" layoutY="396.0" text="Extra Message When Switched Off:" />
-                        <TextArea fx:id="extraMessageWhenSwitchedOffTextArea" layoutX="17.0" layoutY="413.0" prefHeight="94.0" prefWidth="762.0" />
+                        <Label layoutX="18.0" layoutY="279.0" text="Extra Description When Switched On:" />
+                        <TextArea fx:id="extraDescriptionWhenSwitchedOnTextArea" layoutX="17.0" layoutY="296.0" prefHeight="94.0" prefWidth="762.0" />
+                        <Label layoutX="18.0" layoutY="396.0" text="Extra Description When Switched Off:" />
+                        <TextArea fx:id="extraDescriptionWhenSwitchedOffTextArea" layoutX="17.0" layoutY="413.0" prefHeight="94.0" prefWidth="762.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
