@@ -3,8 +3,6 @@ package uk.co.rjsoftware.adventure.view.editor.treeitems
 import groovy.transform.TypeChecked
 import javafx.event.ActionEvent
 import javafx.event.Event
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem

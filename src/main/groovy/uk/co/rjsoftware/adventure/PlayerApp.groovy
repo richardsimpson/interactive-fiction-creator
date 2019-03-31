@@ -2,9 +2,6 @@ package uk.co.rjsoftware.adventure
 
 import groovy.transform.TypeChecked
 import javafx.application.Application
-import javafx.fxml.FXMLLoader
-import javafx.scene.Scene
-import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.controller.AdventureController
 import uk.co.rjsoftware.adventure.controller.load.Loader
@@ -21,19 +18,8 @@ class PlayerApp extends Application {
     }
 
     void start(Stage primaryStage) {
-        // Load root layout from fxml file
-        final FXMLLoader loader = new FXMLLoader()
-        loader.setLocation(getClass().getResource("view/playerApp.fxml"))
-        final BorderPane rootLayout = loader.load()
-
-        // Show the scene containing the root layout
-        final Scene scene = new Scene(rootLayout)
-        primaryStage.setScene(scene)
-        primaryStage.show()
-
-        // initialise the view after showing the scene, as then the request to focus the input box will work
-        final PlayerAppView playerAppView = loader.getController()
-        playerAppView.init(primaryStage)
+        PlayerAppView playerAppView = new PlayerAppView()
+        playerAppView.show(primaryStage)
 
         final AdventureController controller = new AdventureController(playerAppView)
 

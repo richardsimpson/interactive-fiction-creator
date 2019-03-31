@@ -2,9 +2,6 @@ package uk.co.rjsoftware.adventure
 
 import groovy.transform.TypeChecked
 import javafx.application.Application
-import javafx.fxml.FXMLLoader
-import javafx.scene.Scene
-import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.controller.EditorController
 import uk.co.rjsoftware.adventure.controller.load.Loader

@@ -12,12 +12,11 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.FileChooser
 import javafx.stage.FileChooser.ExtensionFilter
-import javafx.stage.Stage
 
 import java.nio.file.Paths
 
 @TypeChecked
-class PlayerAppView implements IPlayerAppView {
+class PlayerAppView extends AbstractDialogView implements IPlayerAppView {
 
     @FXML private TextArea outputTextArea = null
 
@@ -27,16 +26,19 @@ class PlayerAppView implements IPlayerAppView {
 
     @FXML private MenuItem loadMenuItem = null
 
-    @FXML void initialize() {
-    }
-
-    private Stage primaryStage = null
-
     private List<CommandListener> commandListeners = new ArrayList()
     private List<LoadListener> loadListeners = new ArrayList()
 
-    void init(Stage primaryStage) {
-        this.primaryStage = primaryStage
+    @FXML void initialize() {
+    }
+
+    @Override
+    String fxmlLocation() {
+        return "./playerApp.fxml"
+    }
+
+    @Override
+    void onShow() {
         this.outputTextArea.setText("")
 
         inputTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -66,7 +68,7 @@ class PlayerAppView implements IPlayerAppView {
         fileChooser.setInitialDirectory(new File(Paths.get("").toAbsolutePath().toString()))
         fileChooser.setSelectedExtensionFilter(new ExtensionFilter("Adventures", "*.groovy"))
 
-        File file = fileChooser.showOpenDialog(this.primaryStage)
+        File file = fileChooser.showOpenDialog(getStage())
         if (file != null) {
             fireLoadCommand(new LoadEvent(file))
         }
@@ -113,7 +115,7 @@ class PlayerAppView implements IPlayerAppView {
 
     void loadAdventure(String title, String introduction) {
         this.outputTextArea.setText("")
-        this.primaryStage.setTitle(title)
+        getStage().setTitle(title)
 
         if (introduction.length() > 0) {
             say(introduction)
