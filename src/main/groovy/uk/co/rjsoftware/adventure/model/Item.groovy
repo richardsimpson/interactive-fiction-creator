@@ -14,12 +14,15 @@ class Item implements ItemContainer, VerbContainer {
     private boolean scenery
     private boolean gettable = true
     private boolean droppable = true
+
     private boolean switchable
     private boolean switchedOn
     private String switchOnMessage
     private String switchOffMessage
+    // TODO: Rename this to extraDescriptionWhenSwitchedOn/Off
     private String extraMessageWhenSwitchedOn
     private String extraMessageWhenSwitchedOff
+
     private boolean container
     private boolean openable = false
     private boolean closeable = false
@@ -29,6 +32,7 @@ class Item implements ItemContainer, VerbContainer {
     private String onOpenScript
     private String onCloseScript
     private ContentVisibility contentVisibility = ContentVisibility.AFTER_EXAMINE
+
     private boolean edible
     private String eatMessage
     private String onEatScript
@@ -115,6 +119,10 @@ class Item implements ItemContainer, VerbContainer {
 
     String getDisplayName() {
         this.displayName
+    }
+
+    void setDisplayName(String displayName) {
+        this.displayName = displayName
     }
 
     List<String> getSynonyms() {
