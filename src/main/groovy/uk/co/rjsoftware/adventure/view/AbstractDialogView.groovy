@@ -8,12 +8,15 @@ import javafx.scene.Scene
 import javafx.stage.Modality
 import javafx.stage.Stage
 
+import static uk.co.rjsoftware.adventure.view.ModalResult.mrNone
+
 @TypeChecked
 abstract class AbstractDialogView {
 
     private final String fxmlLocation
     private Stage stage
     private Stage owner
+    protected ModalResult modalResult = mrNone
 
     private boolean resizable = true
 
@@ -41,7 +44,7 @@ abstract class AbstractDialogView {
         stage.show()
     }
 
-    void showModal(Stage owner) {
+    ModalResult showModal(Stage owner) {
         this.owner = owner
 
         final Parent rootLayout = loadRoot()
@@ -55,6 +58,7 @@ abstract class AbstractDialogView {
         stage.setScene(scene)
         onShow()
         stage.showAndWait()
+        modalResult
     }
 
     private Parent loadRoot() {

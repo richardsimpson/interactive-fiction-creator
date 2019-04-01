@@ -7,6 +7,9 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 
+import static uk.co.rjsoftware.adventure.view.ModalResult.mrCancel
+import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
+
 @TypeChecked
 abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView {
 
@@ -23,6 +26,7 @@ abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView 
     @FXML void initialize() {
         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             void handle(ActionEvent event) {
+                modalResult = mrCancel
                 close()
             }
         })
@@ -38,6 +42,7 @@ abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView 
     private void save() {
         doSave()
         fireChangeEvent()
+        modalResult = mrOk
     }
 
     abstract void doSave()

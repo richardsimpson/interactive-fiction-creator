@@ -14,8 +14,11 @@ import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.ModalResult
 
 import java.util.stream.Collectors
+
+import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
 class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
@@ -25,10 +28,10 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
     @FXML private TextArea waitTextTextArea
     @FXML private TextArea getTextTextArea
 
-    @FXML private TableView<CustomVerbView> verbsTableView
-    @FXML private TableColumn<CustomVerbView, String> nameColumn
-    @FXML private TableColumn<CustomVerbView, String> friendlyNameColumn
-    @FXML private TableColumn<CustomVerbView, String> synonymsColumn
+    @FXML private TableView<ObservableCustomVerb> verbsTableView
+    @FXML private TableColumn<ObservableCustomVerb, String> nameColumn
+    @FXML private TableColumn<ObservableCustomVerb, String> friendlyNameColumn
+    @FXML private TableColumn<ObservableCustomVerb, String> synonymsColumn
 
     @FXML private Button addButton
     @FXML private Button editButton
@@ -69,10 +72,10 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         // to enable in-place editing
         nameColumn.setCellFactory(cellFactory);
         nameColumn.setOnEditCommit(
-                new EventHandler<CellEditEvent<CustomVerbView, String>>() {
+                new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
                     @Override
-                    void handle(CellEditEvent<CustomVerbView, String> t) {
-                        ((CustomVerbView) t.getTableView().getItems().get(
+                    void handle(CellEditEvent<ObservableCustomVerb, String> t) {
+                        ((ObservableCustomVerb) t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())
                         ).setId(t.getNewValue())
                     }
@@ -82,10 +85,10 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         // to enable in-place editing
         friendlyNameColumn.setCellFactory(cellFactory);
         friendlyNameColumn.setOnEditCommit(
-                new EventHandler<CellEditEvent<CustomVerbView, String>>() {
+                new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
                     @Override
-                    void handle(CellEditEvent<CustomVerbView, String> t) {
-                        ((CustomVerbView) t.getTableView().getItems().get(
+                    void handle(CellEditEvent<ObservableCustomVerb, String> t) {
+                        ((ObservableCustomVerb) t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())
                         ).setFriendlyName(t.getNewValue())
                     }
@@ -95,10 +98,10 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         // to enable in-place editing
         synonymsColumn.setCellFactory(cellFactory);
         synonymsColumn.setOnEditCommit(
-                new EventHandler<CellEditEvent<CustomVerbView, String>>() {
+                new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
                     @Override
-                    void handle(CellEditEvent<CustomVerbView, String> t) {
-                        ((CustomVerbView) t.getTableView().getItems().get(
+                    void handle(CellEditEvent<ObservableCustomVerb, String> t) {
+                        ((ObservableCustomVerb) t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())
                         ).setSynonyms(t.getNewValue())
                     }
@@ -106,10 +109,10 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         )
 
         // create the ObservableList and assign it to the TableView
-        final List<CustomVerbView> customVerbs = adventure.getCustomVerbs().stream()
-                .map { verb -> new CustomVerbView(verb.getId(), verb.getFriendlyName(), verb.getSynonyms().toListString())}
+        final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
+                .map { verb -> new ObservableCustomVerb(verb.getId(), verb.getFriendlyName(), verb.getSynonyms().toListString())}
                 .collect(Collectors.toList())
-        final ObservableList<CustomVerbView> observableCustomVerbs = FXCollections.observableArrayList(customVerbs)
+        final ObservableList<ObservableCustomVerb> observableCustomVerbs = FXCollections.observableArrayList(customVerbs)
         verbsTableView.setItems(observableCustomVerbs)
 
         // wire up the remaining buttons
@@ -119,7 +122,11 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
     }
 
     private void addButtonClick(ActionEvent event) {
-        // TODO: How to support both adding and editing in the single EditVerbView form?
+        final ObservableCustomVerb newObservableCustomVerb = new ObservableCustomVerb()
+        EditVerbView editVerbView = new EditVerbView(newObservableCustomVerb)
+        if (editVerbView.showModal(getStage()) == mrOk) {
+            this.verbsTableView.getItems().add(newObservableCustomVerb)
+        }
     }
 
     private void editButtonClick(ActionEvent event) {
@@ -128,7 +135,7 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
     }
 
     private void deleteButtonClick(ActionEvent event) {
-
+        this.verbsTableView.getItems().remove(this.verbsTableView.getSelectionModel().getSelectedIndex())
     }
 
     void doSave() {
@@ -140,15 +147,19 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
 }
 
-class CustomVerbView {
+class ObservableCustomVerb {
     private final SimpleStringProperty id
     private final SimpleStringProperty friendlyName
     private final SimpleStringProperty synonyms
 
-    CustomVerbView(String id, String friendlyName, String synonyms) {
+    ObservableCustomVerb(String id, String friendlyName, String synonyms) {
         this.id = new SimpleStringProperty(id)
         this.friendlyName = new SimpleStringProperty(friendlyName)
         this.synonyms = new SimpleStringProperty(synonyms)
+    }
+
+    ObservableCustomVerb() {
+        this("", "", "")
     }
 
     String getId() {
@@ -189,7 +200,7 @@ class CustomVerbView {
 
 }
 
-class EditingCell extends TableCell<CustomVerbView, String> {
+class EditingCell extends TableCell<ObservableCustomVerb, String> {
 
     private TextField textField;
 

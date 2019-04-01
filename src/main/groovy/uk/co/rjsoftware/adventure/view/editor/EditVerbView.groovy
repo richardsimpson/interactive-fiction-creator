@@ -6,14 +6,14 @@ import javafx.scene.control.TextField
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
 @TypeChecked
-class EditVerbView extends AbstractEditDomainObjectDialogView<CustomVerbView> {
+class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVerb> {
 
     @FXML private TextField nameTextField
     @FXML private TextField friendlyNameTextField
 
-    private final CustomVerbView customVerb
+    private final ObservableCustomVerb customVerb
 
-    EditVerbView(CustomVerbView customVerb) {
+    EditVerbView(ObservableCustomVerb customVerb) {
         super("../editVerb.fxml")
         this.customVerb = customVerb
     }
