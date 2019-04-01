@@ -18,7 +18,6 @@ abstract class CustomTreeItem {
     private final Stage owner
 
     private ContextMenu contextMenu = new ContextMenu()
-    private String oldName
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
     CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage owner) {
@@ -33,15 +32,23 @@ abstract class CustomTreeItem {
 
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected onActionEditMenuItem(ActionEvent event) {
-        // toString() is used by the TreeItem to determine th text to display, so
+        // toString() is used by the TreeItem to determine the text to display, so
         // we need to know if the edit dialog will change this
-        this.oldName = toString()
+        final String existingName = toString()
 
         final AbstractEditDomainObjectDialogView view = createDialogView()
 
-        view.addChangeListener(this.&onChanged)
-
         view.showModal(owner)
+
+        // now check if the tree item text will have changed
+        final String newName = toString()
+        if (!existingName.equals(newName)) {
+            TreeItem.TreeModificationEvent treeEvent = new TreeItem.TreeModificationEvent(TreeItem.valueChangedEvent(), treeItem);
+            Event.fireEvent(treeItem, treeEvent);
+        }
+
+        // fire event that the RoomComponent listens to
+        fireChangeEvent()
     }
 
     abstract AbstractEditDomainObjectDialogView createDialogView()
@@ -50,19 +57,6 @@ abstract class CustomTreeItem {
 
     ContextMenu getContextMenu() {
         this.contextMenu
-    }
-
-    // has to be protected, as otherwise the method doesn't get found at runtime
-    protected void onChanged() {
-        final String newName = toString()
-        if (!oldName.equals(newName)) {
-            oldName = newName
-            TreeItem.TreeModificationEvent event = new TreeItem.TreeModificationEvent(TreeItem.valueChangedEvent(), treeItem);
-            Event.fireEvent(treeItem, event);
-        }
-
-        // fire event that the RoomComponent listens to
-        fireChangeEvent()
     }
 
     void addChangeListener(ChangeListener listener) {
