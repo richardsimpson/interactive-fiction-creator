@@ -16,7 +16,7 @@ class ItemTreeItem extends CustomTreeItem {
     private final ItemComponent component
 
     ItemTreeItem(Item item, TreeItem<CustomTreeItem> treeItem, Stage owner) {
-        super(treeItem, owner, EditItemView.class)
+        super(treeItem, owner)
         this.item = item
         component = new ItemComponent(item)
     }

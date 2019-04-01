@@ -16,7 +16,7 @@ class RoomTreeItem extends CustomTreeItem {
     private final RoomComponent component
 
     RoomTreeItem(Room room, TreeItem<CustomTreeItem> treeItem, Stage owner) {
-        super(treeItem, owner, EditRoomView.class)
+        super(treeItem, owner)
         this.room = room
         component = new RoomComponent(room, this)
     }

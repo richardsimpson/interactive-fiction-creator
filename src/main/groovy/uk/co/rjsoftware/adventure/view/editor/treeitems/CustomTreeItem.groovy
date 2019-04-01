@@ -16,16 +16,14 @@ abstract class CustomTreeItem {
 
     private final TreeItem<CustomTreeItem> treeItem
     private final Stage owner
-    private final Class<? extends AbstractEditDomainObjectDialogView> dialogClass
 
     private ContextMenu contextMenu = new ContextMenu()
     private String oldName
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
-    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage owner, Class<? extends AbstractEditDomainObjectDialogView> dialogClass) {
+    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage owner) {
         this.treeItem = treeItem
         this.owner = owner
-        this.dialogClass = dialogClass
 
         // set up the context menu
         MenuItem item1 = new MenuItem("Edit...");
