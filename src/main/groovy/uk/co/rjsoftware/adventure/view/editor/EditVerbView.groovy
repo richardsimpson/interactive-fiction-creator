@@ -11,15 +11,14 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<CustomVerbView> {
     @FXML private TextField nameTextField
     @FXML private TextField friendlyNameTextField
 
-    private CustomVerbView customVerb
+    private final CustomVerbView customVerb
 
-    EditVerbView() {
+    EditVerbView(CustomVerbView customVerb) {
         super("../editVerb.fxml")
+        this.customVerb = customVerb
     }
 
-    void setDomainObject(CustomVerbView customVerb) {
-        this.customVerb = customVerb
-
+    protected void onShow() {
         this.nameTextField.setText(customVerb.getId())
         this.friendlyNameTextField.setText(customVerb.getFriendlyName())
     }

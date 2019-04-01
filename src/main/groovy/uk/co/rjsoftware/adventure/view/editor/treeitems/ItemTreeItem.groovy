@@ -21,8 +21,9 @@ class ItemTreeItem extends CustomTreeItem {
         component = new ItemComponent(item)
     }
 
-    void initialiseEditView(AbstractEditDomainObjectDialogView view) {
-        view.setDomainObject(item)
+    @Override
+    AbstractEditDomainObjectDialogView createDialogView() {
+        new EditItemView(item)
     }
 
     CustomComponent getComponent() {

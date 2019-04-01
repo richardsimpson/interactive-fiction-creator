@@ -21,8 +21,9 @@ class AdventureTreeItem extends CustomTreeItem {
         component = new AdventureComponent(adventure)
     }
 
-    void initialiseEditView(AbstractEditDomainObjectDialogView view) {
-        view.setDomainObject(adventure)
+    @Override
+    AbstractEditDomainObjectDialogView createDialogView() {
+        new EditAdventureView(adventure)
     }
 
     CustomComponent getComponent() {

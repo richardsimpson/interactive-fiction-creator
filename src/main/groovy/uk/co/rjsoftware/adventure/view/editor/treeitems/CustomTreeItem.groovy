@@ -35,19 +35,18 @@ abstract class CustomTreeItem {
 
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected onActionEditMenuItem(ActionEvent event) {
-        final AbstractEditDomainObjectDialogView view = this.dialogClass.newInstance()
-        view.showModal(owner)
-
-        initialiseEditView(view)
-
         // toString() is used by the TreeItem to determine th text to display, so
         // we need to know if the edit dialog will change this
         this.oldName = toString()
 
+        final AbstractEditDomainObjectDialogView view = createDialogView()
+
         view.addChangeListener(this.&onChanged)
+
+        view.showModal(owner)
     }
 
-    abstract void initialiseEditView(AbstractEditDomainObjectDialogView view)
+    abstract AbstractEditDomainObjectDialogView createDialogView()
 
     abstract CustomComponent getComponent()
 
@@ -57,7 +56,6 @@ abstract class CustomTreeItem {
 
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected void onChanged() {
-
         final String newName = toString()
         if (!oldName.equals(newName)) {
             oldName = newName

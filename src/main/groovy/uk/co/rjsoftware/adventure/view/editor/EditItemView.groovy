@@ -47,15 +47,14 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
     @FXML private TextArea eatMessageTextArea
     @FXML private TextArea onEatScriptTextArea
 
-    private Item item
+    private final Item item
 
-    EditItemView() {
+    EditItemView(Item item) {
         super("../editItem.fxml")
+        this.item = item
     }
 
-    void setDomainObject(Item item) {
-        this.item = item
-
+    protected void onShow() {
         // General Tab
         this.nameTextField.setText(item.getName())
         this.displayNameTextField.setText(item.getDisplayName())

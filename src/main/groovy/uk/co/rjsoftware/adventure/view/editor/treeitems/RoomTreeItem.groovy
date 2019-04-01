@@ -21,8 +21,9 @@ class RoomTreeItem extends CustomTreeItem {
         component = new RoomComponent(room, this)
     }
 
-    void initialiseEditView(AbstractEditDomainObjectDialogView view) {
-        view.setDomainObject(room)
+    @Override
+    AbstractEditDomainObjectDialogView createDialogView() {
+        new EditRoomView(room)
     }
 
     CustomComponent getComponent() {

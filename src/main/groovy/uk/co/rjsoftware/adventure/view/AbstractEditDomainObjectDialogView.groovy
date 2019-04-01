@@ -40,8 +40,6 @@ abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView 
         fireChangeEvent()
     }
 
-    abstract void setDomainObject(T domainObject)
-
     abstract void doSave()
 
     void addChangeListener(ChangeListener listener) {

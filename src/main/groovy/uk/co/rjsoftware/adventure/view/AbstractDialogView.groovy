@@ -37,9 +37,8 @@ abstract class AbstractDialogView {
         final Scene scene = new Scene(rootLayout)
         stage.setScene(scene)
         stage.setResizable(this.resizable)
-        stage.show()
-
         onShow()
+        stage.show()
     }
 
     void showModal(Stage owner) {
@@ -54,10 +53,8 @@ abstract class AbstractDialogView {
         stage.initModality(Modality.WINDOW_MODAL)
         stage.setResizable(this.resizable)
         stage.setScene(scene)
-        stage.show()
-
-        // initialise the view after showing the scene
         onShow()
+        stage.showAndWait()
     }
 
     private Parent loadRoot() {

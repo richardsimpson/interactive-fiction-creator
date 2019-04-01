@@ -1,30 +1,21 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
-import javafx.beans.Observable
 import javafx.beans.property.SimpleStringProperty
-import javafx.beans.value.ObservableValue
 import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.TableCell
-import javafx.scene.control.TableColumn
+import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
-import javafx.scene.control.TableView
-import javafx.scene.control.TextArea
-import javafx.scene.control.TextField
-import javafx.scene.control.cell.PropertyValueFactory
-import javafx.scene.control.cell.TextFieldTableCell
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
 import java.util.stream.Collectors
-import java.util.stream.Stream
 
 @TypeChecked
 class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
@@ -44,15 +35,14 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
     @FXML private Button deleteButton
 
 
-    private Adventure adventure
+    private final Adventure adventure
 
-    EditAdventureView() {
+    EditAdventureView(Adventure adventure) {
         super("../editAdventure.fxml")
+        this.adventure = adventure
     }
 
-    void setDomainObject(Adventure adventure) {
-        this.adventure = adventure
-
+    protected void onShow() {
         this.titleTextField.setText(adventure.getTitle())
         this.introductionTextArea.setText(adventure.getIntroduction())
         this.waitTextTextArea.setText(adventure.getWaitText())
@@ -133,9 +123,8 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
     }
 
     private void editButtonClick(ActionEvent event) {
-        EditVerbView editVerbView = new EditVerbView()
+        EditVerbView editVerbView = new EditVerbView(this.verbsTableView.getSelectionModel().getSelectedItem())
         editVerbView.showModal(getStage())
-        editVerbView.setDomainObject(this.verbsTableView.getSelectionModel().getSelectedItem())
     }
 
     private void deleteButtonClick(ActionEvent event) {

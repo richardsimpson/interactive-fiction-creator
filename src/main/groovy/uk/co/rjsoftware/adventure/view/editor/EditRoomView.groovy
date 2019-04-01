@@ -13,15 +13,15 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
     @FXML private TextField nameTextField
     @FXML private TextArea descriptionTextArea
 
-    private Room room
+    private final Room room
 
-    EditRoomView() {
+    EditRoomView(Room room) {
         super("../editRoom.fxml")
-    }
-
-    void setDomainObject(Room room) {
         this.room = room
 
+    }
+
+    protected void onShow() {
         this.nameTextField.setText(room.getName())
         this.descriptionTextArea.setText(room.getDescription())
     }
