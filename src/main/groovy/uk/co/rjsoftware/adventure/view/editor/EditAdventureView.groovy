@@ -13,6 +13,7 @@ import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
+import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 import uk.co.rjsoftware.adventure.view.ModalResult
 
@@ -108,9 +109,11 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
                 }
         )
 
+        // TODO: Editing of the verb synonyms.
+
         // create the ObservableList and assign it to the TableView
         final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
-                .map { verb -> new ObservableCustomVerb(verb.getId(), verb.getFriendlyName(), verb.getSynonyms().toListString())}
+                .map { verb -> new ObservableCustomVerb(verb)}
                 .collect(Collectors.toList())
         final ObservableList<ObservableCustomVerb> observableCustomVerbs = FXCollections.observableArrayList(customVerbs)
         verbsTableView.setItems(observableCustomVerbs)
@@ -143,23 +146,39 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         this.adventure.setIntroduction(this.introductionTextArea.getText())
         this.adventure.setWaitText(this.waitTextTextArea.getText())
         this.adventure.setGetText(this.getTextTextArea.getText())
+
+        // TODO: Make it easier to set the custom verbs on the adventure
+        final List<CustomVerb> newCustomVerbs = this.verbsTableView.getItems().stream()
+                .map { verb -> verb.toCustomVerb()}
+                .collect(Collectors.toList())
+        this.adventure.getCustomVerbs().clear()
+        this.adventure.getCustomVerbs().addAll(newCustomVerbs)
     }
 
 }
 
+@TypeChecked
 class ObservableCustomVerb {
     private final SimpleStringProperty id
     private final SimpleStringProperty friendlyName
     private final SimpleStringProperty synonyms
 
-    ObservableCustomVerb(String id, String friendlyName, String synonyms) {
+    private ObservableCustomVerb(String id, String friendlyName, String synonyms) {
         this.id = new SimpleStringProperty(id)
         this.friendlyName = new SimpleStringProperty(friendlyName)
         this.synonyms = new SimpleStringProperty(synonyms)
     }
 
+    ObservableCustomVerb(CustomVerb customVerb) {
+        this(customVerb.getId(), customVerb.getFriendlyName(), customVerb.getSynonyms().toListString())
+    }
+
     ObservableCustomVerb() {
         this("", "", "")
+    }
+
+    CustomVerb toCustomVerb() {
+        new CustomVerb(this.id.get(), this.friendlyName.get(), this.synonyms.get())
     }
 
     String getId() {
