@@ -1,18 +1,14 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
-import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
-import javafx.scene.control.TableColumn
 import javafx.scene.control.TextField
 import javafx.scene.control.cell.TextFieldListCell
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
-
-import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
 class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVerb> {
