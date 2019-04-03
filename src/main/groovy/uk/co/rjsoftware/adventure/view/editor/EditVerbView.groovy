@@ -59,11 +59,6 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVe
 
     private void addButtonClick(ActionEvent event) {
         this.synonymsListView.getItems().add(this.newSynonymTextField.getText())
-//        final ObservableCustomVerb newObservableCustomVerb = new ObservableCustomVerb()
-//        EditVerbView editVerbView = new EditVerbView(newObservableCustomVerb)
-//        if (editVerbView.showModal(getStage()) == mrOk) {
-//            this.verbsTableView.getItems().add(newObservableCustomVerb)
-//        }
     }
 
     private void deleteButtonClick(ActionEvent event) {
@@ -73,8 +68,6 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVe
     void doSave() {
         this.customVerb.setId(this.nameTextField.getText())
         this.customVerb.setFriendlyName(this.friendlyNameTextField.getText())
-//        this.customVerb.setSynonyms(this.synonymsListView.getItems())
-
         this.customVerb.setSynonyms(this.synonymsListView.getItems())
     }
 

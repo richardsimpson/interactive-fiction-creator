@@ -1,7 +1,6 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
-import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
@@ -16,7 +15,6 @@ import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
-import uk.co.rjsoftware.adventure.view.ModalResult
 
 import java.util.stream.Collectors
 
@@ -96,19 +94,6 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
                     }
                 }
         )
-
-        // to enable in-place editing
-//        synonymsColumn.setCellFactory(cellFactory);
-//        synonymsColumn.setOnEditCommit(
-//                new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
-//                    @Override
-//                    void handle(CellEditEvent<ObservableCustomVerb, String> t) {
-//                        ((ObservableCustomVerb) t.getTableView().getItems().get(
-//                                t.getTablePosition().getRow())
-//                        ).setSynonyms(t.getNewValue())
-//                    }
-//                }
-//        )
 
         // create the ObservableList and assign it to the TableView
         final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
