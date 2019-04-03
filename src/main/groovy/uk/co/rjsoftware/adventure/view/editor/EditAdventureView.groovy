@@ -69,7 +69,7 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         // to have the table view listening for changes in the data.
         nameColumn.setCellValueFactory({cellData -> cellData.getValue().idProperty()})
         friendlyNameColumn.setCellValueFactory({cellData -> cellData.getValue().friendlyNameProperty()})
-        synonymsColumn.setCellValueFactory({cellData -> cellData.getValue().synonymsProperty()})
+        synonymsColumn.setCellValueFactory({cellData -> cellData.getValue().displayedSynonymsProperty()})
 
         // to enable in-place editing
         nameColumn.setCellFactory(cellFactory);
@@ -158,13 +158,14 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 class ObservableCustomVerb {
     private final SimpleStringProperty id
     private final SimpleStringProperty friendlyName
-    private final SimpleListProperty<String> synonyms
+    private final SimpleStringProperty displayedSynonyms
+    private final ObservableList<String> synonyms
 
     private ObservableCustomVerb(String id, String friendlyName, List<String> synonyms) {
         this.id = new SimpleStringProperty(id)
         this.friendlyName = new SimpleStringProperty(friendlyName)
-        final ObservableList<String> observableSynonyms = FXCollections.observableArrayList(synonyms)
-        this.synonyms = new SimpleListProperty<String>(observableSynonyms)
+        this.displayedSynonyms = new SimpleStringProperty(synonyms.toListString())
+        this.synonyms = FXCollections.observableArrayList(synonyms)
     }
 
     ObservableCustomVerb(CustomVerb customVerb) {
@@ -176,7 +177,7 @@ class ObservableCustomVerb {
     }
 
     CustomVerb toCustomVerb() {
-        new CustomVerb(this.id.get(), this.friendlyName.get(), this.synonyms.get().toList())
+        new CustomVerb(this.id.get(), this.friendlyName.get(), this.synonyms.toList())
     }
 
     String getId() {
@@ -203,16 +204,27 @@ class ObservableCustomVerb {
         this.friendlyName.set(friendlyName)
     }
 
-    ObservableList<String> getSynonyms() {
-        this.synonyms.get()
+    String getDisplayedSynonyms() {
+        this.displayedSynonyms.get()
     }
 
-    SimpleListProperty synonymsProperty() {
+    SimpleStringProperty displayedSynonymsProperty() {
+        this.displayedSynonyms
+    }
+
+    void setDisplayedSynonyms(String displayedSynonyms) {
+        this.displayedSynonyms.set(displayedSynonyms)
+    }
+
+    ObservableList<String> getSynonyms() {
         this.synonyms
     }
 
     void setSynonyms(ObservableList<String> synonyms) {
-        this.synonyms.set(synonyms)
+        if (this.synonyms != synonyms) {
+            this.synonyms.setAll(synonyms)
+        }
+        this.displayedSynonyms.set(synonyms.toListString())
     }
 
 }

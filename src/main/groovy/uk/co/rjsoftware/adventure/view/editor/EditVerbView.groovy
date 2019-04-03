@@ -1,6 +1,7 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
+import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -72,6 +73,8 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVe
     void doSave() {
         this.customVerb.setId(this.nameTextField.getText())
         this.customVerb.setFriendlyName(this.friendlyNameTextField.getText())
+//        this.customVerb.setSynonyms(this.synonymsListView.getItems())
+
         this.customVerb.setSynonyms(this.synonymsListView.getItems())
     }
 
