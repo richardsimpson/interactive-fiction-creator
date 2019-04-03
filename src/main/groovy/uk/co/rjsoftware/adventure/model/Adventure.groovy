@@ -109,6 +109,10 @@ class Adventure {
         this.customVerbs
     }
 
+    void setCustomVerbs(List<CustomVerb> customVerbs) {
+        this.customVerbs = customVerbs
+    }
+
     CustomVerb findCustomVerb(String verbId) {
         this.customVerbs.find { verb ->
             verb.getId().equals(verbId)

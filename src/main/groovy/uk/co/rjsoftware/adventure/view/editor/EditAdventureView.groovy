@@ -1,6 +1,7 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
+import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
@@ -97,19 +98,17 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         )
 
         // to enable in-place editing
-        synonymsColumn.setCellFactory(cellFactory);
-        synonymsColumn.setOnEditCommit(
-                new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
-                    @Override
-                    void handle(CellEditEvent<ObservableCustomVerb, String> t) {
-                        ((ObservableCustomVerb) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                        ).setSynonyms(t.getNewValue())
-                    }
-                }
-        )
-
-        // TODO: Editing of the verb synonyms.
+//        synonymsColumn.setCellFactory(cellFactory);
+//        synonymsColumn.setOnEditCommit(
+//                new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
+//                    @Override
+//                    void handle(CellEditEvent<ObservableCustomVerb, String> t) {
+//                        ((ObservableCustomVerb) t.getTableView().getItems().get(
+//                                t.getTablePosition().getRow())
+//                        ).setSynonyms(t.getNewValue())
+//                    }
+//                }
+//        )
 
         // create the ObservableList and assign it to the TableView
         final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
@@ -147,12 +146,10 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         this.adventure.setWaitText(this.waitTextTextArea.getText())
         this.adventure.setGetText(this.getTextTextArea.getText())
 
-        // TODO: Make it easier to set the custom verbs on the adventure
         final List<CustomVerb> newCustomVerbs = this.verbsTableView.getItems().stream()
                 .map { verb -> verb.toCustomVerb()}
                 .collect(Collectors.toList())
-        this.adventure.getCustomVerbs().clear()
-        this.adventure.getCustomVerbs().addAll(newCustomVerbs)
+        this.adventure.setCustomVerbs(newCustomVerbs)
     }
 
 }
@@ -161,24 +158,25 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 class ObservableCustomVerb {
     private final SimpleStringProperty id
     private final SimpleStringProperty friendlyName
-    private final SimpleStringProperty synonyms
+    private final SimpleListProperty<String> synonyms
 
-    private ObservableCustomVerb(String id, String friendlyName, String synonyms) {
+    private ObservableCustomVerb(String id, String friendlyName, List<String> synonyms) {
         this.id = new SimpleStringProperty(id)
         this.friendlyName = new SimpleStringProperty(friendlyName)
-        this.synonyms = new SimpleStringProperty(synonyms)
+        final ObservableList<String> observableSynonyms = FXCollections.observableArrayList(synonyms)
+        this.synonyms = new SimpleListProperty<String>(observableSynonyms)
     }
 
     ObservableCustomVerb(CustomVerb customVerb) {
-        this(customVerb.getId(), customVerb.getFriendlyName(), customVerb.getSynonyms().toListString())
+        this(customVerb.getId(), customVerb.getFriendlyName(), customVerb.getSynonyms())
     }
 
     ObservableCustomVerb() {
-        this("", "", "")
+        this("", "", new ArrayList())
     }
 
     CustomVerb toCustomVerb() {
-        new CustomVerb(this.id.get(), this.friendlyName.get(), this.synonyms.get())
+        new CustomVerb(this.id.get(), this.friendlyName.get(), this.synonyms.get().toList())
     }
 
     String getId() {
@@ -205,15 +203,15 @@ class ObservableCustomVerb {
         this.friendlyName.set(friendlyName)
     }
 
-    String getSynonyms() {
+    ObservableList<String> getSynonyms() {
         this.synonyms.get()
     }
 
-    SimpleStringProperty synonymsProperty() {
+    SimpleListProperty synonymsProperty() {
         this.synonyms
     }
 
-    void setSynonyms(String synonyms) {
+    void setSynonyms(ObservableList<String> synonyms) {
         this.synonyms.set(synonyms)
     }
 
