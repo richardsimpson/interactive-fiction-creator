@@ -34,8 +34,6 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVe
         this.synonymsListView.setItems(customVerb.getSynonyms())
         this.synonymsListView.setEditable(true)
 
-        // TODO: Implement 'Add' and 'Delete'
-
         // to enable in-place editing
         synonymsListView.setCellFactory(TextFieldListCell.forListView());
         synonymsListView.setOnEditCommit(
