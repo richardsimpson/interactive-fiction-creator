@@ -21,6 +21,8 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
 
     }
 
+    // TODO: Add verbs (and other room things here)
+
     protected void onShow() {
         this.nameTextField.setText(room.getName())
         this.descriptionTextArea.setText(room.getDescription())
