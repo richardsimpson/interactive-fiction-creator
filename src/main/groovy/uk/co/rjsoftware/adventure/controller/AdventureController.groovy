@@ -357,7 +357,7 @@ class AdventureController {
         this.disambiguatingVerb = verb
         this.disambiguatingNouns = sortedItems
 
-        say(verb.getFriendlyName() + " what?")
+        say(verb.getName() + " what?")
         for (int index = 0; index < sortedItems.size(); index++) {
             say((index+1).toString() + ") " + sortedItems.get(index).getDisplayName())
         }

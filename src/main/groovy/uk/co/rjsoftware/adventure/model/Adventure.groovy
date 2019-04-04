@@ -113,9 +113,10 @@ class Adventure {
         this.customVerbs = customVerbs
     }
 
-    CustomVerb findCustomVerb(String verbId) {
+    CustomVerb getVerbByName(String name) {
+        final upperCaseName = name.toUpperCase()
         this.customVerbs.find { verb ->
-            verb.getId().equals(verbId)
+            verb.getName().toUpperCase().equals(upperCaseName)
         }
     }
 

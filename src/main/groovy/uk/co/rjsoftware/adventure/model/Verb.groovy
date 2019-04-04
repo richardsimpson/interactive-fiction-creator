@@ -5,22 +5,28 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class Verb {
 
-    private final String id                // id to refer to the verb within script
-    private final String friendlyName      // name to display when asking the player to disambiguate
+    private final UUID id
+    private final String name              // name to use in the scripts
+    private final String displayName       // name to display when asking the player to disambiguate
     private final List<String> synonyms    // synonyms for the verb
 
-    Verb(String id, String friendlyName, List<String> synonyms) {
-        this.id = id
-        this.friendlyName = friendlyName
+    Verb(String name, String displayName, List<String> synonyms) {
+        this.id = UUID.randomUUID()
+        this.name = name
+        this.displayName = displayName
         this.synonyms = synonyms
     }
 
-    String getId() {
+    UUID getId() {
         this.id
     }
 
-    String getFriendlyName() {
-        this.friendlyName
+    String getName() {
+        this.name
+    }
+
+    String getDisplayName() {
+        this.displayName
     }
 
     String getVerb() {

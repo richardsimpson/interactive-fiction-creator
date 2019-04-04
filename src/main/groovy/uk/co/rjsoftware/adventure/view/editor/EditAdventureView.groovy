@@ -30,7 +30,7 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
     @FXML private TableView<ObservableCustomVerb> verbsTableView
     @FXML private TableColumn<ObservableCustomVerb, String> nameColumn
-    @FXML private TableColumn<ObservableCustomVerb, String> friendlyNameColumn
+    @FXML private TableColumn<ObservableCustomVerb, String> displayNameColumn
     @FXML private TableColumn<ObservableCustomVerb, String> synonymsColumn
 
     @FXML private Button addButton
@@ -65,8 +65,8 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
         // TODO: Where else can we use this closure syntax instead of an anonymous class?
         // to have the table view listening for changes in the data.
-        nameColumn.setCellValueFactory({cellData -> cellData.getValue().idProperty()})
-        friendlyNameColumn.setCellValueFactory({cellData -> cellData.getValue().friendlyNameProperty()})
+        nameColumn.setCellValueFactory({ cellData -> cellData.getValue().nameProperty()})
+        displayNameColumn.setCellValueFactory({ cellData -> cellData.getValue().displayNameProperty()})
         synonymsColumn.setCellValueFactory({cellData -> cellData.getValue().displayedSynonymsProperty()})
 
         // to enable in-place editing
@@ -77,20 +77,20 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
                     void handle(CellEditEvent<ObservableCustomVerb, String> t) {
                         ((ObservableCustomVerb) t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())
-                        ).setId(t.getNewValue())
+                        ).setName(t.getNewValue())
                     }
                 }
         )
 
         // to enable in-place editing
-        friendlyNameColumn.setCellFactory(cellFactory);
-        friendlyNameColumn.setOnEditCommit(
+        displayNameColumn.setCellFactory(cellFactory);
+        displayNameColumn.setOnEditCommit(
                 new EventHandler<CellEditEvent<ObservableCustomVerb, String>>() {
                     @Override
                     void handle(CellEditEvent<ObservableCustomVerb, String> t) {
                         ((ObservableCustomVerb) t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())
-                        ).setFriendlyName(t.getNewValue())
+                        ).setDisplayName(t.getNewValue())
                     }
                 }
         )
@@ -141,20 +141,20 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
 @TypeChecked
 class ObservableCustomVerb {
-    private final SimpleStringProperty id
-    private final SimpleStringProperty friendlyName
+    private final SimpleStringProperty name
+    private final SimpleStringProperty displayName
     private final SimpleStringProperty displayedSynonyms
     private final ObservableList<String> synonyms
 
-    private ObservableCustomVerb(String id, String friendlyName, List<String> synonyms) {
-        this.id = new SimpleStringProperty(id)
-        this.friendlyName = new SimpleStringProperty(friendlyName)
+    private ObservableCustomVerb(String name, String displayName, List<String> synonyms) {
+        this.name = new SimpleStringProperty(name)
+        this.displayName = new SimpleStringProperty(displayName)
         this.displayedSynonyms = new SimpleStringProperty(synonyms.toListString())
         this.synonyms = FXCollections.observableArrayList(synonyms)
     }
 
     ObservableCustomVerb(CustomVerb customVerb) {
-        this(customVerb.getId(), customVerb.getFriendlyName(), customVerb.getSynonyms())
+        this(customVerb.getName(), customVerb.getDisplayName(), customVerb.getSynonyms())
     }
 
     ObservableCustomVerb() {
@@ -162,31 +162,31 @@ class ObservableCustomVerb {
     }
 
     CustomVerb toCustomVerb() {
-        new CustomVerb(this.id.get(), this.friendlyName.get(), this.synonyms.toList())
+        new CustomVerb(this.name.get(), this.displayName.get(), this.synonyms.toList())
     }
 
-    String getId() {
-        this.id.get()
+    String getName() {
+        this.name.get()
     }
 
-    SimpleStringProperty idProperty() {
-        this.id
+    SimpleStringProperty nameProperty() {
+        this.name
     }
 
-    void setId(String id) {
-        this.id.set(id)
+    void setName(String name) {
+        this.name.set(name)
     }
 
-    String getFriendlyName() {
-        this.friendlyName.get()
+    String getDisplayName() {
+        this.displayName.get()
     }
 
-    SimpleStringProperty friendlyNameProperty() {
-        this.friendlyName
+    SimpleStringProperty displayNameProperty() {
+        this.displayName
     }
 
-    void setFriendlyName(String friendlyName) {
-        this.friendlyName.set(friendlyName)
+    void setDisplayName(String displayName) {
+        this.displayName.set(displayName)
     }
 
     String getDisplayedSynonyms() {

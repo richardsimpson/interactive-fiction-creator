@@ -27,7 +27,7 @@ class LoaderTest {
 
         final Map<String, CustomVerb> verbMap = new HashMap<>()
         for (CustomVerb verb : adventure.getCustomVerbs()) {
-            verbMap.put(verb.id, verb)
+            verbMap.put(verb.getName(), verb)
         }
 
         assertEquals(["WATCH {noun}", "LOOK AT {noun}", "VIEW {noun}"], verbMap.get("Watch").getSynonyms())

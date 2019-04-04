@@ -38,7 +38,7 @@
                         <TableView fx:id="verbsTableView" layoutX="14.0" layoutY="14.0" prefHeight="430.0" prefWidth="695.0">
                           <columns>
                             <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-                            <TableColumn fx:id="friendlyNameColumn" prefWidth="113.0" text="Friendly Name" />
+                            <TableColumn fx:id="displayNameColumn" prefWidth="113.0" text="Display Name" />
                               <TableColumn fx:id="synonymsColumn" prefWidth="544.0" text="Synonyms" />
                           </columns>
                         </TableView>

@@ -14,7 +14,7 @@ import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVerb> {
 
     @FXML private TextField nameTextField
-    @FXML private TextField friendlyNameTextField
+    @FXML private TextField displayNameTextField
     @FXML private TextField newSynonymTextField
     @FXML private ListView<String> synonymsListView
 
@@ -29,8 +29,8 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVe
     }
 
     protected void onShow() {
-        this.nameTextField.setText(customVerb.getId())
-        this.friendlyNameTextField.setText(customVerb.getFriendlyName())
+        this.nameTextField.setText(customVerb.getName())
+        this.displayNameTextField.setText(customVerb.getDisplayName())
         this.synonymsListView.setItems(customVerb.getSynonyms())
         this.synonymsListView.setEditable(true)
 
@@ -60,8 +60,8 @@ class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVe
     }
 
     void doSave() {
-        this.customVerb.setId(this.nameTextField.getText())
-        this.customVerb.setFriendlyName(this.friendlyNameTextField.getText())
+        this.customVerb.setName(this.nameTextField.getText())
+        this.customVerb.setDisplayName(this.displayNameTextField.getText())
         this.customVerb.setSynonyms(this.synonymsListView.getItems())
     }
 

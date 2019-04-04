@@ -71,12 +71,12 @@ class AdventureDelegate {
         this.adventure.setGetText(StringUtils.sanitiseString(getText))
     }
 
-    private void verb(String id, String friendlyName, String command, Optional<Closure> closure) {
-        if (this.adventure.findCustomVerb(id) != null) {
+    private void verb(String name, String displayName, String command, Optional<Closure> closure) {
+        if (this.adventure.getVerbByName(name) != null) {
             throw new RuntimeException("Cannot declare custom verbs twice")
         }
 
-        CustomVerb customVerb = new CustomVerb(id, friendlyName, command)
+        CustomVerb customVerb = new CustomVerb(name, displayName, command)
         this.adventure.addCustomVerb(customVerb)
 
         closure.ifPresent {clo ->
@@ -86,20 +86,20 @@ class AdventureDelegate {
         }
     }
 
-    private void verb(String id, String friendlyName, String command, Closure closure) {
-        verb(id, friendlyName, command, Optional.of(closure))
+    private void verb(String name, String displayName, String command, Closure closure) {
+        verb(name, displayName, command, Optional.of(closure))
     }
 
-    private void verb(String id, String friendlyName, String command) {
-        verb(id, friendlyName, command, Optional.empty())
+    private void verb(String name, String displayName, String command) {
+        verb(name, displayName, command, Optional.empty())
     }
 
-    private void verb(String id, String command, Closure closure) {
-        verb(id, id, command, closure)
+    private void verb(String name, String command, Closure closure) {
+        verb(name, name, command, closure)
     }
 
-    private void verb(String id, String command) {
-        verb(id, id, command)
+    private void verb(String name, String command) {
+        verb(name, name, command)
     }
 
     private void room(String roomName, Closure closure) {
@@ -280,11 +280,11 @@ class RoomDelegate {
         item(itemName, itemDisplayName, Optional.empty())
     }
 
-    private void verb(String verbId, Closure closure) {
-        final CustomVerb customVerb = this.adventure.findCustomVerb(verbId)
+    private void verb(String name, Closure closure) {
+        final CustomVerb customVerb = this.adventure.getVerbByName(name)
 
         if (customVerb == null) {
-            throw new RuntimeException("Cannot locate custom verb '" + verbId + "'")
+            throw new RuntimeException("Cannot locate custom verb '" + name + "'")
         }
 
         final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
@@ -385,11 +385,11 @@ class ItemDelegate {
         this.item.setExtraMessageWhenSwitchedOff(StringUtils.sanitiseString(extraMessageWhenSwitchedOff))
     }
 
-    private void verb(String verbId, Closure closure) {
-        final CustomVerb customVerb = this.adventure.findCustomVerb(verbId)
+    private void verb(String name, Closure closure) {
+        final CustomVerb customVerb = this.adventure.getVerbByName(name)
 
         if (customVerb == null) {
-            throw new RuntimeException("Cannot locate custom verb '" + verbId + "'")
+            throw new RuntimeException("Cannot locate custom verb '" + name + "'")
         }
 
         final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
