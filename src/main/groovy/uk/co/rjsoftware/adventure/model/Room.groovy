@@ -149,6 +149,15 @@ class Room implements ItemContainer, VerbContainer {
         this.customVerbs.get(verb.getId())
     }
 
+    Map<UUID, String> getCustomVerbs() {
+        this.customVerbs
+    }
+
+    void setCustomVerbs(Map<UUID, String> customVerbs) {
+        this.customVerbs.clear()
+        this.customVerbs.putAll(customVerbs)
+    }
+
     String getBeforeEnterRoomScript() {
         this.beforeEnterRoomScript
     }

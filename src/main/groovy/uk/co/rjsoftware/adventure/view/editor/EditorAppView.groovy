@@ -112,7 +112,7 @@ class EditorAppView extends AbstractDialogView {
 
         for (Room room : adventure.getRooms()) {
             final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-            final RoomTreeItem roomTreeItem = new RoomTreeItem(room, treeItem, getStage())
+            final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, room, treeItem, getStage())
             treeItem.setValue(roomTreeItem)
 
             root.getChildren().add(treeItem)
