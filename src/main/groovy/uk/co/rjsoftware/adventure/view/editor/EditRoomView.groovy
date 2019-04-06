@@ -50,7 +50,15 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
 
     }
 
-    // TODO: Add verbs (and other room things here)
+    // TODO: Add ability to edit:
+    //       exits
+    //       items
+    //       descriptionScript
+    //       beforeEnterRoomScript
+    //       afterEnterRoomScript
+    //       afterLeaveRoomScript
+    //       beforeEnterRoomFirstTimeScript
+    //       afterEnterRoomFirstTimeScript
 
     protected void onShow() {
         this.nameTextField.setText(room.getName())

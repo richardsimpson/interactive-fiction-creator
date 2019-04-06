@@ -54,6 +54,11 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
         this.item = item
     }
 
+    // TODO: Add ability to edit:
+    //       verbs
+    //       items
+    //       contentVisibility (not currently populating the combo box)
+
     protected void onShow() {
         // General Tab
         this.nameTextField.setText(item.getName())
