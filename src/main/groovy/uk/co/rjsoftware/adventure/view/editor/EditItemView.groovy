@@ -57,6 +57,7 @@ class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
     // TODO: Add ability to edit:
     //       verbs
     //       items
+    //       descriptionScript
     //       contentVisibility (not currently populating the combo box)
 
     protected void onShow() {
