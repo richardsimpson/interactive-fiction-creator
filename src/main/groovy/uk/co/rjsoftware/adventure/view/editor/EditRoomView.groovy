@@ -16,7 +16,10 @@ import javafx.scene.control.cell.ComboBoxTreeTableCell
 import javafx.util.StringConverter
 import sun.security.pkcs11.wrapper.Functions
 import uk.co.rjsoftware.adventure.model.Adventure
+import uk.co.rjsoftware.adventure.model.ContentVisibility
 import uk.co.rjsoftware.adventure.model.CustomVerb
+import uk.co.rjsoftware.adventure.model.Item
+import uk.co.rjsoftware.adventure.model.ItemContainer
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
@@ -39,6 +42,10 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
     @FXML private Button addButton
     @FXML private Button editButton
     @FXML private Button deleteButton
+
+    @FXML private TableView<ObservableItem> itemsTableView
+    @FXML private TableColumn<ObservableItem, String> nameColumn
+    @FXML private TableColumn<ObservableItem, String> descriptionColumn
 
     private final Adventure adventure
     private final Room room
@@ -97,6 +104,22 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
 
         verbsTableView.setItems(observableCustomVerbInstances)
 
+
+        // Setup the table view of the items
+
+        itemsTableView.setEditable(true)
+
+        nameColumn.setCellValueFactory({ cellData -> cellData.getValue().nameProperty()})
+        descriptionColumn.setCellValueFactory({ cellData -> cellData.getValue().descriptionProperty()})
+
+        final List<ObservableItem> items = room.getItems().values().stream()
+                .map { item -> new ObservableItem(item)}
+        .collect(Collectors.toList())
+        final ObservableList<ObservableItem> observableItems = FXCollections.observableArrayList(items)
+
+        itemsTableView.setItems(observableItems)
+
+        
         // wire up the remaining buttons
         addButton.setOnAction(this.&addButtonClick)
         editButton.setOnAction(this.&editButtonClick)
@@ -179,6 +202,46 @@ class ObservableVerbInstance {
 
     void setScript(String script) {
         this.script.set(script)
+    }
+
+}
+
+@TypeChecked
+class ObservableItem {
+    private final SimpleStringProperty name
+    private final SimpleStringProperty description
+
+    ObservableItem(Item item) {
+        this.name = new SimpleStringProperty(item.getName())
+        this.description = new SimpleStringProperty(item.getDescription())
+    }
+
+    ObservableItem() {
+        this(new Item(""))
+    }
+
+    String getName() {
+        this.name.get()
+    }
+
+    SimpleStringProperty nameProperty() {
+        this.name
+    }
+
+    void setName(String name) {
+        this.name.set(name)
+    }
+
+    String getDescription() {
+        this.description.get()
+    }
+
+    SimpleStringProperty descriptionProperty() {
+        this.description
+    }
+
+    void setDescription(String description) {
+        this.description.set(description)
     }
 
 }
