@@ -2,26 +2,19 @@ package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
 import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.adapter.JavaBeanObjectProperty
+import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
+import javafx.beans.property.adapter.JavaBeanStringProperty
+import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import javafx.scene.control.TextArea
-import javafx.scene.control.TextField
-import javafx.scene.control.cell.ComboBoxTableCell
-import javafx.scene.control.cell.ComboBoxTreeTableCell
-import javafx.util.StringConverter
-import sun.security.pkcs11.wrapper.Functions
-import uk.co.rjsoftware.adventure.model.Adventure
-import uk.co.rjsoftware.adventure.model.ContentVisibility
-import uk.co.rjsoftware.adventure.model.CustomVerb
-import uk.co.rjsoftware.adventure.model.Item
-import uk.co.rjsoftware.adventure.model.ItemContainer
-import uk.co.rjsoftware.adventure.model.Room
-import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import javafx.scene.control.*
+import javafx.util.Callback
+import uk.co.rjsoftware.adventure.model.*
+import uk.co.rjsoftware.adventure.view.AbstractDialogView
 
 import java.util.function.Function
 import java.util.stream.Collectors
@@ -30,13 +23,13 @@ import java.util.stream.Stream
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
-class EditRoomView extends AbstractEditDomainObjectDialogView {
+class EditRoomView extends AbstractDialogView {
 
     @FXML private TextField nameTextField
     @FXML private TextArea descriptionTextArea
 
     @FXML private TableView<ObservableVerbInstance> verbsTableView
-    @FXML private TableColumn<ObservableVerbInstance, String> verbColumn
+    @FXML private TableColumn<ObservableVerbInstance, UUID> verbColumn
     @FXML private TableColumn<ObservableVerbInstance, String> scriptColumn
 
     @FXML private Button addButton
@@ -49,12 +42,13 @@ class EditRoomView extends AbstractEditDomainObjectDialogView {
 
     private final Adventure adventure
     private final Room room
+    private final ObservableRoom observableRoom
 
     EditRoomView(Adventure adventure, Room room) {
         super("../editRoom.fxml")
         this.adventure = adventure
         this.room = room
-
+        this.observableRoom = new ObservableRoom(room)
     }
 
     // TODO: Add ability to edit:
@@ -68,19 +62,13 @@ class EditRoomView extends AbstractEditDomainObjectDialogView {
     //       afterEnterRoomFirstTimeScript
 
     protected void onShow() {
-        this.nameTextField.setText(room.getName())
-        this.descriptionTextArea.setText(room.getDescription())
+        this.nameTextField.textProperty().bindBidirectional(this.observableRoom.nameProperty())
+        this.descriptionTextArea.textProperty().bindBidirectional(this.observableRoom.descriptionProperty())
 
-        // Setup the table view of the custom verbs
-
-        verbsTableView.setEditable(true)
-
-        verbColumn.setCellValueFactory({ cellData -> cellData.getValue().nameProperty()})
-        scriptColumn.setCellValueFactory({ cellData -> cellData.getValue().scriptProperty()})
-
+        // get a handy map of the adventure's custom verbs
         final List<CustomVerb> customVerbList = this.adventure.getCustomVerbs()
         final Map<UUID, CustomVerb> customVerbMap = customVerbList.stream()
-        .collect(Collectors.toMap(
+                .collect(Collectors.toMap(
                 new Function<CustomVerb, UUID>() {
                     @Override
                     UUID apply(CustomVerb customVerb) {
@@ -95,14 +83,59 @@ class EditRoomView extends AbstractEditDomainObjectDialogView {
                 }
         ))
 
-        final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().entrySet().stream()
-                .map { entry -> new ObservableVerbInstance(customVerbMap.get(entry.key).getId(),
-                                                           customVerbMap.get(entry.key).getName(),
-                                                           entry.value)}
+        // Setup the table view of the custom verbs
+
+        verbColumn.setCellValueFactory({ cellData -> cellData.getValue().idProperty()})
+        scriptColumn.setCellValueFactory({ cellData -> cellData.getValue().scriptProperty()})
+
+        // have the verbColumn display the verb name instead of the UUID id field
+        verbColumn.setCellFactory(new Callback<TableColumn<ObservableVerbInstance, UUID>, TableCell<ObservableVerbInstance, UUID>>() {
+            @Override
+            TableCell<ObservableVerbInstance, UUID> call(TableColumn<ObservableVerbInstance, UUID> param) {
+                new TableCell<ObservableVerbInstance, UUID>() {
+                    @Override
+                    void updateItem(UUID id, boolean empty) {
+                        super.updateItem(id, empty)
+                        if (empty) {
+                            setText(null)
+                        } else {
+                            setText(customVerbMap.get(id).getName())
+                        }
+                    }
+                }
+            }
+        })
+
+        final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().values().stream()
+                .map { verbInstance -> new ObservableVerbInstance(verbInstance)}
                 .collect(Collectors.toList())
-        final ObservableList<ObservableVerbInstance> observableCustomVerbInstances = FXCollections.observableArrayList(customVerbInstances)
+        final ObservableList<ObservableVerbInstance> observableCustomVerbInstances = FXCollections.observableList(customVerbInstances)
 
         verbsTableView.setItems(observableCustomVerbInstances)
+
+        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
+        observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
+                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
+                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
+                        new Function<ObservableVerbInstance, UUID>() {
+                            @Override
+                            UUID apply(ObservableVerbInstance verbInstance) {
+                                return verbInstance.getId()
+                            }
+                        },
+                        new Function<ObservableVerbInstance, CustomVerbInstance>() {
+                            @Override
+                            CustomVerbInstance apply(ObservableVerbInstance verbInstance) {
+                                return verbInstance.getVerbInstance()
+                            }
+                        }))
+
+                room.setCustomVerbs(verbs)
+            }
+        })
+
 
 
         // Setup the table view of the items
@@ -115,7 +148,7 @@ class EditRoomView extends AbstractEditDomainObjectDialogView {
         final List<ObservableItem> items = room.getItems().values().stream()
                 .map { item -> new ObservableItem(item)}
         .collect(Collectors.toList())
-        final ObservableList<ObservableItem> observableItems = FXCollections.observableArrayList(items)
+        final ObservableList<ObservableItem> observableItems = FXCollections.observableList(items)
 
         itemsTableView.setItems(observableItems)
 
@@ -143,60 +176,67 @@ class EditRoomView extends AbstractEditDomainObjectDialogView {
         this.verbsTableView.getItems().remove(this.verbsTableView.getSelectionModel().getSelectedIndex())
     }
 
-    void doSave() {
-        this.room.setName(this.nameTextField.getText())
-        this.room.setDescription(this.descriptionTextArea.getText())
+}
 
-        final Map<UUID, String> newCustomVerbs = new HashMap<>()
-        for (ObservableVerbInstance verbInstance : this.verbsTableView.getItems()) {
-            newCustomVerbs.put(verbInstance.getId(), verbInstance.getScript())
-        }
-        this.room.setCustomVerbs(newCustomVerbs)
+@TypeChecked
+class ObservableRoom {
+
+    private final Room room
+    private final JavaBeanStringProperty name
+    private final JavaBeanStringProperty description
+
+    ObservableRoom(Room room) {
+        this.room = room
+        this.name = new JavaBeanStringPropertyBuilder().bean(room).name("name").build();
+        this.description = new JavaBeanStringPropertyBuilder().bean(room).name("description").build();
     }
 
+    JavaBeanStringProperty nameProperty() {
+        this.name
+    }
+
+    JavaBeanStringProperty descriptionProperty() {
+        this.description
+    }
 }
 
 @TypeChecked
 class ObservableVerbInstance {
-    private UUID id
-    private final SimpleStringProperty name
-    private final SimpleStringProperty script
+    private final CustomVerbInstance verbInstance
+    private final JavaBeanObjectProperty<UUID> id
+    private final JavaBeanStringProperty script
 
-    ObservableVerbInstance(UUID id, String name, String script) {
-        this.id = id
-        this.name = new SimpleStringProperty(name)
-        this.script = new SimpleStringProperty(script)
+    ObservableVerbInstance(CustomVerbInstance verbInstance) {
+        this.verbInstance = verbInstance
+        this.id = new JavaBeanObjectPropertyBuilder().bean(verbInstance).name("id").build()
+        this.script = new JavaBeanStringPropertyBuilder().bean(verbInstance).name("script").build();
     }
 
     ObservableVerbInstance() {
-        this(null, "", "")
+        this(new CustomVerbInstance(null))
+    }
+
+    CustomVerbInstance getVerbInstance() {
+        this.verbInstance
     }
 
     UUID getId() {
+        this.id.get()
+    }
+
+    JavaBeanObjectProperty<UUID> idProperty() {
         this.id
     }
 
     void setId(UUID id) {
-        this.id = id
-    }
-
-    String getName() {
-        this.name.get()
-    }
-
-    SimpleStringProperty nameProperty() {
-        this.name
-    }
-
-    void setName(String name) {
-        this.name.set(name)
+        this.id.set(id)
     }
 
     String getScript() {
         this.script.get()
     }
 
-    SimpleStringProperty scriptProperty() {
+    JavaBeanStringProperty scriptProperty() {
         this.script
     }
 

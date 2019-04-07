@@ -177,8 +177,6 @@ class ObservableAdventure {
     JavaBeanStringProperty getTextProperty() {
         this.getText
     }
-
-
 }
 
 @TypeChecked

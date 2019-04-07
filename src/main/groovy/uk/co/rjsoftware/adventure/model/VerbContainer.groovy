@@ -5,7 +5,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 interface VerbContainer {
 
-    void addVerb(CustomVerb verb, String script)
+    void addVerb(CustomVerb verb, CustomVerbInstance verbInstance)
 
     boolean containsVerb(CustomVerb verb)
 

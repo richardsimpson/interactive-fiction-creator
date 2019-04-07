@@ -38,7 +38,7 @@ class Item implements ItemContainer, VerbContainer {
 
     private ItemContainer parent
 
-    private final Map<UUID, String> customVerbs = new HashMap<>()
+    private final Map<UUID, CustomVerbInstance> customVerbs = new HashMap<>()
     // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
     private final Map<String, Item> items = new TreeMap<>()
     private boolean itemExamined = false
@@ -286,12 +286,12 @@ class Item implements ItemContainer, VerbContainer {
         this.customVerbs.containsKey(verb.getId())
     }
 
-    void addVerb(CustomVerb verb, String script) {
-        this.customVerbs.put(verb.getId(), script)
+    void addVerb(CustomVerb verb, CustomVerbInstance verbInstance) {
+        this.customVerbs.put(verb.getId(), verbInstance)
     }
 
     String getVerbScript(CustomVerb verb) {
-        this.customVerbs.get(verb.getId())
+        this.customVerbs.get(verb.getId()).getScript()
     }
 
     //

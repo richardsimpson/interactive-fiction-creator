@@ -7,7 +7,7 @@ class Room implements ItemContainer, VerbContainer {
 
     private final UUID id
     private final Map<Direction, Exit> exits = new TreeMap<>()
-    private final Map<UUID, String> customVerbs = new HashMap<>()
+    private final Map<UUID, CustomVerbInstance> customVerbs = new HashMap<>()
     // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
     private final Map<String, Item> items = new TreeMap<>()
     private String name
@@ -141,19 +141,19 @@ class Room implements ItemContainer, VerbContainer {
         this.customVerbs.containsKey(verb.getId())
     }
 
-    void addVerb(CustomVerb verb, String script) {
-        this.customVerbs.put(verb.getId(), script)
+    void addVerb(CustomVerb verb, CustomVerbInstance verbInstance) {
+        this.customVerbs.put(verb.getId(), verbInstance)
     }
 
     String getVerbScript(CustomVerb verb) {
-        this.customVerbs.get(verb.getId())
+        this.customVerbs.get(verb.getId()).getScript()
     }
 
-    Map<UUID, String> getCustomVerbs() {
+    Map<UUID, CustomVerbInstance> getCustomVerbs() {
         this.customVerbs
     }
 
-    void setCustomVerbs(Map<UUID, String> customVerbs) {
+    void setCustomVerbs(Map<UUID, CustomVerbInstance> customVerbs) {
         this.customVerbs.clear()
         this.customVerbs.putAll(customVerbs)
     }

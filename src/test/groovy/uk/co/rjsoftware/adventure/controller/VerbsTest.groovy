@@ -58,9 +58,9 @@ class VerbsTest {
         donut.setEatMessage("eating donut")
         donut.setOnEatScript("say('onEatScript')")
 
-        tv.addVerb(watch, "say('You watch the TV for a while.')")
-        livingRoom.addVerb(relax , "say('You sit on the floor, and veg out in front of the TV.')")
-        garden.addVerb(relax , "say('You sunbathe for a while.  Difficult without anything to sit on though.')")
+        tv.addVerb(watch, new CustomVerbInstance(watch.getId(), "say('You watch the TV for a while.')"))
+        livingRoom.addVerb(relax, new CustomVerbInstance(livingRoom.getId(),"say('You sit on the floor, and veg out in front of the TV.')"))
+        garden.addVerb(relax , new CustomVerbInstance(garden.getId(), "say('You sunbathe for a while.  Difficult without anything to sit on though.')"))
 
         //           kitchen    landing
         //                |      |
@@ -941,14 +941,14 @@ class VerbsTest {
     @Test
     void testNounsCanBeReferencedFromScriptsIndependentOfCase() {
         // test lower case
-        tv.addVerb(watch, """
+        tv.addVerb(watch, new CustomVerbInstance(watch.getId(), """
             if (isSwitchedOn('tv')) {
                 say('You watch the TV for a while.  It is showing an old western.')
             }
             else {
                 say("You watch the TV for a while.  It's just a black screen.")
             }
-        """)
+        """))
 
         this.mainWindow.clearMessages()
         mainWindow.fireCommand(new CommandEvent("watch tv"))
@@ -959,14 +959,14 @@ class VerbsTest {
         ])
 
         // test upper case
-        tv.addVerb(watch, """
+        tv.addVerb(watch, new CustomVerbInstance(watch.getId(), """
             if (isSwitchedOn('TV')) {
                 say('You watch the TV for a while.  It is showing an old western.')
             }
             else {
                 say("You watch the TV for a while.  It's just a black screen.")
             }
-        """)
+        """))
 
         this.mainWindow.clearMessages()
         mainWindow.fireCommand(new CommandEvent("watch tv"))

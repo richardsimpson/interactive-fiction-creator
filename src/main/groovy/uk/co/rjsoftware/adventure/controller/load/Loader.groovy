@@ -2,13 +2,7 @@ package uk.co.rjsoftware.adventure.controller.load
 
 import groovy.transform.TypeChecked
 import org.codehaus.groovy.control.CompilerConfiguration
-import uk.co.rjsoftware.adventure.model.Adventure
-import uk.co.rjsoftware.adventure.model.ContentVisibility
-import uk.co.rjsoftware.adventure.model.CustomVerb
-import uk.co.rjsoftware.adventure.model.Direction
-import uk.co.rjsoftware.adventure.model.Exit
-import uk.co.rjsoftware.adventure.model.Item
-import uk.co.rjsoftware.adventure.model.Room
+import uk.co.rjsoftware.adventure.model.*
 import uk.co.rjsoftware.adventure.utils.StringUtils
 
 /**
@@ -287,12 +281,13 @@ class RoomDelegate {
             throw new RuntimeException("Cannot locate custom verb '" + name + "'")
         }
 
-        final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
+        final CustomVerbInstance verbInstance = new CustomVerbInstance(customVerb.getId())
+        final VerbInstanceDelegate delegate = new VerbInstanceDelegate(verbInstance)
         closure.delegate = delegate
         closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
 
-        this.room.addVerb(customVerb, delegate.getScript())
+        this.room.addVerb(customVerb, verbInstance)
 
     }
 
@@ -392,12 +387,13 @@ class ItemDelegate {
             throw new RuntimeException("Cannot locate custom verb '" + name + "'")
         }
 
-        final VerbInstanceDelegate delegate = new VerbInstanceDelegate()
+        final CustomVerbInstance verbInstance = new CustomVerbInstance(customVerb.getId())
+        final VerbInstanceDelegate delegate = new VerbInstanceDelegate(verbInstance)
         closure.delegate = delegate
         closure.resolveStrategy = Closure.DELEGATE_ONLY
         closure()
 
-        this.item.addVerb(customVerb, delegate.getScript())
+        this.item.addVerb(customVerb, verbInstance)
 
     }
 
@@ -452,14 +448,14 @@ class ItemDelegate {
 
 class VerbInstanceDelegate {
 
-    private String script
+    CustomVerbInstance verbInstance
 
-    private void script(String script) {
-        this.script = StringUtils.sanitiseString(script)
+    VerbInstanceDelegate(CustomVerbInstance verbInstance) {
+        this.verbInstance = verbInstance
     }
 
-    String getScript() {
-        this.script
+    private void script(String script) {
+        this.verbInstance.setScript(StringUtils.sanitiseString(script))
     }
 }
 
