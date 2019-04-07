@@ -2,6 +2,8 @@ package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
 import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.adapter.JavaBeanStringProperty
+import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
@@ -14,14 +16,14 @@ import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
-import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.AbstractDialogView
 
 import java.util.stream.Collectors
 
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
-class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
+class EditAdventureView extends AbstractDialogView {
 
     @FXML private TextField titleTextField
     @FXML private TextArea introductionTextArea
@@ -39,17 +41,20 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
 
 
     private final Adventure adventure
+    private final ObservableAdventure observableAdventure
 
     EditAdventureView(Adventure adventure) {
         super("../editAdventure.fxml")
         this.adventure = adventure
+        this.observableAdventure = new ObservableAdventure(adventure)
+
     }
 
     protected void onShow() {
-        this.titleTextField.setText(adventure.getTitle())
-        this.introductionTextArea.setText(adventure.getIntroduction())
-        this.waitTextTextArea.setText(adventure.getWaitText())
-        this.getTextTextArea.setText(adventure.getGetText())
+        this.titleTextField.textProperty().bindBidirectional(this.observableAdventure.titleProperty())
+        this.introductionTextArea.textProperty().bindBidirectional(this.observableAdventure.introductionProperty())
+        this.waitTextTextArea.textProperty().bindBidirectional(this.observableAdventure.waitTextProperty())
+        this.getTextTextArea.textProperty().bindBidirectional(this.observableAdventure.getTextProperty())
 
         // Setup the table view of the custom verbs
 
@@ -96,10 +101,11 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         )
 
         // create the ObservableList and assign it to the TableView
+        // TODO: Fix the adding / deleting of custom verbs.  They are not being saved at the moment.
         final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
                 .map { verb -> new ObservableCustomVerb(verb)}
                 .collect(Collectors.toList())
-        final ObservableList<ObservableCustomVerb> observableCustomVerbs = FXCollections.observableArrayList(customVerbs)
+        final ObservableList<ObservableCustomVerb> observableCustomVerbs = FXCollections.observableList(customVerbs)
         verbsTableView.setItems(observableCustomVerbs)
 
         // wire up the remaining buttons
@@ -125,40 +131,64 @@ class EditAdventureView extends AbstractEditDomainObjectDialogView<Adventure> {
         this.verbsTableView.getItems().remove(this.verbsTableView.getSelectionModel().getSelectedIndex())
     }
 
-    void doSave() {
-        this.adventure.setTitle(this.titleTextField.getText())
-        this.adventure.setIntroduction(this.introductionTextArea.getText())
-        this.adventure.setWaitText(this.waitTextTextArea.getText())
-        this.adventure.setGetText(this.getTextTextArea.getText())
+}
 
-        final List<CustomVerb> newCustomVerbs = this.verbsTableView.getItems().stream()
-                .map { verb -> verb.toCustomVerb()}
-                .collect(Collectors.toList())
-        this.adventure.setCustomVerbs(newCustomVerbs)
+@TypeChecked
+class ObservableAdventure {
+
+    private final Adventure adventure
+    private final JavaBeanStringProperty introduction
+    private final JavaBeanStringProperty title
+    private final JavaBeanStringProperty waitText
+    private final JavaBeanStringProperty getText
+
+    ObservableAdventure(Adventure adventure) {
+        this.adventure = adventure
+        this.introduction = new JavaBeanStringPropertyBuilder().bean(adventure).name("introduction").build();
+        this.title = new JavaBeanStringPropertyBuilder().bean(adventure).name("title").build();
+        this.waitText = new JavaBeanStringPropertyBuilder().bean(adventure).name("waitText").build();
+        this.getText = new JavaBeanStringPropertyBuilder().bean(adventure).name("getText").build();
     }
+
+    JavaBeanStringProperty introductionProperty() {
+        this.introduction
+    }
+
+    JavaBeanStringProperty titleProperty() {
+        this.title
+    }
+
+    JavaBeanStringProperty waitTextProperty() {
+        this.waitText
+    }
+
+    JavaBeanStringProperty getTextProperty() {
+        this.getText
+    }
+
 
 }
 
 @TypeChecked
 class ObservableCustomVerb {
-    private final SimpleStringProperty name
-    private final SimpleStringProperty displayName
+    private final JavaBeanStringProperty name
+    private final JavaBeanStringProperty displayName
     private final SimpleStringProperty displayedSynonyms
     private final ObservableList<String> synonyms
 
-    private ObservableCustomVerb(String name, String displayName, List<String> synonyms) {
-        this.name = new SimpleStringProperty(name)
-        this.displayName = new SimpleStringProperty(displayName)
-        this.displayedSynonyms = new SimpleStringProperty(synonyms.toListString())
-        this.synonyms = FXCollections.observableArrayList(synonyms)
-    }
+    private final CustomVerb customVerb
 
     ObservableCustomVerb(CustomVerb customVerb) {
-        this(customVerb.getName(), customVerb.getDisplayName(), customVerb.getSynonyms())
+        this.name = new JavaBeanStringPropertyBuilder().bean(customVerb).name("name").build();
+        this.displayName = new JavaBeanStringPropertyBuilder().bean(customVerb).name("displayName").build();
+        this.displayedSynonyms = new SimpleStringProperty(customVerb.getSynonyms().toListString())
+        this.synonyms = FXCollections.observableList(customVerb.getSynonyms())
+
+        this.customVerb = customVerb
     }
 
     ObservableCustomVerb() {
-        this("", "", new ArrayList())
+        this(new CustomVerb("", "", ""))
     }
 
     CustomVerb toCustomVerb() {
@@ -169,7 +199,7 @@ class ObservableCustomVerb {
         this.name.get()
     }
 
-    SimpleStringProperty nameProperty() {
+    JavaBeanStringProperty nameProperty() {
         this.name
     }
 
@@ -181,7 +211,7 @@ class ObservableCustomVerb {
         this.displayName.get()
     }
 
-    SimpleStringProperty displayNameProperty() {
+    JavaBeanStringProperty displayNameProperty() {
         this.displayName
     }
 
@@ -189,20 +219,12 @@ class ObservableCustomVerb {
         this.displayName.set(displayName)
     }
 
-    String getDisplayedSynonyms() {
-        this.displayedSynonyms.get()
-    }
-
     SimpleStringProperty displayedSynonymsProperty() {
         this.displayedSynonyms
     }
 
-    void setDisplayedSynonyms(String displayedSynonyms) {
-        this.displayedSynonyms.set(displayedSynonyms)
-    }
-
     ObservableList<String> getSynonyms() {
-        this.synonyms
+        FXCollections.observableArrayList(this.customVerb.getSynonyms())
     }
 
     void setSynonyms(ObservableList<String> synonyms) {
@@ -210,6 +232,7 @@ class ObservableCustomVerb {
             this.synonyms.setAll(synonyms)
         }
         this.displayedSynonyms.set(synonyms.toListString())
+        this.customVerb.setSynonyms(synonyms)
     }
 
 }

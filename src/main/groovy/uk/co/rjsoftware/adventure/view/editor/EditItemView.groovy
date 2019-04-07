@@ -10,7 +10,7 @@ import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
 @TypeChecked
-class EditItemView extends AbstractEditDomainObjectDialogView<Item> {
+class EditItemView extends AbstractEditDomainObjectDialogView {
 
     // General Tab
     @FXML private TextField nameTextField

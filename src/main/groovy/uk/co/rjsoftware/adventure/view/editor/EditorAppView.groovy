@@ -9,6 +9,7 @@ import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import javafx.stage.FileChooser
@@ -30,7 +31,8 @@ import java.nio.file.Paths
 @TypeChecked
 class EditorAppView extends AbstractDialogView {
 
-    @FXML private Pane pane = null
+    @FXML private Pane mapPane = null
+    @FXML private BorderPane editPane = null
 
     @FXML private TreeView<CustomTreeItem> treeView = null
     private TreeViewComparator treeViewComparator = new TreeViewComparator()
@@ -44,7 +46,7 @@ class EditorAppView extends AbstractDialogView {
     private List<LoadListener> loadListeners = new ArrayList()
 
     @FXML void initialize() {
-        resizeComponent = new ResizeComponent(this.pane)
+        resizeComponent = new ResizeComponent(this.mapPane)
     }
 
     EditorAppView() {
@@ -67,12 +69,12 @@ class EditorAppView extends AbstractDialogView {
                 final CustomComponent component = newValue.getValue().getComponent()
 
                 // Add the component to the editor view, if it's not already there
-                if (component.getParent() != EditorAppView.this.pane) {
+                if (component.getParent() != EditorAppView.this.mapPane) {
                     component.setLayoutX(100)
                     component.setLayoutY(100)
 
                     resizeComponent.registerComponent(component)
-                    EditorAppView.this.pane.getChildren().add(component)
+                    EditorAppView.this.mapPane.getChildren().add(component)
                 }
             }
         });
@@ -106,13 +108,13 @@ class EditorAppView extends AbstractDialogView {
 
         // add the adventure rooms / items to the treeView
         final TreeItem<CustomTreeItem> root = new TreeItem<>()
-        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, root, getStage())
+        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, root, editPane)
         root.setValue(adventureTreeItem)
         root.setExpanded(true);
 
         for (Room room : adventure.getRooms()) {
             final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-            final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, room, treeItem, getStage())
+            final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, room, treeItem, editPane)
             treeItem.setValue(roomTreeItem)
 
             root.getChildren().add(treeItem)
@@ -153,7 +155,7 @@ class EditorAppView extends AbstractDialogView {
 
     private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
         final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, getStage())
+        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, editPane)
         treeItem.setValue(itemTreeItem)
 
         parent.getChildren().add(treeItem)

@@ -2,6 +2,8 @@ package uk.co.rjsoftware.adventure.view.editor.treeitems
 
 import groovy.transform.TypeChecked
 import javafx.scene.control.TreeItem
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.Pane
 import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
@@ -15,8 +17,8 @@ class ItemTreeItem extends CustomTreeItem {
     private final Item item
     private final ItemComponent component
 
-    ItemTreeItem(Item item, TreeItem<CustomTreeItem> treeItem, Stage owner) {
-        super(treeItem, owner)
+    ItemTreeItem(Item item, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
+        super(treeItem, parent)
         this.item = item
         component = new ItemComponent(item)
     }

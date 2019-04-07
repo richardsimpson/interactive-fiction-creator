@@ -11,7 +11,7 @@ import javafx.scene.control.cell.TextFieldListCell
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
 @TypeChecked
-class EditVerbView extends AbstractEditDomainObjectDialogView<ObservableCustomVerb> {
+class EditVerbView extends AbstractEditDomainObjectDialogView {
 
     @FXML private TextField nameTextField
     @FXML private TextField displayNameTextField

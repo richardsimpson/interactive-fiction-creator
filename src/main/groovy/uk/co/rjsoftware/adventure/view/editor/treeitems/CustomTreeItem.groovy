@@ -6,8 +6,10 @@ import javafx.event.Event
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.Pane
 import javafx.stage.Stage
-import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 
@@ -15,14 +17,14 @@ import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 abstract class CustomTreeItem {
 
     private final TreeItem<CustomTreeItem> treeItem
-    private final Stage owner
+    private final BorderPane parent
 
     private ContextMenu contextMenu = new ContextMenu()
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
-    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, Stage owner) {
+    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         this.treeItem = treeItem
-        this.owner = owner
+        this.parent = parent
 
         // set up the context menu
         MenuItem item1 = new MenuItem("Edit...");
@@ -36,9 +38,9 @@ abstract class CustomTreeItem {
         // we need to know if the edit dialog will change this
         final String existingName = toString()
 
-        final AbstractEditDomainObjectDialogView view = createDialogView()
+        final AbstractDialogView view = createDialogView()
 
-        view.showModal(owner)
+        view.show(parent)
 
         // now check if the tree item text will have changed
         final String newName = toString()
@@ -51,7 +53,7 @@ abstract class CustomTreeItem {
         fireChangeEvent()
     }
 
-    abstract AbstractEditDomainObjectDialogView createDialogView()
+    abstract AbstractDialogView createDialogView()
 
     abstract CustomComponent getComponent()
 

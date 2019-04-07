@@ -30,7 +30,7 @@ import java.util.stream.Stream
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
-class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
+class EditRoomView extends AbstractEditDomainObjectDialogView {
 
     @FXML private TextField nameTextField
     @FXML private TextArea descriptionTextArea
@@ -119,7 +119,7 @@ class EditRoomView extends AbstractEditDomainObjectDialogView<Room> {
 
         itemsTableView.setItems(observableItems)
 
-        
+
         // wire up the remaining buttons
         addButton.setOnAction(this.&addButtonClick)
         editButton.setOnAction(this.&editButtonClick)

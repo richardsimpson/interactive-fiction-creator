@@ -5,6 +5,8 @@ import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.Pane
 import javafx.stage.Modality
 import javafx.stage.Stage
 
@@ -42,6 +44,12 @@ abstract class AbstractDialogView {
         stage.setResizable(this.resizable)
         onShow()
         stage.show()
+    }
+
+    void show(BorderPane parent) {
+        final Parent rootLayout = loadRoot()
+        onShow()
+        parent.setCenter(rootLayout)
     }
 
     ModalResult showModal(Stage owner) {

@@ -11,7 +11,7 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrCancel
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
-abstract class AbstractEditDomainObjectDialogView<T> extends AbstractDialogView {
+abstract class AbstractEditDomainObjectDialogView extends AbstractDialogView {
 
     @FXML private Button cancelButton
     @FXML private Button okButton

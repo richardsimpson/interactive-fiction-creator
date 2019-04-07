@@ -19,7 +19,7 @@ import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
 
 @TypeChecked
-class EditVerbInstanceView extends AbstractEditDomainObjectDialogView<ObservableCustomVerb> {
+class EditVerbInstanceView extends AbstractEditDomainObjectDialogView {
 
     @FXML private ComboBox<CustomVerb> verbComboBox
     @FXML private TextArea scriptTextArea
