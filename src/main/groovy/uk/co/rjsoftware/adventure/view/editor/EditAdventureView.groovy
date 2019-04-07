@@ -7,6 +7,7 @@ import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -19,6 +20,7 @@ import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 
 import java.util.stream.Collectors
+import java.util.stream.Stream
 
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
@@ -101,12 +103,22 @@ class EditAdventureView extends AbstractDialogView {
         )
 
         // create the ObservableList and assign it to the TableView
-        // TODO: Fix the adding / deleting of custom verbs.  They are not being saved at the moment.
         final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
                 .map { verb -> new ObservableCustomVerb(verb)}
                 .collect(Collectors.toList())
         final ObservableList<ObservableCustomVerb> observableCustomVerbs = FXCollections.observableList(customVerbs)
         verbsTableView.setItems(observableCustomVerbs)
+
+        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
+        observableCustomVerbs.addListener(new ListChangeListener<ObservableCustomVerb>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableCustomVerb> c) {
+                Stream<CustomVerb> tempVerbs = observableCustomVerbs.stream()
+                        .map{verb -> verb.getCustomVerb()}
+                List<CustomVerb> verbs = tempVerbs.collect(Collectors.toList())
+                adventure.setCustomVerbs(verbs)
+            }
+        })
 
         // wire up the remaining buttons
         addButton.setOnAction(this.&addButtonClick)
@@ -191,8 +203,8 @@ class ObservableCustomVerb {
         this(new CustomVerb("", "", ""))
     }
 
-    CustomVerb toCustomVerb() {
-        new CustomVerb(this.name.get(), this.displayName.get(), this.synonyms.toList())
+    CustomVerb getCustomVerb() {
+        this.customVerb
     }
 
     String getName() {
