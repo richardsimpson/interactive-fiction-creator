@@ -372,12 +372,12 @@ class ItemDelegate {
         this.item.setSwitchOffMessage(StringUtils.sanitiseString(switchOffMessage))
     }
 
-    private void extraMessageWhenSwitchedOn(String extraMessageWhenSwitchedOn) {
-        this.item.setExtraDescriptionWhenSwitchedOn(StringUtils.sanitiseString(extraMessageWhenSwitchedOn))
+    private void extraDescriptionWhenSwitchedOn(String extraDescriptionWhenSwitchedOn) {
+        this.item.setExtraDescriptionWhenSwitchedOn(StringUtils.sanitiseString(extraDescriptionWhenSwitchedOn))
     }
 
-    private void extraMessageWhenSwitchedOff(String extraMessageWhenSwitchedOff) {
-        this.item.setExtraMessageWhenSwitchedOff(StringUtils.sanitiseString(extraMessageWhenSwitchedOff))
+    private void extraDescriptionWhenSwitchedOff(String extraDescriptionWhenSwitchedOff) {
+        this.item.setExtraDescriptionWhenSwitchedOff(StringUtils.sanitiseString(extraDescriptionWhenSwitchedOff))
     }
 
     private void verb(String name, Closure closure) {

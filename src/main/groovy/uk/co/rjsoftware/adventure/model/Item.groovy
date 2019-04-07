@@ -298,7 +298,7 @@ class Item implements ItemContainer, VerbContainer {
     // Switchable
     //
 
-    Boolean isSwitchable() { this.switchable }
+    boolean isSwitchable() { this.switchable }
     void setSwitchable(boolean switchable) { this.switchable = switchable }
 
     boolean isSwitchedOn() { this.switchedOn }
@@ -317,8 +317,8 @@ class Item implements ItemContainer, VerbContainer {
     String getExtraDescriptionWhenSwitchedOn() { this.extraDescriptionWhenSwitchedOn }
     void setExtraDescriptionWhenSwitchedOn(String message) { this.extraDescriptionWhenSwitchedOn = message }
 
-    String getExtraMessageWhenSwitchedOff() { this.extraDescriptionWhenSwitchedOff }
-    void setExtraMessageWhenSwitchedOff(String message) { this.extraDescriptionWhenSwitchedOff = message }
+    String getExtraDescriptionWhenSwitchedOff() { this.extraDescriptionWhenSwitchedOff }
+    void setExtraDescriptionWhenSwitchedOff(String message) { this.extraDescriptionWhenSwitchedOff = message }
 
     //
     // Container

@@ -38,8 +38,8 @@ adventure {
             switchable false
             switchOnMessage "switchOnMessage"
             switchOffMessage "switchOffMessage"
-            extraMessageWhenSwitchedOn "extraDescriptionWhenSwitchedOn"
-            extraMessageWhenSwitchedOff "extraDescriptionWhenSwitchedOff"
+            extraDescriptionWhenSwitchedOn "extraDescriptionWhenSwitchedOn"
+            extraDescriptionWhenSwitchedOff "extraDescriptionWhenSwitchedOff"
         }
 
         item("tv") {
@@ -52,8 +52,8 @@ adventure {
             switchable true
             switchOnMessage "switchOnMessage"
             switchOffMessage "switchOffMessage"
-            extraMessageWhenSwitchedOn "extraDescriptionWhenSwitchedOn"
-            extraMessageWhenSwitchedOff "extraDescriptionWhenSwitchedOff"
+            extraDescriptionWhenSwitchedOn "extraDescriptionWhenSwitchedOn"
+            extraDescriptionWhenSwitchedOff "extraDescriptionWhenSwitchedOff"
 
             verb ("Watch") {
                 script "say('watchVerb')"
