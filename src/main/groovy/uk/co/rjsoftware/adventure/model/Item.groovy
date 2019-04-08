@@ -405,8 +405,4 @@ class Item implements ItemContainer, VerbContainer {
     String getOnEatScript() { this.onEatScript }
     void setOnEatScript(String onEatScript) { this.onEatScript = onEatScript }
 
-//    @Override
-//    int compareTo(Item other) {
-//        return this.getDisplayName().compareTo(other.getDisplayName())
-//    }
 }

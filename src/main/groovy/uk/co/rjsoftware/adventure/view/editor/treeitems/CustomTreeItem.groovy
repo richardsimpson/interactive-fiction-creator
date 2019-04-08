@@ -22,6 +22,13 @@ abstract class CustomTreeItem {
     private ContextMenu contextMenu = new ContextMenu()
     private List<ChangeListener> changeListeners = new ArrayList<>()
 
+    // This 'view' attribute could be local to onActionEditMenuItem, except for the fact that it can get garbage
+    // collected if declared locally.  Controllers are not references by virtue of them being set as the
+    // controller in FXMLLoader, nor are they referenced by JavaBeanProperties (those only have WeakReferences to
+    // their properties).  If the view gets garbage collected, then changes in the GUI don't get persisted back
+    // to the domain object (since the JavaBeanProperty.get() method would then return 'null'.
+    private AbstractDialogView view
+
     CustomTreeItem(TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         this.treeItem = treeItem
         this.parent = parent
@@ -38,7 +45,7 @@ abstract class CustomTreeItem {
         // we need to know if the edit dialog will change this
         final String existingName = toString()
 
-        final AbstractDialogView view = createDialogView()
+        view = createDialogView()
 
         view.show(parent)
 
