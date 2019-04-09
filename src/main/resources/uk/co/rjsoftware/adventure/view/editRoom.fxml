@@ -36,9 +36,9 @@
                               <TableColumn fx:id="scriptColumn" prefWidth="480.0" text="Script" />
                            </columns>
                         </TableView>
-                        <Button fx:id="addButton" layoutX="667.0" layoutY="14.0" mnemonicParsing="false" text="Add..." />
-                        <Button fx:id="editButton" layoutX="668.0" layoutY="48.0" mnemonicParsing="false" text="Edit..." />
-                        <Button fx:id="deleteButton" layoutX="666.0" layoutY="83.0" mnemonicParsing="false" text="Delete" />
+                        <Button fx:id="addVerbButton" layoutX="667.0" layoutY="14.0" mnemonicParsing="false" text="Add..." />
+                        <Button fx:id="editVerbButton" layoutX="668.0" layoutY="48.0" mnemonicParsing="false" text="Edit..." />
+                        <Button fx:id="deleteVerbButton" layoutX="666.0" layoutY="83.0" mnemonicParsing="false" text="Delete" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -52,6 +52,9 @@
                               <TableColumn fx:id="descriptionColumn" prefWidth="480.0" text="Description" />
                            </columns>
                         </TableView>
+                        <Button fx:id="addItemButton" disable="true" layoutX="662.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Add..." />
+                        <Button fx:id="editItemButton" layoutX="662.0" layoutY="41.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Edit..." />
+                        <Button fx:id="deleteItemButton" layoutX="662.0" layoutY="75.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Delete" />
                      </children></AnchorPane>
               </content>
             </Tab>

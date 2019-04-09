@@ -1,7 +1,6 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
-import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.adapter.JavaBeanObjectProperty
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanStringProperty
@@ -32,9 +31,13 @@ class EditRoomView extends AbstractDialogView {
     @FXML private TableColumn<ObservableVerbInstance, UUID> verbColumn
     @FXML private TableColumn<ObservableVerbInstance, String> scriptColumn
 
-    @FXML private Button addButton
-    @FXML private Button editButton
-    @FXML private Button deleteButton
+    @FXML private Button addVerbButton
+    @FXML private Button editVerbButton
+    @FXML private Button deleteVerbButton
+
+    @FXML private Button addItemButton
+    @FXML private Button editItemButton
+    @FXML private Button deleteItemButton
 
     @FXML private TableView<ObservableItem> itemsTableView
     @FXML private TableColumn<ObservableItem, String> nameColumn
@@ -154,12 +157,15 @@ class EditRoomView extends AbstractDialogView {
 
 
         // wire up the remaining buttons
-        addButton.setOnAction(this.&addButtonClick)
-        editButton.setOnAction(this.&editButtonClick)
-        deleteButton.setOnAction(this.&deleteButtonClick)
+        addVerbButton.setOnAction(this.&addVerbButtonClick)
+        editVerbButton.setOnAction(this.&editVerbButtonClick)
+        deleteVerbButton.setOnAction(this.&deleteVerbButtonClick)
+        addItemButton.setOnAction(this.&addItemButtonClick)
+        editItemButton.setOnAction(this.&editItemButtonClick)
+        deleteItemButton.setOnAction(this.&deleteItemButtonClick)
     }
 
-    private void addButtonClick(ActionEvent event) {
+    private void addVerbButtonClick(ActionEvent event) {
         final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
         EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
         if (editVerbInstanceView.showModal(getStage()) == mrOk) {
@@ -167,13 +173,37 @@ class EditRoomView extends AbstractDialogView {
         }
     }
 
-    private void editButtonClick(ActionEvent event) {
+    private void editVerbButtonClick(ActionEvent event) {
         EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, this.verbsTableView.getSelectionModel().getSelectedItem())
         editVerbInstanceView.showModal(getStage())
     }
 
-    private void deleteButtonClick(ActionEvent event) {
+    private void deleteVerbButtonClick(ActionEvent event) {
         this.verbsTableView.getItems().remove(this.verbsTableView.getSelectionModel().getSelectedIndex())
+    }
+
+    private void addItemButtonClick(ActionEvent event) {
+//        final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
+//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
+//        if (editVerbInstanceView.showModal(getStage()) == mrOk) {
+//            this.verbsTableView.getItems().add(newObservableVerbInstance)
+//        }
+    }
+
+    private void editItemButtonClick(ActionEvent event) {
+        //TODO: Can we get the treeitems to bind to their values, so we don't need to manually update the treeitem text in
+        // CustomTreeItem.onActionEditMenuItem?  This will also make it easier to add/edit any items, because
+        // we won't need to go through onActionEditMenuItem.  Instead, just display the appropriate edit form,
+        // with their components bound to the domain object.
+        //
+        // Maybe start by converting the Adventure into an ObservableAdventure, and get the rooms and items from that,
+        // instead of via the original adventure?
+//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, this.verbsTableView.getSelectionModel().getSelectedItem())
+//        editVerbInstanceView.showModal(getStage())
+    }
+
+    private void deleteItemButtonClick(ActionEvent event) {
+//        this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
     }
 
 }
