@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
+import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 
 import java.util.stream.Collectors
@@ -135,6 +136,7 @@ class ObservableAdventure {
     private final JavaBeanStringProperty waitText
     private final JavaBeanStringProperty getText
     private final ObservableList<ObservableCustomVerb> observableCustomVerbs
+    private final ObservableList<ObservableRoom> observableRooms
 
     ObservableAdventure(Adventure adventure) {
         this.adventure = adventure
@@ -153,12 +155,30 @@ class ObservableAdventure {
         this.observableCustomVerbs.addListener(new ListChangeListener<ObservableCustomVerb>() {
             @Override
             void onChanged(ListChangeListener.Change<? extends ObservableCustomVerb> c) {
-                Stream<CustomVerb> tempVerbs = observableCustomVerbs.stream()
+                List<CustomVerb> tempVerbs = observableCustomVerbs.stream()
                         .map{verb -> verb.getCustomVerb()}
-                List<CustomVerb> verbs = tempVerbs.collect(Collectors.toList())
-                adventure.setCustomVerbs(verbs)
+                        .collect(Collectors.toList())
+                adventure.setCustomVerbs(tempVerbs)
             }
         })
+
+        // setup the observableRoom's list
+        final List<ObservableRoom> rooms = adventure.getRooms().stream()
+                .map { room -> new ObservableRoom(room)}
+                .collect(Collectors.toList())
+        this.observableRooms = FXCollections.observableList(rooms)
+
+        // listen to changes in the observableList of rooms, so that we can update the original items in the adventure
+        this.observableRooms.addListener(new ListChangeListener<ObservableRoom>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableRoom> c) {
+                List<Room> tempRooms = observableRooms.stream()
+                        .map{room -> room.getRoom()}
+                        .collect(Collectors.toList())
+                adventure.setRooms(tempRooms)
+            }
+        })
+
     }
 
     JavaBeanStringProperty introductionProperty() {
@@ -179,6 +199,10 @@ class ObservableAdventure {
 
     ObservableList<ObservableCustomVerb> getObservableCustomVerbs() {
         this.observableCustomVerbs
+    }
+
+    ObservableList<ObservableRoom> getObservableRooms() {
+        this.observableRooms
     }
 }
 

@@ -26,7 +26,7 @@ class RoomTreeItem extends CustomTreeItem {
 
     @Override
     AbstractDialogView createDialogView() {
-        new EditRoomView(adventure, observableRoom)
+        new EditRoomView(adventure, observableRoom, getParentForView())
     }
 
     CustomComponent getComponent() {

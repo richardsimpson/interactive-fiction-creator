@@ -113,16 +113,15 @@ class EditorAppView extends AbstractDialogView {
         root.setValue(adventureTreeItem)
         root.setExpanded(true);
 
-        for (Room room : adventure.getRooms()) {
-            final ObservableRoom observableRoom = new ObservableRoom(room)
+        for (ObservableRoom observableRoom : observableAdventure.getObservableRooms()) {
             final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
             final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, observableRoom, treeItem, editPane)
             treeItem.setValue(roomTreeItem)
 
             root.getChildren().add(treeItem)
 
-            for (Map.Entry<String, Item> entry : room.getItems()) {
-                populateTreeView(treeItem, entry.getValue())
+            for (ObservableItem observableItem : observableRoom.getObservableItems()) {
+                populateTreeView(treeItem, observableItem)
             }
         }
 
@@ -155,16 +154,15 @@ class EditorAppView extends AbstractDialogView {
         }
     }
 
-    private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
-        final ObservableItem observableItem = new ObservableItem(item)
+    private void populateTreeView(TreeItem<CustomTreeItem> parent, ObservableItem observableItem) {
         final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
         final ItemTreeItem itemTreeItem = new ItemTreeItem(observableItem, treeItem, editPane)
         treeItem.setValue(itemTreeItem)
 
         parent.getChildren().add(treeItem)
 
-        for (Map.Entry<String, Item> entry : item.getItems()) {
-            populateTreeView(treeItem, entry.getValue())
+        for (ObservableItem observableChildItem : observableItem.getObservableItems()) {
+            populateTreeView(treeItem, observableChildItem)
         }
     }
 

@@ -62,4 +62,8 @@ abstract class CustomTreeItem {
         this.contextMenu
     }
 
+    BorderPane getParentForView() {
+        this.parent
+    }
+
 }

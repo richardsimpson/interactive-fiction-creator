@@ -5,6 +5,8 @@ import javafx.beans.property.adapter.JavaBeanBooleanProperty
 import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanStringProperty
 import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
@@ -12,6 +14,8 @@ import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
+
+import java.util.stream.Collectors
 
 @TypeChecked
 class EditItemView extends AbstractDialogView {
@@ -138,6 +142,9 @@ class ObservableItem {
     private final JavaBeanStringProperty eatMessage
     private final JavaBeanStringProperty onEatScript
 
+    private final ObservableList<ObservableItem> observableItems
+
+
     ObservableItem(Item item) {
         this.item = item
 
@@ -172,6 +179,12 @@ class ObservableItem {
         eatMessage = new JavaBeanStringPropertyBuilder().bean(item).name("eatMessage").build();
         onEatScript = new JavaBeanStringPropertyBuilder().bean(item).name("onEatScript").build();
 
+
+        // setup the observableItem's list
+        final List<ObservableItem> childItems = item.getItems().values().stream()
+                .map { childItem -> new ObservableItem(childItem)}
+                .collect(Collectors.toList())
+        this.observableItems = FXCollections.observableList(childItems)
     }
 
     JavaBeanStringProperty nameProperty() {
@@ -246,5 +259,10 @@ class ObservableItem {
     JavaBeanStringProperty onEatScriptProperty() {
         this.onEatScript
     }
+
+    ObservableList<ObservableItem> getObservableItems() {
+        this.observableItems
+    }
+
 }
 

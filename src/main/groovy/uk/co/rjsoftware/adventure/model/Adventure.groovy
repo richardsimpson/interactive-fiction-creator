@@ -87,6 +87,10 @@ class Adventure {
         }
     }
 
+    void setRooms(List<Room> rooms) {
+        this.rooms = rooms
+    }
+
     Map<String, Item> getAllItems() {
         final Map<String, Item> items = new HashMap<>()
 

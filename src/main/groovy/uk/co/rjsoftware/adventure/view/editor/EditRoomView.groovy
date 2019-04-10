@@ -11,6 +11,7 @@ import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.*
+import javafx.scene.layout.BorderPane
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
@@ -46,11 +47,14 @@ class EditRoomView extends AbstractDialogView {
     @FXML private TableColumn<ObservableItem, String> nameColumn
     @FXML private TableColumn<ObservableItem, String> descriptionColumn
 
+    private AbstractDialogView view
+    private BorderPane parent
     private final Adventure adventure
     private final ObservableRoom observableRoom
 
-    EditRoomView(Adventure adventure, ObservableRoom observableRoom) {
+    EditRoomView(Adventure adventure, ObservableRoom observableRoom, BorderPane parent) {
         super("../editRoom.fxml")
+        this.parent = parent
         this.adventure = adventure
         this.observableRoom = observableRoom
     }
@@ -158,15 +162,8 @@ class EditRoomView extends AbstractDialogView {
     }
 
     private void editItemButtonClick(ActionEvent event) {
-        //TODO: Can we get the treeitems to bind to their values, so we don't need to manually update the treeitem text in
-        // CustomTreeItem.onActionEditMenuItem?  This will also make it easier to add/edit any items, because
-        // we won't need to go through onActionEditMenuItem.  Instead, just display the appropriate edit form,
-        // with their components bound to the domain object.
-        //
-        // Maybe start by converting the Adventure into an ObservableAdventure, and get the rooms and items from that,
-        // instead of via the original adventure?
-//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, this.verbsTableView.getSelectionModel().getSelectedItem())
-//        editVerbInstanceView.showModal(getStage())
+        this.view = new EditItemView(this.itemsTableView.getSelectionModel().getSelectedItem())
+        this.view.show(this.parent)
     }
 
     private void deleteItemButtonClick(ActionEvent event) {
@@ -239,6 +236,10 @@ class ObservableRoom {
 
     ObservableList<ObservableItem> getObservableItems() {
         this.observableItems
+    }
+
+    Room getRoom() {
+        this.room
     }
 }
 
