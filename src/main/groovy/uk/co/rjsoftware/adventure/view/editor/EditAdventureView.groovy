@@ -42,13 +42,11 @@ class EditAdventureView extends AbstractDialogView {
     @FXML private Button deleteButton
 
 
-    private final Adventure adventure
     private final ObservableAdventure observableAdventure
 
-    EditAdventureView(Adventure adventure) {
+    EditAdventureView(ObservableAdventure observableAdventure) {
         super("../editAdventure.fxml")
-        this.adventure = adventure
-        this.observableAdventure = new ObservableAdventure(adventure)
+        this.observableAdventure = observableAdventure
 
     }
 
@@ -68,7 +66,6 @@ class EditAdventureView extends AbstractDialogView {
                 return new EditingCell()
             }
         };
-
 
         // TODO: Where else can we use this closure syntax instead of an anonymous class?
         // to have the table view listening for changes in the data.
@@ -102,23 +99,7 @@ class EditAdventureView extends AbstractDialogView {
                 }
         )
 
-        // create the ObservableList and assign it to the TableView
-        final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
-                .map { verb -> new ObservableCustomVerb(verb)}
-                .collect(Collectors.toList())
-        final ObservableList<ObservableCustomVerb> observableCustomVerbs = FXCollections.observableList(customVerbs)
-        verbsTableView.setItems(observableCustomVerbs)
-
-        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
-        observableCustomVerbs.addListener(new ListChangeListener<ObservableCustomVerb>() {
-            @Override
-            void onChanged(ListChangeListener.Change<? extends ObservableCustomVerb> c) {
-                Stream<CustomVerb> tempVerbs = observableCustomVerbs.stream()
-                        .map{verb -> verb.getCustomVerb()}
-                List<CustomVerb> verbs = tempVerbs.collect(Collectors.toList())
-                adventure.setCustomVerbs(verbs)
-            }
-        })
+        verbsTableView.setItems(this.observableAdventure.getObservableCustomVerbs())
 
         // wire up the remaining buttons
         addButton.setOnAction(this.&addButtonClick)
@@ -153,6 +134,7 @@ class ObservableAdventure {
     private final JavaBeanStringProperty title
     private final JavaBeanStringProperty waitText
     private final JavaBeanStringProperty getText
+    private final ObservableList<ObservableCustomVerb> observableCustomVerbs
 
     ObservableAdventure(Adventure adventure) {
         this.adventure = adventure
@@ -160,6 +142,23 @@ class ObservableAdventure {
         this.title = new JavaBeanStringPropertyBuilder().bean(adventure).name("title").build();
         this.waitText = new JavaBeanStringPropertyBuilder().bean(adventure).name("waitText").build();
         this.getText = new JavaBeanStringPropertyBuilder().bean(adventure).name("getText").build();
+
+        // setup the observableCustomVerb's list
+        final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
+                .map { verb -> new ObservableCustomVerb(verb)}
+                .collect(Collectors.toList())
+        this.observableCustomVerbs = FXCollections.observableList(customVerbs)
+
+        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
+        this.observableCustomVerbs.addListener(new ListChangeListener<ObservableCustomVerb>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableCustomVerb> c) {
+                Stream<CustomVerb> tempVerbs = observableCustomVerbs.stream()
+                        .map{verb -> verb.getCustomVerb()}
+                List<CustomVerb> verbs = tempVerbs.collect(Collectors.toList())
+                adventure.setCustomVerbs(verbs)
+            }
+        })
     }
 
     JavaBeanStringProperty introductionProperty() {
@@ -176,6 +175,10 @@ class ObservableAdventure {
 
     JavaBeanStringProperty getTextProperty() {
         this.getText
+    }
+
+    ObservableList<ObservableCustomVerb> getObservableCustomVerbs() {
+        this.observableCustomVerbs
     }
 }
 

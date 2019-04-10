@@ -1,14 +1,13 @@
 package uk.co.rjsoftware.adventure.view.editor.treeitems
 
 import groovy.transform.TypeChecked
+import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.event.Event
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Pane
-import javafx.stage.Stage
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
@@ -29,7 +28,7 @@ abstract class CustomTreeItem {
     // to the domain object (since the JavaBeanProperty.get() method would then return 'null'.
     private AbstractDialogView view
 
-    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
+    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, BorderPane parent, ObservableValue treeItemTextProperty) {
         this.treeItem = treeItem
         this.parent = parent
 
@@ -37,27 +36,22 @@ abstract class CustomTreeItem {
         MenuItem item1 = new MenuItem("Edit...");
         item1.setOnAction(this.&onActionEditMenuItem)
         contextMenu.getItems().addAll(item1);
+
+        if (treeItemTextProperty != null) {
+            treeItemTextProperty.addListener(new javafx.beans.value.ChangeListener<String>() {
+                @Override
+                void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    TreeItem.TreeModificationEvent treeEvent = new TreeItem.TreeModificationEvent(TreeItem.valueChangedEvent(), treeItem);
+                    Event.fireEvent(treeItem, treeEvent);
+                }
+            })
+        }
     }
 
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected onActionEditMenuItem(ActionEvent event) {
-        // toString() is used by the TreeItem to determine the text to display, so
-        // we need to know if the edit dialog will change this
-        final String existingName = toString()
-
         view = createDialogView()
-
         view.show(parent)
-
-        // now check if the tree item text will have changed
-        final String newName = toString()
-        if (!existingName.equals(newName)) {
-            TreeItem.TreeModificationEvent treeEvent = new TreeItem.TreeModificationEvent(TreeItem.valueChangedEvent(), treeItem);
-            Event.fireEvent(treeItem, treeEvent);
-        }
-
-        // fire event that the RoomComponent listens to
-        fireChangeEvent()
     }
 
     abstract AbstractDialogView createDialogView()
@@ -66,16 +60,6 @@ abstract class CustomTreeItem {
 
     ContextMenu getContextMenu() {
         this.contextMenu
-    }
-
-    void addChangeListener(ChangeListener listener) {
-        this.changeListeners.add(listener)
-    }
-
-    private void fireChangeEvent() {
-        for (ChangeListener listener : this.changeListeners) {
-            listener.changed()
-        }
     }
 
 }

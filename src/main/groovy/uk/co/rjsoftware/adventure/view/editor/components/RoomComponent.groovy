@@ -7,7 +7,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.text.Font
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
-import uk.co.rjsoftware.adventure.model.Room
+import uk.co.rjsoftware.adventure.view.editor.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.treeitems.RoomTreeItem
 
 @TypeChecked
@@ -18,9 +18,9 @@ class RoomComponent extends CustomComponent {
 
     private Label name = new Label()
     private Label description = new Label()
-    private Room room
+    private ObservableRoom room
 
-    RoomComponent(Room room, RoomTreeItem roomTreeItem) {
+    RoomComponent(ObservableRoom room, RoomTreeItem roomTreeItem) {
         this.room = room
 
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT)
@@ -35,6 +35,9 @@ class RoomComponent extends CustomComponent {
         this.getChildren().add(name)
         this.getChildren().add(description)
 
+        this.name.textProperty().bind(room.nameProperty())
+        this.description.textProperty().bind(room.descriptionProperty())
+
         // plug in the context menu
         this.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -46,14 +49,6 @@ class RoomComponent extends CustomComponent {
             }
         })
 
-        onChanged()
-
-        roomTreeItem.addChangeListener(this.&onChanged)
-    }
-
-    private void onChanged() {
-        this.name.setText(room.getName())
-        this.description.setText(room.getDescription())
     }
 
 }

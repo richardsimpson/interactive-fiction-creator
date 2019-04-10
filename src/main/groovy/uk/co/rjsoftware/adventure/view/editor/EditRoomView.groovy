@@ -12,7 +12,10 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.util.Callback
-import uk.co.rjsoftware.adventure.model.*
+import uk.co.rjsoftware.adventure.model.Adventure
+import uk.co.rjsoftware.adventure.model.CustomVerb
+import uk.co.rjsoftware.adventure.model.CustomVerbInstance
+import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 
 import java.util.function.Function
@@ -44,14 +47,12 @@ class EditRoomView extends AbstractDialogView {
     @FXML private TableColumn<ObservableItem, String> descriptionColumn
 
     private final Adventure adventure
-    private final Room room
     private final ObservableRoom observableRoom
 
-    EditRoomView(Adventure adventure, Room room) {
+    EditRoomView(Adventure adventure, ObservableRoom observableRoom) {
         super("../editRoom.fxml")
         this.adventure = adventure
-        this.room = room
-        this.observableRoom = new ObservableRoom(room)
+        this.observableRoom = observableRoom
     }
 
     // TODO: Add ability to edit:
@@ -109,36 +110,7 @@ class EditRoomView extends AbstractDialogView {
             }
         })
 
-        final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().values().stream()
-                .map { verbInstance -> new ObservableVerbInstance(verbInstance)}
-                .collect(Collectors.toList())
-        final ObservableList<ObservableVerbInstance> observableCustomVerbInstances = FXCollections.observableList(customVerbInstances)
-
-        verbsTableView.setItems(observableCustomVerbInstances)
-
-        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
-        observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
-            @Override
-            void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
-                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
-                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
-                        new Function<ObservableVerbInstance, UUID>() {
-                            @Override
-                            UUID apply(ObservableVerbInstance verbInstance) {
-                                return verbInstance.getId()
-                            }
-                        },
-                        new Function<ObservableVerbInstance, CustomVerbInstance>() {
-                            @Override
-                            CustomVerbInstance apply(ObservableVerbInstance verbInstance) {
-                                return verbInstance.getVerbInstance()
-                            }
-                        }))
-
-                room.setCustomVerbs(verbs)
-            }
-        })
-
+        verbsTableView.setItems(this.observableRoom.getObservableCustomVerbInstances())
 
 
         // Setup the table view of the items
@@ -148,12 +120,7 @@ class EditRoomView extends AbstractDialogView {
         nameColumn.setCellValueFactory({ cellData -> cellData.getValue().nameProperty()})
         descriptionColumn.setCellValueFactory({ cellData -> cellData.getValue().descriptionProperty()})
 
-        final List<ObservableItem> items = room.getItems().values().stream()
-                .map { item -> new ObservableItem(item)}
-        .collect(Collectors.toList())
-        final ObservableList<ObservableItem> observableItems = FXCollections.observableList(items)
-
-        itemsTableView.setItems(observableItems)
+        itemsTableView.setItems(this.observableRoom.getObservableItems())
 
 
         // wire up the remaining buttons
@@ -214,11 +181,48 @@ class ObservableRoom {
     private final Room room
     private final JavaBeanStringProperty name
     private final JavaBeanStringProperty description
+    private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
+    private final ObservableList<ObservableItem> observableItems
 
     ObservableRoom(Room room) {
         this.room = room
         this.name = new JavaBeanStringPropertyBuilder().bean(room).name("name").build();
         this.description = new JavaBeanStringPropertyBuilder().bean(room).name("description").build();
+
+        // setup the observableVerbInstance's list
+        final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().values().stream()
+                .map { verbInstance -> new ObservableVerbInstance(verbInstance)}
+                .collect(Collectors.toList())
+        this.observableCustomVerbInstances = FXCollections.observableList(customVerbInstances)
+
+        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
+        observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
+                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
+                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
+                        new Function<ObservableVerbInstance, UUID>() {
+                            @Override
+                            UUID apply(ObservableVerbInstance verbInstance) {
+                                return verbInstance.getId()
+                            }
+                        },
+                        new Function<ObservableVerbInstance, CustomVerbInstance>() {
+                            @Override
+                            CustomVerbInstance apply(ObservableVerbInstance verbInstance) {
+                                return verbInstance.getVerbInstance()
+                            }
+                        }))
+
+                room.setCustomVerbs(verbs)
+            }
+        })
+
+        // setup the observableItem's list
+        final List<ObservableItem> items = room.getItems().values().stream()
+                .map { item -> new ObservableItem(item)}
+                .collect(Collectors.toList())
+        this.observableItems = FXCollections.observableList(items)
     }
 
     JavaBeanStringProperty nameProperty() {
@@ -227,6 +231,14 @@ class ObservableRoom {
 
     JavaBeanStringProperty descriptionProperty() {
         this.description
+    }
+
+    ObservableList<ObservableVerbInstance> getObservableCustomVerbInstances() {
+        this.observableCustomVerbInstances
+    }
+
+    ObservableList<ObservableItem> getObservableItems() {
+        this.observableItems
     }
 }
 

@@ -107,14 +107,16 @@ class EditorAppView extends AbstractDialogView {
         this.adventure = adventure
 
         // add the adventure rooms / items to the treeView
+        final ObservableAdventure observableAdventure = new ObservableAdventure(adventure)
         final TreeItem<CustomTreeItem> root = new TreeItem<>()
-        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, root, editPane)
+        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(observableAdventure, root, editPane)
         root.setValue(adventureTreeItem)
         root.setExpanded(true);
 
         for (Room room : adventure.getRooms()) {
+            final ObservableRoom observableRoom = new ObservableRoom(room)
             final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-            final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, room, treeItem, editPane)
+            final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, observableRoom, treeItem, editPane)
             treeItem.setValue(roomTreeItem)
 
             root.getChildren().add(treeItem)
@@ -154,8 +156,9 @@ class EditorAppView extends AbstractDialogView {
     }
 
     private void populateTreeView(TreeItem<CustomTreeItem> parent, Item item) {
+        final ObservableItem observableItem = new ObservableItem(item)
         final TreeItem<CustomTreeItem> treeItem = new TreeItem<>()
-        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, editPane)
+        final ItemTreeItem itemTreeItem = new ItemTreeItem(observableItem, treeItem, editPane)
         treeItem.setValue(itemTreeItem)
 
         parent.getChildren().add(treeItem)

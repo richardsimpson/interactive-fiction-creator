@@ -10,7 +10,6 @@ import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
-import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 
@@ -52,13 +51,11 @@ class EditItemView extends AbstractDialogView {
     @FXML private TextArea eatMessageTextArea
     @FXML private TextArea onEatScriptTextArea
 
-    private final Item item
     private final ObservableItem observableItem
 
-    EditItemView(Item item) {
+    EditItemView(ObservableItem observableItem) {
         super("../editItem.fxml")
-        this.item = item
-        this.observableItem = new ObservableItem(item)
+        this.observableItem = observableItem
     }
 
     // TODO: Add ability to edit:
