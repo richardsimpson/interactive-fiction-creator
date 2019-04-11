@@ -147,11 +147,10 @@ class EditRoomView extends AbstractDialogView {
     }
 
     private void addItemButtonClick(ActionEvent event) {
-//        final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
-//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
-//        if (editVerbInstanceView.showModal(getStage()) == mrOk) {
-//            this.verbsTableView.getItems().add(newObservableVerbInstance)
-//        }
+        final ObservableItem newObservableItem = new ObservableItem()
+        this.itemsTableView.getItems().add(newObservableItem)
+        this.view = new EditItemView(newObservableItem)
+        this.view.show(this.parent)
     }
 
     private void editItemButtonClick(ActionEvent event) {

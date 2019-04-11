@@ -91,6 +91,10 @@ class ObservableItem implements ObservableDomainObject {
         this.observableItems = FXCollections.observableList(childItems)
     }
 
+    ObservableItem() {
+        this(new Item("New Item"))
+    }
+
     JavaBeanStringProperty nameProperty() {
         this.name
     }

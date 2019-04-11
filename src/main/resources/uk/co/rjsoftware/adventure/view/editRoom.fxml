@@ -52,7 +52,7 @@
                               <TableColumn fx:id="descriptionColumn" prefWidth="480.0" text="Description" />
                            </columns>
                         </TableView>
-                        <Button fx:id="addItemButton" disable="true" layoutX="662.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Add..." />
+                        <Button fx:id="addItemButton" layoutX="662.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Add..." />
                         <Button fx:id="editItemButton" layoutX="662.0" layoutY="41.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Edit..." />
                         <Button fx:id="deleteItemButton" layoutX="662.0" layoutY="75.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Delete" />
                      </children></AnchorPane>

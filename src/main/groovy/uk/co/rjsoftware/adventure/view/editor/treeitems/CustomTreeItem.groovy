@@ -73,6 +73,7 @@ abstract class CustomTreeItem {
                 }
                 for (ObservableDomainObject additem : c.getAddedSubList()) {
                     println "Item Added: " + additem.getTreeItemTextProperty().getValue()
+                    addItem(additem)
                 }
             }
         }
@@ -86,6 +87,14 @@ abstract class CustomTreeItem {
         if (treeItemToRemove != null) {
             treeItem.getChildren().remove(treeItemToRemove)
         }
+    }
+
+    private addItem(ObservableDomainObject item) {
+//        final TreeItem<CustomTreeItem> newTreeItem = new TreeItem<>()
+//        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, editPane)
+//        newTreeItem.setValue(itemTreeItem)
+//
+//        treeItem.getChildren().add(newTreeItem)
     }
 
     // has to be protected, as otherwise the method doesn't get found at runtime
