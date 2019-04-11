@@ -9,6 +9,7 @@ import uk.co.rjsoftware.adventure.view.editor.EditRoomView
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.RoomComponent
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 
 @TypeChecked
@@ -25,6 +26,14 @@ class RoomTreeItem extends CustomTreeItem {
         this.observableRoom = observableRoom
         this.component = new RoomComponent(observableRoom, this)
         this.treeItem = treeItem
+
+        for (ObservableItem observableItem : observableRoom.getObservableItems()) {
+            final TreeItem<CustomTreeItem> childTreeItem = new TreeItem<>()
+            final ItemTreeItem itemTreeItem = new ItemTreeItem(observableItem, childTreeItem, parent)
+            childTreeItem.setValue(itemTreeItem)
+
+            treeItem.getChildren().add(childTreeItem)
+        }
     }
 
     @Override

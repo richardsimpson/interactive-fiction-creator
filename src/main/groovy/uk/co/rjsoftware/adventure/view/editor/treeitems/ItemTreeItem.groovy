@@ -20,6 +20,14 @@ class ItemTreeItem extends CustomTreeItem {
         super(treeItem, parent, observableItem)
         this.observableItem = observableItem
         component = new ItemComponent(observableItem)
+
+        for (ObservableItem childObservableItem : observableItem.getObservableItems()) {
+            final TreeItem<CustomTreeItem> childTreeItem = new TreeItem<>()
+            final ItemTreeItem itemTreeItem = new ItemTreeItem(childObservableItem, childTreeItem, parent)
+            childTreeItem.setValue(itemTreeItem)
+
+            treeItem.getChildren().add(childTreeItem)
+        }
     }
 
     @Override
