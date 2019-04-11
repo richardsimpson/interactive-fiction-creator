@@ -1,27 +1,17 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.adapter.JavaBeanStringProperty
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
-import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
-import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.util.Callback
-import uk.co.rjsoftware.adventure.model.Adventure
-import uk.co.rjsoftware.adventure.model.CustomVerb
-import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
-
-import java.util.stream.Collectors
-import java.util.stream.Stream
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableCustomVerb
 
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
@@ -123,153 +113,6 @@ class EditAdventureView extends AbstractDialogView {
 
     private void deleteButtonClick(ActionEvent event) {
         this.verbsTableView.getItems().remove(this.verbsTableView.getSelectionModel().getSelectedIndex())
-    }
-
-}
-
-@TypeChecked
-class ObservableAdventure {
-
-    private final Adventure adventure
-    private final JavaBeanStringProperty introduction
-    private final JavaBeanStringProperty title
-    private final JavaBeanStringProperty waitText
-    private final JavaBeanStringProperty getText
-    private final ObservableList<ObservableCustomVerb> observableCustomVerbs
-    private final ObservableList<ObservableRoom> observableRooms
-
-    ObservableAdventure(Adventure adventure) {
-        this.adventure = adventure
-        this.introduction = new JavaBeanStringPropertyBuilder().bean(adventure).name("introduction").build();
-        this.title = new JavaBeanStringPropertyBuilder().bean(adventure).name("title").build();
-        this.waitText = new JavaBeanStringPropertyBuilder().bean(adventure).name("waitText").build();
-        this.getText = new JavaBeanStringPropertyBuilder().bean(adventure).name("getText").build();
-
-        // setup the observableCustomVerb's list
-        final List<ObservableCustomVerb> customVerbs = adventure.getCustomVerbs().stream()
-                .map { verb -> new ObservableCustomVerb(verb)}
-                .collect(Collectors.toList())
-        this.observableCustomVerbs = FXCollections.observableList(customVerbs)
-
-        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
-        this.observableCustomVerbs.addListener(new ListChangeListener<ObservableCustomVerb>() {
-            @Override
-            void onChanged(ListChangeListener.Change<? extends ObservableCustomVerb> c) {
-                List<CustomVerb> tempVerbs = observableCustomVerbs.stream()
-                        .map{verb -> verb.getCustomVerb()}
-                        .collect(Collectors.toList())
-                adventure.setCustomVerbs(tempVerbs)
-            }
-        })
-
-        // setup the observableRoom's list
-        final List<ObservableRoom> rooms = adventure.getRooms().stream()
-                .map { room -> new ObservableRoom(room)}
-                .collect(Collectors.toList())
-        this.observableRooms = FXCollections.observableList(rooms)
-
-        // listen to changes in the observableList of rooms, so that we can update the original items in the adventure
-        this.observableRooms.addListener(new ListChangeListener<ObservableRoom>() {
-            @Override
-            void onChanged(ListChangeListener.Change<? extends ObservableRoom> c) {
-                List<Room> tempRooms = observableRooms.stream()
-                        .map{room -> room.getRoom()}
-                        .collect(Collectors.toList())
-                adventure.setRooms(tempRooms)
-            }
-        })
-
-    }
-
-    JavaBeanStringProperty introductionProperty() {
-        this.introduction
-    }
-
-    JavaBeanStringProperty titleProperty() {
-        this.title
-    }
-
-    JavaBeanStringProperty waitTextProperty() {
-        this.waitText
-    }
-
-    JavaBeanStringProperty getTextProperty() {
-        this.getText
-    }
-
-    ObservableList<ObservableCustomVerb> getObservableCustomVerbs() {
-        this.observableCustomVerbs
-    }
-
-    ObservableList<ObservableRoom> getObservableRooms() {
-        this.observableRooms
-    }
-}
-
-@TypeChecked
-class ObservableCustomVerb {
-    private final JavaBeanStringProperty name
-    private final JavaBeanStringProperty displayName
-    private final SimpleStringProperty displayedSynonyms
-    private final ObservableList<String> synonyms
-
-    private final CustomVerb customVerb
-
-    ObservableCustomVerb(CustomVerb customVerb) {
-        this.name = new JavaBeanStringPropertyBuilder().bean(customVerb).name("name").build();
-        this.displayName = new JavaBeanStringPropertyBuilder().bean(customVerb).name("displayName").build();
-        this.displayedSynonyms = new SimpleStringProperty(customVerb.getSynonyms().toListString())
-        this.synonyms = FXCollections.observableList(customVerb.getSynonyms())
-
-        this.customVerb = customVerb
-    }
-
-    ObservableCustomVerb() {
-        this(new CustomVerb("", "", ""))
-    }
-
-    CustomVerb getCustomVerb() {
-        this.customVerb
-    }
-
-    String getName() {
-        this.name.get()
-    }
-
-    JavaBeanStringProperty nameProperty() {
-        this.name
-    }
-
-    void setName(String name) {
-        this.name.set(name)
-    }
-
-    String getDisplayName() {
-        this.displayName.get()
-    }
-
-    JavaBeanStringProperty displayNameProperty() {
-        this.displayName
-    }
-
-    void setDisplayName(String displayName) {
-        this.displayName.set(displayName)
-    }
-
-    SimpleStringProperty displayedSynonymsProperty() {
-        this.displayedSynonyms
-    }
-
-    ObservableList<String> getSynonyms() {
-        FXCollections.observableArrayList(this.customVerb.getSynonyms())
-    }
-
-    void setSynonyms(ObservableList<String> synonyms) {
-        if (this.synonyms != synonyms) {
-            this.synonyms.setAll(synonyms)
-        }
-        this.displayedSynonyms.set(synonyms.toListString())
-        this.customVerb.setSynonyms(synonyms)
     }
 
 }

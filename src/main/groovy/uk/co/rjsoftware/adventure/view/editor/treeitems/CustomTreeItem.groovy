@@ -2,6 +2,7 @@ package uk.co.rjsoftware.adventure.view.editor.treeitems
 
 import groovy.transform.TypeChecked
 import javafx.beans.value.ObservableValue
+import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.event.Event
 import javafx.scene.control.ContextMenu
@@ -11,6 +12,7 @@ import javafx.scene.layout.BorderPane
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.ChangeListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
 
 @TypeChecked
 abstract class CustomTreeItem {
@@ -28,7 +30,7 @@ abstract class CustomTreeItem {
     // to the domain object (since the JavaBeanProperty.get() method would then return 'null'.
     private AbstractDialogView view
 
-    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, BorderPane parent, ObservableValue treeItemTextProperty) {
+    CustomTreeItem(TreeItem<CustomTreeItem> treeItem, BorderPane parent, ObservableDomainObject observableDomainObject) {
         this.treeItem = treeItem
         this.parent = parent
 
@@ -37,14 +39,52 @@ abstract class CustomTreeItem {
         item1.setOnAction(this.&onActionEditMenuItem)
         contextMenu.getItems().addAll(item1);
 
-        if (treeItemTextProperty != null) {
-            treeItemTextProperty.addListener(new javafx.beans.value.ChangeListener<String>() {
+        if (observableDomainObject.getTreeItemTextProperty() != null) {
+            observableDomainObject.getTreeItemTextProperty().addListener(new javafx.beans.value.ChangeListener<String>() {
                 @Override
                 void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                     TreeItem.TreeModificationEvent treeEvent = new TreeItem.TreeModificationEvent(TreeItem.valueChangedEvent(), treeItem);
                     Event.fireEvent(treeItem, treeEvent);
                 }
             })
+        }
+
+        observableDomainObject.getObservableTreeItemChildren().addListener(new ListChangeListener<ObservableDomainObject>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableDomainObject> c) {
+                listOnChanged(c)
+            }
+        })
+    }
+
+    private void listOnChanged(ListChangeListener.Change<? extends ObservableDomainObject> c) {
+        while (c.next()) {
+            if (c.wasPermutated()) {
+                println "Item list permutated from " + c.getFrom() + " to " + c.getTo() + "."
+                for (int i = c.getFrom(); i < c.getTo(); ++i) {
+                    //permutate
+                }
+            } else if (c.wasUpdated()) {
+                println "Item list updated from " + c.getFrom() + " to " + c.getTo() + "."
+            } else {
+                for (ObservableDomainObject remitem : c.getRemoved()) {
+                    println "Item removed: " + remitem.getTreeItemTextProperty().getValue()
+                    removeItem(remitem)
+                }
+                for (ObservableDomainObject additem : c.getAddedSubList()) {
+                    println "Item Added: " + additem.getTreeItemTextProperty().getValue()
+                }
+            }
+        }
+    }
+
+    private removeItem(ObservableDomainObject item) {
+        final TreeItem<CustomTreeItem> treeItemToRemove = treeItem.getChildren().find {
+            it.getValue().getObservableDomainObject() == item
+        }
+
+        if (treeItemToRemove != null) {
+            treeItem.getChildren().remove(treeItemToRemove)
         }
     }
 
@@ -66,4 +106,5 @@ abstract class CustomTreeItem {
         this.parent
     }
 
+    abstract ObservableDomainObject getObservableDomainObject()
 }

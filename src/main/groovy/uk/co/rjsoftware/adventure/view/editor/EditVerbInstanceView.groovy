@@ -9,6 +9,7 @@ import javafx.util.StringConverter
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableVerbInstance
 
 @TypeChecked
 class EditVerbInstanceView extends AbstractEditDomainObjectDialogView {

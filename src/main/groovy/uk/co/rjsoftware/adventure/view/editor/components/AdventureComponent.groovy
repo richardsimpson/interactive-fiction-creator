@@ -2,7 +2,7 @@ package uk.co.rjsoftware.adventure.view.editor.components
 
 import groovy.transform.TypeChecked
 import javafx.scene.control.Button
-import uk.co.rjsoftware.adventure.view.editor.ObservableAdventure
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
 
 @TypeChecked
 class AdventureComponent extends CustomComponent {

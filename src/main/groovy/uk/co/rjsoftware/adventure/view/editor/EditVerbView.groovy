@@ -9,6 +9,7 @@ import javafx.scene.control.ListView
 import javafx.scene.control.TextField
 import javafx.scene.control.cell.TextFieldListCell
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableCustomVerb
 
 @TypeChecked
 class EditVerbView extends AbstractEditDomainObjectDialogView {

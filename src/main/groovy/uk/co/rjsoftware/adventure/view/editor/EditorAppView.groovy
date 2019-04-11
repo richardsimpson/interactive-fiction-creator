@@ -14,13 +14,14 @@ import javafx.scene.layout.Pane
 import javafx.scene.text.Text
 import javafx.stage.FileChooser
 import uk.co.rjsoftware.adventure.model.Adventure
-import uk.co.rjsoftware.adventure.model.Item
-import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.ResizeComponent
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.treeitems.AdventureTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.CustomTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.ItemTreeItem

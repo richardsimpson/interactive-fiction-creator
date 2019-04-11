@@ -5,9 +5,10 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.BorderPane
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.EditItemView
-import uk.co.rjsoftware.adventure.view.editor.ObservableItem
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.ItemComponent
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 
 @TypeChecked
 class ItemTreeItem extends CustomTreeItem {
@@ -16,7 +17,7 @@ class ItemTreeItem extends CustomTreeItem {
     private final ItemComponent component
 
     ItemTreeItem(ObservableItem observableItem, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
-        super(treeItem, parent, observableItem.nameProperty())
+        super(treeItem, parent, observableItem)
         this.observableItem = observableItem
         component = new ItemComponent(observableItem)
     }
@@ -27,13 +28,17 @@ class ItemTreeItem extends CustomTreeItem {
     }
 
     CustomComponent getComponent() {
-        return component
+        this.component
     }
 
     // toString() is used by the TreeItem to determine th text to display
     @Override
     String toString() {
-        return observableItem.nameProperty().getValue()
+        this.observableItem.nameProperty().getValue()
     }
 
+
+    ObservableDomainObject getObservableDomainObject() {
+        this.observableItem
+    }
 }

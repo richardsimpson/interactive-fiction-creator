@@ -1,13 +1,6 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
-import javafx.beans.property.adapter.JavaBeanObjectProperty
-import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
-import javafx.beans.property.adapter.JavaBeanStringProperty
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
-import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
-import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -15,13 +8,13 @@ import javafx.scene.layout.BorderPane
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
-import uk.co.rjsoftware.adventure.model.CustomVerbInstance
-import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableVerbInstance
 
 import java.util.function.Function
 import java.util.stream.Collectors
-import java.util.stream.Stream
 
 import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
@@ -167,124 +160,7 @@ class EditRoomView extends AbstractDialogView {
     }
 
     private void deleteItemButtonClick(ActionEvent event) {
-//        this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
-    }
-
-}
-
-@TypeChecked
-class ObservableRoom {
-
-    private final Room room
-    private final JavaBeanStringProperty name
-    private final JavaBeanStringProperty description
-    private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
-    private final ObservableList<ObservableItem> observableItems
-
-    ObservableRoom(Room room) {
-        this.room = room
-        this.name = new JavaBeanStringPropertyBuilder().bean(room).name("name").build();
-        this.description = new JavaBeanStringPropertyBuilder().bean(room).name("description").build();
-
-        // setup the observableVerbInstance's list
-        final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().values().stream()
-                .map { verbInstance -> new ObservableVerbInstance(verbInstance)}
-                .collect(Collectors.toList())
-        this.observableCustomVerbInstances = FXCollections.observableList(customVerbInstances)
-
-        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
-        observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
-            @Override
-            void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
-                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
-                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
-                        new Function<ObservableVerbInstance, UUID>() {
-                            @Override
-                            UUID apply(ObservableVerbInstance verbInstance) {
-                                return verbInstance.getId()
-                            }
-                        },
-                        new Function<ObservableVerbInstance, CustomVerbInstance>() {
-                            @Override
-                            CustomVerbInstance apply(ObservableVerbInstance verbInstance) {
-                                return verbInstance.getVerbInstance()
-                            }
-                        }))
-
-                room.setCustomVerbs(verbs)
-            }
-        })
-
-        // setup the observableItem's list
-        final List<ObservableItem> items = room.getItems().values().stream()
-                .map { item -> new ObservableItem(item)}
-                .collect(Collectors.toList())
-        this.observableItems = FXCollections.observableList(items)
-    }
-
-    JavaBeanStringProperty nameProperty() {
-        this.name
-    }
-
-    JavaBeanStringProperty descriptionProperty() {
-        this.description
-    }
-
-    ObservableList<ObservableVerbInstance> getObservableCustomVerbInstances() {
-        this.observableCustomVerbInstances
-    }
-
-    ObservableList<ObservableItem> getObservableItems() {
-        this.observableItems
-    }
-
-    Room getRoom() {
-        this.room
-    }
-}
-
-@TypeChecked
-class ObservableVerbInstance {
-    private final CustomVerbInstance verbInstance
-    private final JavaBeanObjectProperty<UUID> id
-    private final JavaBeanStringProperty script
-
-    ObservableVerbInstance(CustomVerbInstance verbInstance) {
-        this.verbInstance = verbInstance
-        this.id = new JavaBeanObjectPropertyBuilder().bean(verbInstance).name("id").build()
-        this.script = new JavaBeanStringPropertyBuilder().bean(verbInstance).name("script").build();
-    }
-
-    ObservableVerbInstance() {
-        this(new CustomVerbInstance(null))
-    }
-
-    CustomVerbInstance getVerbInstance() {
-        this.verbInstance
-    }
-
-    UUID getId() {
-        this.id.get()
-    }
-
-    JavaBeanObjectProperty<UUID> idProperty() {
-        this.id
-    }
-
-    void setId(UUID id) {
-        this.id.set(id)
-    }
-
-    String getScript() {
-        this.script.get()
-    }
-
-    JavaBeanStringProperty scriptProperty() {
-        this.script
-    }
-
-    void setScript(String script) {
-        this.script.set(script)
+        this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
     }
 
 }
