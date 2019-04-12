@@ -41,6 +41,10 @@ class EditAdventureView extends AbstractDialogView {
 
     }
 
+    // TODO: Add ability to edit:
+    //       rooms
+    //       player
+
     protected void onShow() {
         this.titleTextField.textProperty().bindBidirectional(this.observableAdventure.titleProperty())
         this.introductionTextArea.textProperty().bindBidirectional(this.observableAdventure.introductionProperty())
