@@ -54,7 +54,6 @@ class EditRoomView extends AbstractDialogView {
 
     // TODO: Add ability to edit:
     //       exits
-    //       items
     //       descriptionScript
     //       beforeEnterRoomScript
     //       afterEnterRoomScript
