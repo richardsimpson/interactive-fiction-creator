@@ -16,21 +16,24 @@ import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 @TypeChecked
 class AdventureTreeItem extends CustomTreeItem {
 
+    private final Adventure adventure
     private final ObservableAdventure observableAdventure
     private final AdventureComponent component
 
     AdventureTreeItem(Adventure adventure, ObservableAdventure observableAdventure, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         super(treeItem, parent, observableAdventure)
+        this.adventure = adventure
         this.observableAdventure = observableAdventure
         this.component = new AdventureComponent(observableAdventure)
 
         for (ObservableRoom observableRoom : observableAdventure.getObservableRooms()) {
-            final TreeItem<CustomTreeItem> childTreeItem = new TreeItem<>()
-            final RoomTreeItem roomTreeItem = new RoomTreeItem(adventure, observableRoom, childTreeItem, parent)
-            childTreeItem.setValue(roomTreeItem)
-
-            treeItem.getChildren().add(childTreeItem)
+            addItem(observableRoom)
         }
+    }
+
+    @Override
+    protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
+        new RoomTreeItem(adventure, (ObservableRoom)item, treeItem, getParentForView())
     }
 
     @Override

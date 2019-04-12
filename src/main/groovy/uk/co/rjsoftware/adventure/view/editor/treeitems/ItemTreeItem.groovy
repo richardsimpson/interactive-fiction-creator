@@ -22,12 +22,13 @@ class ItemTreeItem extends CustomTreeItem {
         component = new ItemComponent(observableItem)
 
         for (ObservableItem childObservableItem : observableItem.getObservableItems()) {
-            final TreeItem<CustomTreeItem> childTreeItem = new TreeItem<>()
-            final ItemTreeItem itemTreeItem = new ItemTreeItem(childObservableItem, childTreeItem, parent)
-            childTreeItem.setValue(itemTreeItem)
-
-            treeItem.getChildren().add(childTreeItem)
+            addItem(childObservableItem)
         }
+    }
+
+    @Override
+    protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
+        new ItemTreeItem((ObservableItem)item, treeItem, getParentForView())
     }
 
     @Override

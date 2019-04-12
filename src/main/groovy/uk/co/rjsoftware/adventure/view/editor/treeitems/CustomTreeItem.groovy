@@ -89,13 +89,15 @@ abstract class CustomTreeItem {
         }
     }
 
-    private addItem(ObservableDomainObject item) {
-//        final TreeItem<CustomTreeItem> newTreeItem = new TreeItem<>()
-//        final ItemTreeItem itemTreeItem = new ItemTreeItem(item, treeItem, editPane)
-//        newTreeItem.setValue(itemTreeItem)
-//
-//        treeItem.getChildren().add(newTreeItem)
+    protected addItem(ObservableDomainObject item) {
+        final TreeItem<CustomTreeItem> newTreeItem = new TreeItem<>()
+        final CustomTreeItem customTreeItem = createChildCustomTreeItem(item, newTreeItem)
+        newTreeItem.setValue(customTreeItem)
+
+        treeItem.getChildren().add(newTreeItem)
     }
+
+    abstract protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem)
 
     // has to be protected, as otherwise the method doesn't get found at runtime
     protected onActionEditMenuItem(ActionEvent event) {

@@ -28,12 +28,13 @@ class RoomTreeItem extends CustomTreeItem {
         this.treeItem = treeItem
 
         for (ObservableItem observableItem : observableRoom.getObservableItems()) {
-            final TreeItem<CustomTreeItem> childTreeItem = new TreeItem<>()
-            final ItemTreeItem itemTreeItem = new ItemTreeItem(observableItem, childTreeItem, parent)
-            childTreeItem.setValue(itemTreeItem)
-
-            treeItem.getChildren().add(childTreeItem)
+            addItem(observableItem)
         }
+    }
+
+    @Override
+    protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
+        new ItemTreeItem((ObservableItem)item, treeItem, getParentForView())
     }
 
     @Override
