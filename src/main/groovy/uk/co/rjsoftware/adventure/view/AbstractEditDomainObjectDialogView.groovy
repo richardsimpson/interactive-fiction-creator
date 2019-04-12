@@ -45,7 +45,7 @@ abstract class AbstractEditDomainObjectDialogView extends AbstractDialogView {
         modalResult = mrOk
     }
 
-    abstract void doSave()
+    abstract protected void doSave()
 
     void addChangeListener(ChangeListener listener) {
         this.changeListeners.add(listener)

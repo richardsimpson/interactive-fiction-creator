@@ -53,7 +53,7 @@ class EditVerbInstanceView extends AbstractEditDomainObjectDialogView {
         }
     }
 
-    void doSave() {
+    protected void doSave() {
         this.verbInstance.setId(this.verbComboBox.getSelectionModel().getSelectedItem().getId())
         this.verbInstance.setScript(this.scriptTextArea.getText())
     }

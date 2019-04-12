@@ -37,7 +37,7 @@ class AdventureTreeItem extends CustomTreeItem {
     }
 
     @Override
-    AbstractDialogView createDialogView() {
+    protected AbstractDialogView createDialogView() {
         new EditAdventureView(observableAdventure)
     }
 
@@ -52,7 +52,7 @@ class AdventureTreeItem extends CustomTreeItem {
     }
 
     @Override
-    ObservableDomainObject getObservableDomainObject() {
+    protected ObservableDomainObject getObservableDomainObject() {
         this.observableAdventure
     }
 

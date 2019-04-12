@@ -32,7 +32,7 @@ class ItemTreeItem extends CustomTreeItem {
     }
 
     @Override
-    AbstractDialogView createDialogView() {
+    protected AbstractDialogView createDialogView() {
         new EditItemView(observableItem)
     }
 
@@ -47,7 +47,7 @@ class ItemTreeItem extends CustomTreeItem {
     }
 
 
-    ObservableDomainObject getObservableDomainObject() {
+    protected ObservableDomainObject getObservableDomainObject() {
         this.observableItem
     }
 }

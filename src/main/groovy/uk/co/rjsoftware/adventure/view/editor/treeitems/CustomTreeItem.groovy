@@ -105,7 +105,7 @@ abstract class CustomTreeItem {
         view.show(parent)
     }
 
-    abstract AbstractDialogView createDialogView()
+    abstract protected AbstractDialogView createDialogView()
 
     abstract CustomComponent getComponent()
 
@@ -117,5 +117,5 @@ abstract class CustomTreeItem {
         this.parent
     }
 
-    abstract ObservableDomainObject getObservableDomainObject()
+    abstract protected ObservableDomainObject getObservableDomainObject()
 }

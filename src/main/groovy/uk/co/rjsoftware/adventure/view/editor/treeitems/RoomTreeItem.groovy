@@ -38,7 +38,7 @@ class RoomTreeItem extends CustomTreeItem {
     }
 
     @Override
-    AbstractDialogView createDialogView() {
+    protected AbstractDialogView createDialogView() {
         new EditRoomView(adventure, observableRoom, getParentForView())
     }
 
@@ -53,7 +53,7 @@ class RoomTreeItem extends CustomTreeItem {
     }
 
     @Override
-    ObservableDomainObject getObservableDomainObject() {
+    protected ObservableDomainObject getObservableDomainObject() {
         this.observableRoom
     }
 }

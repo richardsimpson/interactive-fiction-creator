@@ -60,7 +60,7 @@ class EditVerbView extends AbstractEditDomainObjectDialogView {
         this.synonymsListView.getItems().remove(this.synonymsListView.getSelectionModel().getSelectedIndex())
     }
 
-    void doSave() {
+    protected void doSave() {
         this.customVerb.setName(this.nameTextField.getText())
         this.customVerb.setDisplayName(this.displayNameTextField.getText())
         this.customVerb.setSynonyms(this.synonymsListView.getItems())
