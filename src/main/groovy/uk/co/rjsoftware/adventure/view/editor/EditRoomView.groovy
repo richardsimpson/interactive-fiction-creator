@@ -47,6 +47,12 @@ class EditRoomView extends AbstractDialogView {
     @FXML private TableColumn<ObservableItem, String> nameColumn
     @FXML private TableColumn<ObservableItem, String> descriptionColumn
 
+    @FXML private TextArea beforeEnterRoomScriptTextArea
+    @FXML private TextArea afterEnterRoomScriptTextArea
+    @FXML private TextArea afterLeaveRoomScriptTextArea
+    @FXML private TextArea beforeEnterRoomFirstTimeScriptTextArea
+    @FXML private TextArea afterEnterRoomFirstTimeScriptTextArea
+
     private AbstractDialogView view
     private BorderPane parent
     private final Adventure adventure
@@ -61,11 +67,6 @@ class EditRoomView extends AbstractDialogView {
 
     // TODO: Add ability to edit:
     //       exits
-    //       beforeEnterRoomScript
-    //       afterEnterRoomScript
-    //       afterLeaveRoomScript
-    //       beforeEnterRoomFirstTimeScript
-    //       afterEnterRoomFirstTimeScript
 
     private descriptionScriptEnabledOnChange(boolean newValue) {
         if (newValue) {
@@ -149,6 +150,11 @@ class EditRoomView extends AbstractDialogView {
 
         itemsTableView.setItems(this.observableRoom.getObservableItems())
 
+        beforeEnterRoomScriptTextArea.textProperty().bindBidirectional(this.observableRoom.beforeEnterRoomScriptProperty())
+        afterEnterRoomScriptTextArea.textProperty().bindBidirectional(this.observableRoom.afterEnterRoomScriptProperty())
+        afterLeaveRoomScriptTextArea.textProperty().bindBidirectional(this.observableRoom.afterLeaveRoomScriptProperty())
+        beforeEnterRoomFirstTimeScriptTextArea.textProperty().bindBidirectional(this.observableRoom.beforeEnterRoomFirstTimeScriptProperty())
+        afterEnterRoomFirstTimeScriptTextArea.textProperty().bindBidirectional(this.observableRoom.afterEnterRoomFirstTimeScriptProperty())
 
         // wire up the remaining buttons
         addVerbButton.setOnAction(this.&addVerbButtonClick)

@@ -70,6 +70,24 @@
                      </children></AnchorPane>
               </content>
             </Tab>
+            <Tab text="Scripts">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="6.0" layoutY="6.0" text="Script To Run Before Entering Room:" />
+                        <TextArea fx:id="beforeEnterRoomScriptTextArea" layoutX="6.0" layoutY="23.0" prefHeight="74.0" prefWidth="724.0" />
+                        <Label layoutX="6.0" layoutY="104.0" text="Script To Run After Entering Room:" />
+                        <TextArea fx:id="afterEnterRoomScriptTextArea" layoutX="7.0" layoutY="121.0" prefHeight="74.0" prefWidth="724.0" />
+                        <Label layoutX="6.0" layoutY="300.0" text="Script To Run Before Entering Room For First Time:" />
+                        <TextArea fx:id="beforeEnterRoomFirstTimeScriptTextArea" layoutX="7.0" layoutY="317.0" prefHeight="74.0" prefWidth="724.0" />
+                        <Label layoutX="6.0" layoutY="398.0" text="Script To Run After Entering Room For First Time:" />
+                        <TextArea fx:id="afterEnterRoomFirstTimeScriptTextArea" layoutX="6.0" layoutY="415.0" prefHeight="74.0" prefWidth="724.0" />
+                        <Label layoutX="6.0" layoutY="202.0" text="Script To Run After Leaving Room:" />
+                        <TextArea fx:id="afterLeaveRoomScriptTextArea" layoutX="6.0" layoutY="219.0" prefHeight="74.0" prefWidth="724.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
    </children>

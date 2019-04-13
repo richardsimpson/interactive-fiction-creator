@@ -23,6 +23,11 @@ class ObservableRoom implements ObservableDomainObject {
     private final JavaBeanStringProperty description
     private final JavaBeanStringProperty descriptionScript
     private final JavaBeanBooleanProperty descriptionScriptEnabled
+    private final JavaBeanStringProperty beforeEnterRoomScript
+    private final JavaBeanStringProperty afterEnterRoomScript
+    private final JavaBeanStringProperty afterLeaveRoomScript
+    private final JavaBeanStringProperty beforeEnterRoomFirstTimeScript
+    private final JavaBeanStringProperty afterEnterRoomFirstTimeScript
     private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
     private final ObservableList<ObservableItem> observableItems
 
@@ -32,6 +37,11 @@ class ObservableRoom implements ObservableDomainObject {
         this.description = new JavaBeanStringPropertyBuilder().bean(room).name("description").build();
         this.descriptionScript = new JavaBeanStringPropertyBuilder().bean(room).name("descriptionScript").build();
         this.descriptionScriptEnabled = new JavaBeanBooleanPropertyBuilder().bean(room).name("descriptionScriptEnabled").build();
+        this.beforeEnterRoomScript = new JavaBeanStringPropertyBuilder().bean(room).name("beforeEnterRoomScript").build();
+        this.afterEnterRoomScript = new JavaBeanStringPropertyBuilder().bean(room).name("afterEnterRoomScript").build();
+        this.afterLeaveRoomScript = new JavaBeanStringPropertyBuilder().bean(room).name("afterLeaveRoomScript").build();
+        this.beforeEnterRoomFirstTimeScript = new JavaBeanStringPropertyBuilder().bean(room).name("beforeEnterRoomFirstTimeScript").build();
+        this.afterEnterRoomFirstTimeScript = new JavaBeanStringPropertyBuilder().bean(room).name("afterEnterRoomFirstTimeScript").build();
 
         // setup the observableVerbInstance's list
         final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().values().stream()
@@ -79,6 +89,26 @@ class ObservableRoom implements ObservableDomainObject {
 
     JavaBeanStringProperty descriptionScriptProperty() {
         this.descriptionScript
+    }
+
+    JavaBeanStringProperty beforeEnterRoomScriptProperty() {
+        this.beforeEnterRoomScript
+    }
+
+    JavaBeanStringProperty afterEnterRoomScriptProperty() {
+        this.afterEnterRoomScript
+    }
+
+    JavaBeanStringProperty afterLeaveRoomScriptProperty() {
+        this.afterLeaveRoomScript
+    }
+
+    JavaBeanStringProperty beforeEnterRoomFirstTimeScriptProperty() {
+        this.beforeEnterRoomFirstTimeScript
+    }
+
+    JavaBeanStringProperty afterEnterRoomFirstTimeScriptProperty() {
+        this.afterEnterRoomFirstTimeScript
     }
 
     JavaBeanBooleanProperty descriptionScriptEnabledProperty() {
