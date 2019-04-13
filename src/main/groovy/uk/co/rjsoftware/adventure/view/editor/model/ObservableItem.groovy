@@ -3,10 +3,13 @@ package uk.co.rjsoftware.adventure.view.editor.model
 import groovy.transform.TypeChecked
 import javafx.beans.property.adapter.JavaBeanBooleanProperty
 import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder
+import javafx.beans.property.adapter.JavaBeanObjectProperty
+import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanStringProperty
 import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import uk.co.rjsoftware.adventure.model.ContentVisibility
 import uk.co.rjsoftware.adventure.model.Item
 
 import java.util.stream.Collectors
@@ -39,7 +42,7 @@ class ObservableItem implements ObservableDomainObject {
     private final JavaBeanBooleanProperty openable
     private final JavaBeanBooleanProperty closeable
     private final JavaBeanBooleanProperty open
-//        this.contentVisibilityComboBox.setSelected(item.getContentVisibility())
+    private final JavaBeanObjectProperty<ContentVisibility> contentVisibility
     private final JavaBeanStringProperty openMessage
     private final JavaBeanStringProperty closeMessage
     private final JavaBeanStringProperty onOpenScript
@@ -78,7 +81,7 @@ class ObservableItem implements ObservableDomainObject {
         openable = new JavaBeanBooleanPropertyBuilder().bean(item).name("openable").build();
         closeable = new JavaBeanBooleanPropertyBuilder().bean(item).name("closeable").build();
         open = new JavaBeanBooleanPropertyBuilder().bean(item).name("open").build();
-//        this.contentVisibilityComboBox.setSelected(item.getContentVisibility())
+        contentVisibility = new JavaBeanObjectPropertyBuilder().bean(item).name("contentVisibility").build()
         openMessage = new JavaBeanStringPropertyBuilder().bean(item).name("openMessage").build();
         closeMessage = new JavaBeanStringPropertyBuilder().bean(item).name("closeMessage").build();
         onOpenScript = new JavaBeanStringPropertyBuilder().bean(item).name("onOpenScript").build();
@@ -158,6 +161,9 @@ class ObservableItem implements ObservableDomainObject {
     }
     JavaBeanBooleanProperty openProperty() {
         this.open
+    }
+    JavaBeanObjectProperty<ContentVisibility> contentVisibilityProperty() {
+        this.contentVisibility
     }
     JavaBeanStringProperty openMessageProperty() {
         this.openMessage

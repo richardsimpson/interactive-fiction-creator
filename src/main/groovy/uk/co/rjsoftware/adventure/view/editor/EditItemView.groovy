@@ -2,12 +2,16 @@ package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
 import javafx.beans.value.ObservableValue
+import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import javafx.scene.layout.AnchorPane
+import javafx.util.StringConverter
+import uk.co.rjsoftware.adventure.model.ContentVisibility
+import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 
@@ -43,7 +47,7 @@ class EditItemView extends AbstractDialogView {
     @FXML private CheckBox openableCheckBox
     @FXML private CheckBox closeableCheckBox
     @FXML private CheckBox openCheckBox
-    @FXML private ComboBox contentVisibilityComboBox
+    @FXML private ComboBox<ContentVisibility> contentVisibilityComboBox
     @FXML private TextArea openMessageTextArea
     @FXML private TextArea closeMessageTextArea
     @FXML private TextArea onOpenScriptTextArea
@@ -64,7 +68,6 @@ class EditItemView extends AbstractDialogView {
     //       verbs
     //       items
     //       synonyms
-    //       contentVisibility (not currently populating the combo box)
 
     private descriptionScriptEnabledOnChange(boolean newValue) {
         if (newValue) {
@@ -117,7 +120,27 @@ class EditItemView extends AbstractDialogView {
         this.openableCheckBox.selectedProperty().bindBidirectional(this.observableItem.openableProperty())
         this.closeableCheckBox.selectedProperty().bindBidirectional(this.observableItem.closeableProperty())
         this.openCheckBox.selectedProperty().bindBidirectional(this.observableItem.openProperty())
-//        this.contentVisibilityComboBox.setSelected(item.getContentVisibility())
+
+        this.contentVisibilityComboBox.setItems(FXCollections.observableArrayList(ContentVisibility.values()))
+
+        this.contentVisibilityComboBox.setConverter(new StringConverter<ContentVisibility>() {
+            @Override
+            public String toString(ContentVisibility verb) {
+                if (verb == null){
+                    return null;
+                } else {
+                    return verb.getFriendlyName();
+                }
+            }
+
+            @Override
+            public ContentVisibility fromString(String name) {
+                return null;
+            }
+        });
+
+        this.contentVisibilityComboBox.valueProperty().bindBidirectional(this.observableItem.contentVisibilityProperty())
+
         this.openMessageTextArea.textProperty().bindBidirectional(this.observableItem.openMessageProperty())
         this.closeMessageTextArea.textProperty().bindBidirectional(this.observableItem.closeMessageProperty())
         this.onOpenScriptTextArea.textProperty().bindBidirectional(this.observableItem.onOpenScriptProperty())
