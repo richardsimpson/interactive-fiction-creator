@@ -56,6 +56,7 @@ adventure {
 
         item ("chest", "large, wooden chest") {
             synonyms "chest"
+            descriptionScriptEnabled true
             descriptionScript """
                 if (isOpen("chest")) {
                     say("The chest was both heavy and open")

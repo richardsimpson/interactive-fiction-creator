@@ -91,6 +91,10 @@ class ObservableRoom implements ObservableDomainObject {
         this.descriptionScript
     }
 
+    JavaBeanBooleanProperty descriptionScriptEnabledProperty() {
+        this.descriptionScriptEnabled
+    }
+
     JavaBeanStringProperty beforeEnterRoomScriptProperty() {
         this.beforeEnterRoomScript
     }
@@ -109,10 +113,6 @@ class ObservableRoom implements ObservableDomainObject {
 
     JavaBeanStringProperty afterEnterRoomFirstTimeScriptProperty() {
         this.afterEnterRoomFirstTimeScript
-    }
-
-    JavaBeanBooleanProperty descriptionScriptEnabledProperty() {
-        this.descriptionScriptEnabled
     }
 
     ObservableList<ObservableVerbInstance> getObservableCustomVerbInstances() {

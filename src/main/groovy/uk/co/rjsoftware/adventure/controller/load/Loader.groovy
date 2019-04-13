@@ -348,6 +348,10 @@ class ItemDelegate {
         this.item.setDescriptionScript(StringUtils.sanitiseString(script))
     }
 
+    private void descriptionScriptEnabled(boolean scriptEnabled) {
+        this.item.setDescriptionScriptEnabled(scriptEnabled)
+    }
+
     private void visible(Boolean visible) {
         this.item.setVisible(visible)
     }

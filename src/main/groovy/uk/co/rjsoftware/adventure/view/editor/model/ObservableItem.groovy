@@ -23,6 +23,8 @@ class ObservableItem implements ObservableDomainObject {
     private final JavaBeanBooleanProperty gettable
     private final JavaBeanBooleanProperty droppable
     private final JavaBeanStringProperty description
+    private final JavaBeanStringProperty descriptionScript
+    private final JavaBeanBooleanProperty descriptionScriptEnabled
     // Features Tab
     private final JavaBeanBooleanProperty switchable
     private final JavaBeanBooleanProperty container
@@ -60,6 +62,8 @@ class ObservableItem implements ObservableDomainObject {
         gettable = new JavaBeanBooleanPropertyBuilder().bean(item).name("gettable").build();
         droppable = new JavaBeanBooleanPropertyBuilder().bean(item).name("droppable").build();
         description = new JavaBeanStringPropertyBuilder().bean(item).name("description").build();
+        descriptionScript = new JavaBeanStringPropertyBuilder().bean(item).name("descriptionScript").build();
+        descriptionScriptEnabled = new JavaBeanBooleanPropertyBuilder().bean(item).name("descriptionScriptEnabled").build();
         // Features Tab
         switchable = new JavaBeanBooleanPropertyBuilder().bean(item).name("switchable").build();
         container = new JavaBeanBooleanPropertyBuilder().bean(item).name("container").build();
@@ -115,6 +119,12 @@ class ObservableItem implements ObservableDomainObject {
     }
     JavaBeanStringProperty descriptionProperty() {
         this.description
+    }
+    JavaBeanStringProperty descriptionScriptProperty() {
+        this.descriptionScript
+    }
+    JavaBeanBooleanProperty descriptionScriptEnabledProperty() {
+        this.descriptionScriptEnabled
     }
     JavaBeanBooleanProperty switchableProperty() {
         this.switchable

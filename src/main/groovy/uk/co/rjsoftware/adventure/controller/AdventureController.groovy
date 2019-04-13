@@ -594,9 +594,8 @@ class AdventureController {
         final Item item = items.get(0)
 
         item.setItemExamined(true)
-        final String script = item.getDescriptionScript()
-        if (script != null) {
-            executeScript(script)
+        if (item.isDescriptionScriptEnabled() && item.getDescriptionScript() != null) {
+            executeScript(item.getDescriptionScript())
         }
         else {
             say(item.getItemDescription())

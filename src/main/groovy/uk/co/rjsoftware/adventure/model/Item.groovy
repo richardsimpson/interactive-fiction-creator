@@ -10,6 +10,7 @@ class Item implements ItemContainer, VerbContainer {
     private final List<String> synonyms = new ArrayList<>()
     private String description
     private String descriptionScript
+    private boolean descriptionScriptEnabled
     private boolean visible = true
     private boolean scenery
     private boolean gettable = true
@@ -70,6 +71,7 @@ class Item implements ItemContainer, VerbContainer {
         final Item itemCopy = new Item(this.name, this.displayName, synonyms, description)
 
         itemCopy.descriptionScript = this.descriptionScript
+        itemCopy.descriptionScriptEnabled = this.descriptionScriptEnabled
         itemCopy.visible = this.visible
         itemCopy.scenery = this.scenery
         itemCopy.gettable = this.gettable
@@ -170,6 +172,14 @@ class Item implements ItemContainer, VerbContainer {
 
     void setDescriptionScript(String script) {
         this.descriptionScript = script
+    }
+
+    boolean isDescriptionScriptEnabled() {
+        this.descriptionScriptEnabled
+    }
+
+    void setDescriptionScriptEnabled(boolean scriptEnabled) {
+        this.descriptionScriptEnabled = scriptEnabled
     }
 
     boolean isVisible() {

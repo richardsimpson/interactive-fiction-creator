@@ -23,12 +23,23 @@
                         <TextField disable="true" layoutX="116.0" layoutY="79.0" />
                         <Label layoutX="18.0" layoutY="19.0" text="Name:" />
                         <Label layoutX="18.0" layoutY="51.0" text="Display Name:" />
-                        <TextArea fx:id="descriptionTextArea" layoutX="21.0" layoutY="200.0" prefHeight="323.0" prefWidth="763.0" />
-                        <Label layoutX="21.0" layoutY="182.0" text="Description:" />
                         <CheckBox fx:id="visibleCheckBox" layoutX="116.0" layoutY="116.0" mnemonicParsing="false" text="Visible" />
                         <CheckBox fx:id="sceneryCheckBox" layoutX="116.0" layoutY="150.0" mnemonicParsing="false" text="Scenery" />
                         <CheckBox fx:id="gettableCheckBox" layoutX="207.0" layoutY="116.0" mnemonicParsing="false" text="Gettable" />
                         <CheckBox fx:id="droppableCheckBox" layoutX="207.0" layoutY="150.0" mnemonicParsing="false" text="Droppable" />
+                        <CheckBox fx:id="descriptionScriptEnabledCheckBox" layoutX="115.0" layoutY="192.0" mnemonicParsing="false" text="Script?" />
+                        <AnchorPane fx:id="descriptionAnchorPane" layoutX="17.0" layoutY="218.0" prefHeight="300.0" prefWidth="766.0">
+                           <children>
+                              <Label text="Description:" />
+                              <TextArea fx:id="descriptionTextArea" layoutX="97.0" prefHeight="266.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="descriptionScriptAnchorPane" layoutX="17.0" layoutY="218.0" prefHeight="300.0" prefWidth="766.0">
+                           <children>
+                              <Label text="Description:" />
+                              <TextArea fx:id="descriptionScriptTextArea" layoutX="97.0" prefHeight="266.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
             </content>

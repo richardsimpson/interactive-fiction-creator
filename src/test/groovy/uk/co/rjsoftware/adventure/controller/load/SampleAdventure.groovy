@@ -82,6 +82,7 @@ adventure {
             say 'roomDescriptionClosure'
         """
         item("itemWithDescriptionClosure") {
+            descriptionScriptEnabled true
             descriptionScript """
                 say 'itemDescriptionClosure'
             """

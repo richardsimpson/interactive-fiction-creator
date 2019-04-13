@@ -1,11 +1,13 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
+import javafx.beans.value.ObservableValue
 import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
+import javafx.scene.layout.AnchorPane
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 
@@ -13,6 +15,9 @@ import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 class EditItemView extends AbstractDialogView {
 
     // General Tab
+    @FXML private CheckBox descriptionScriptEnabledCheckBox
+    @FXML private AnchorPane descriptionAnchorPane
+    @FXML private AnchorPane descriptionScriptAnchorPane
     @FXML private TextField nameTextField
     @FXML private TextField displayNameTextField
     @FXML private CheckBox visibleCheckBox
@@ -20,6 +25,7 @@ class EditItemView extends AbstractDialogView {
     @FXML private CheckBox gettableCheckBox
     @FXML private CheckBox droppableCheckBox
     @FXML private TextArea descriptionTextArea
+    @FXML private TextArea descriptionScriptTextArea
 
     // Features Tab
     @FXML private CheckBox switchableCheckBox
@@ -57,8 +63,19 @@ class EditItemView extends AbstractDialogView {
     // TODO: Add ability to edit:
     //       verbs
     //       items
-    //       descriptionScript
+    //       synonyms
     //       contentVisibility (not currently populating the combo box)
+
+    private descriptionScriptEnabledOnChange(boolean newValue) {
+        if (newValue) {
+            descriptionScriptAnchorPane.setVisible(true)
+            descriptionAnchorPane.setVisible(false)
+        }
+        else {
+            descriptionAnchorPane.setVisible(true)
+            descriptionScriptAnchorPane.setVisible(false)
+        }
+    }
 
     protected void onShow() {
         // General Tab
@@ -68,7 +85,21 @@ class EditItemView extends AbstractDialogView {
         this.sceneryCheckBox.selectedProperty().bindBidirectional(this.observableItem.sceneryProperty())
         this.gettableCheckBox.selectedProperty().bindBidirectional(this.observableItem.gettableProperty())
         this.droppableCheckBox.selectedProperty().bindBidirectional(this.observableItem.droppableProperty())
+
+        this.descriptionScriptEnabledCheckBox.selectedProperty().bindBidirectional(this.observableItem.descriptionScriptEnabledProperty())
         this.descriptionTextArea.textProperty().bindBidirectional(this.observableItem.descriptionProperty())
+        this.descriptionScriptTextArea.textProperty().bindBidirectional(this.observableItem.descriptionScriptProperty())
+
+        // Switch between description and the script anchor panes when the check box is clicked.
+        this.descriptionScriptEnabledCheckBox.selectedProperty().addListener(new javafx.beans.value.ChangeListener<Boolean>() {
+            @Override
+            void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                descriptionScriptEnabledOnChange(newValue)
+            }
+        })
+
+        // setup the anchor panes based on the initial value of the script flag
+        descriptionScriptEnabledOnChange(this.descriptionScriptEnabledCheckBox.isSelected())
 
         // Features Tab
         this.switchableCheckBox.selectedProperty().bindBidirectional(this.observableItem.switchableProperty())

@@ -101,6 +101,7 @@ class LoaderTest {
         final Room roomWithDescriptionClosure = adventure.getRoomByName("roomWithDescriptionClosure")
         final Item itemWithDescriptionClosure = roomWithDescriptionClosure.getItemByName("itemWithDescriptionClosure")
         assertTrue(roomWithDescriptionClosure.isDescriptionScriptEnabled())
+        assertTrue(itemWithDescriptionClosure.isDescriptionScriptEnabled())
         assertEquals("say 'roomDescriptionClosure'", roomWithDescriptionClosure.getDescriptionScript())
         assertEquals("say 'itemDescriptionClosure'", itemWithDescriptionClosure.getDescriptionScript())
 
