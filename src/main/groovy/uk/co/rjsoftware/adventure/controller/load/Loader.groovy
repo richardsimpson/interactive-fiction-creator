@@ -182,6 +182,10 @@ class RoomDelegate {
         this.room.setDescriptionScript(StringUtils.sanitiseString(script))
     }
 
+    private void descriptionScriptEnabled(boolean scriptEnabled) {
+        this.room.setDescriptionScriptEnabled(scriptEnabled)
+    }
+
     private void beforeEnterRoomScript(String script) {
         this.room.setBeforeEnterRoomScript(StringUtils.sanitiseString(script))
     }

@@ -1,9 +1,11 @@
 package uk.co.rjsoftware.adventure.view.editor
 
 import groovy.transform.TypeChecked
+import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.*
+import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.Adventure
@@ -22,7 +24,12 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 class EditRoomView extends AbstractDialogView {
 
     @FXML private TextField nameTextField
+    @FXML private CheckBox descriptionScriptEnabledCheckBox
+    @FXML private AnchorPane descriptionAnchorPane
+    @FXML private AnchorPane descriptionScriptAnchorPane
+
     @FXML private TextArea descriptionTextArea
+    @FXML private TextArea descriptionScriptTextArea
 
     @FXML private TableView<ObservableVerbInstance> verbsTableView
     @FXML private TableColumn<ObservableVerbInstance, UUID> verbColumn
@@ -54,16 +61,40 @@ class EditRoomView extends AbstractDialogView {
 
     // TODO: Add ability to edit:
     //       exits
-    //       descriptionScript
     //       beforeEnterRoomScript
     //       afterEnterRoomScript
     //       afterLeaveRoomScript
     //       beforeEnterRoomFirstTimeScript
     //       afterEnterRoomFirstTimeScript
 
+    private descriptionScriptEnabledOnChange(boolean newValue) {
+        if (newValue) {
+            descriptionScriptAnchorPane.setVisible(true)
+            descriptionAnchorPane.setVisible(false)
+        }
+        else {
+            descriptionAnchorPane.setVisible(true)
+            descriptionScriptAnchorPane.setVisible(false)
+        }
+    }
+
     protected void onShow() {
         this.nameTextField.textProperty().bindBidirectional(this.observableRoom.nameProperty())
+
+        this.descriptionScriptEnabledCheckBox.selectedProperty().bindBidirectional(this.observableRoom.descriptionScriptEnabledProperty())
         this.descriptionTextArea.textProperty().bindBidirectional(this.observableRoom.descriptionProperty())
+        this.descriptionScriptTextArea.textProperty().bindBidirectional(this.observableRoom.descriptionScriptProperty())
+
+        // Switch between description and the script anchor panes when the check box is clicked.
+        this.descriptionScriptEnabledCheckBox.selectedProperty().addListener(new javafx.beans.value.ChangeListener<Boolean>() {
+            @Override
+            void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                descriptionScriptEnabledOnChange(newValue)
+            }
+        })
+
+        // setup the anchor panes based on the initial value of the script flag
+        descriptionScriptEnabledOnChange(this.descriptionScriptEnabledCheckBox.isSelected())
 
         // get a handy map of the adventure's custom verbs
         final List<CustomVerb> customVerbList = this.adventure.getCustomVerbs()

@@ -77,6 +77,7 @@ adventure {
     }
 
     room ("roomWithDescriptionClosure") {
+        descriptionScriptEnabled true
         descriptionScript """
             say 'roomDescriptionClosure'
         """

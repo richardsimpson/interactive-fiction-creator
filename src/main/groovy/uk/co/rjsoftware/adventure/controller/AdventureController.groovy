@@ -424,9 +424,8 @@ class AdventureController {
     //
 
     private void look() {
-        final String script = this.currentRoom.getDescriptionScript()
-        if (script != null) {
-            executeScript(script)
+        if (this.currentRoom.isDescriptionScriptEnabled() && this.currentRoom.getDescriptionScript() != null) {
+            executeScript(this.currentRoom.getDescriptionScript())
         }
         else {
             say(this.currentRoom.getDescription())

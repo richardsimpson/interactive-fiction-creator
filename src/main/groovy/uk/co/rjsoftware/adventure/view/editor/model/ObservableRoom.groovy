@@ -1,6 +1,8 @@
 package uk.co.rjsoftware.adventure.view.editor.model
 
 import groovy.transform.TypeChecked
+import javafx.beans.property.adapter.JavaBeanBooleanProperty
+import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanStringProperty
 import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.collections.FXCollections
@@ -19,6 +21,8 @@ class ObservableRoom implements ObservableDomainObject {
     private final Room room
     private final JavaBeanStringProperty name
     private final JavaBeanStringProperty description
+    private final JavaBeanStringProperty descriptionScript
+    private final JavaBeanBooleanProperty descriptionScriptEnabled
     private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
     private final ObservableList<ObservableItem> observableItems
 
@@ -26,6 +30,8 @@ class ObservableRoom implements ObservableDomainObject {
         this.room = room
         this.name = new JavaBeanStringPropertyBuilder().bean(room).name("name").build();
         this.description = new JavaBeanStringPropertyBuilder().bean(room).name("description").build();
+        this.descriptionScript = new JavaBeanStringPropertyBuilder().bean(room).name("descriptionScript").build();
+        this.descriptionScriptEnabled = new JavaBeanBooleanPropertyBuilder().bean(room).name("descriptionScriptEnabled").build();
 
         // setup the observableVerbInstance's list
         final List<ObservableVerbInstance> customVerbInstances = room.getCustomVerbs().values().stream()
@@ -69,6 +75,14 @@ class ObservableRoom implements ObservableDomainObject {
 
     JavaBeanStringProperty descriptionProperty() {
         this.description
+    }
+
+    JavaBeanStringProperty descriptionScriptProperty() {
+        this.descriptionScript
+    }
+
+    JavaBeanBooleanProperty descriptionScriptEnabledProperty() {
+        this.descriptionScriptEnabled
     }
 
     ObservableList<ObservableVerbInstance> getObservableCustomVerbInstances() {

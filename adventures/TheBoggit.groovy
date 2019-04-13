@@ -145,6 +145,7 @@ adventure {
     }
 
     room ("game over") {
+        descriptionScriptEnabled true
         descriptionScript ''' 
             say("""
                 Shortly, the Grim Reaper, Death, arrived to claim Bimbo.

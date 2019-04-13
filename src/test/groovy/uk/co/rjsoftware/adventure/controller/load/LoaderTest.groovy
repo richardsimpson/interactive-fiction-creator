@@ -38,6 +38,7 @@ class LoaderTest {
 
         assertEquals("bedroom", bedroom.getName())
         assertEquals("custom description", bedroom.getDescription())
+        assertFalse(bedroom.isDescriptionScriptEnabled())
         assertEquals("beforeEnterRoomScript", bedroom.getBeforeEnterRoomScript())
         assertEquals("afterEnterRoomScript", bedroom.getAfterEnterRoomScript())
         assertEquals("afterLeaveRoomScript", bedroom.getAfterLeaveRoomScript())
@@ -52,6 +53,7 @@ class LoaderTest {
 
         assertEquals("landing", landing.getName())
         assertEquals("custom description2", landing.getDescription())
+        assertFalse(landing.isDescriptionScriptEnabled())
         assertEquals("beforeEnterRoomScript2", landing.getBeforeEnterRoomScript())
         assertEquals("afterEnterRoomScript2", landing.getAfterEnterRoomScript())
         assertEquals("afterLeaveRoomScript2", landing.getAfterLeaveRoomScript())
@@ -98,6 +100,7 @@ class LoaderTest {
 
         final Room roomWithDescriptionClosure = adventure.getRoomByName("roomWithDescriptionClosure")
         final Item itemWithDescriptionClosure = roomWithDescriptionClosure.getItemByName("itemWithDescriptionClosure")
+        assertTrue(roomWithDescriptionClosure.isDescriptionScriptEnabled())
         assertEquals("say 'roomDescriptionClosure'", roomWithDescriptionClosure.getDescriptionScript())
         assertEquals("say 'itemDescriptionClosure'", itemWithDescriptionClosure.getDescriptionScript())
 

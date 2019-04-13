@@ -13,6 +13,7 @@ class Room implements ItemContainer, VerbContainer {
     private String name
     private String description
     private String descriptionScript
+    private boolean descriptionScriptEnabled
     private String beforeEnterRoomScript
     private String afterEnterRoomScript
     private String afterLeaveRoomScript
@@ -51,6 +52,7 @@ class Room implements ItemContainer, VerbContainer {
         }
         roomCopy.description = this.description
         roomCopy.descriptionScript = this.descriptionScript
+        roomCopy.descriptionScriptEnabled = this.descriptionScriptEnabled
         roomCopy.beforeEnterRoomScript = this.beforeEnterRoomScript
         roomCopy.afterEnterRoomScript = this.afterEnterRoomScript
         roomCopy.afterLeaveRoomScript = this.afterLeaveRoomScript
@@ -86,6 +88,14 @@ class Room implements ItemContainer, VerbContainer {
 
     void setDescriptionScript(String script) {
         this.descriptionScript = script
+    }
+
+    boolean isDescriptionScriptEnabled() {
+        this.descriptionScriptEnabled
+    }
+
+    void setDescriptionScriptEnabled(boolean scriptEnabled) {
+        this.descriptionScriptEnabled = scriptEnabled
     }
 
     void addExit(Exit exit) {
