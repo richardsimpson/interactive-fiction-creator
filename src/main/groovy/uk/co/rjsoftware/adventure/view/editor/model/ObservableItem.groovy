@@ -8,11 +8,15 @@ import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanStringProperty
 import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import uk.co.rjsoftware.adventure.model.ContentVisibility
+import uk.co.rjsoftware.adventure.model.CustomVerbInstance
 import uk.co.rjsoftware.adventure.model.Item
 
+import java.util.function.Function
 import java.util.stream.Collectors
+import java.util.stream.Stream
 
 @TypeChecked
 class ObservableItem implements ObservableDomainObject {
@@ -52,6 +56,7 @@ class ObservableItem implements ObservableDomainObject {
     private final JavaBeanStringProperty onEatScript
 
     private final ObservableList<ObservableItem> observableItems
+    private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
 
 
     ObservableItem(Item item) {
@@ -90,6 +95,35 @@ class ObservableItem implements ObservableDomainObject {
         eatMessage = new JavaBeanStringPropertyBuilder().bean(item).name("eatMessage").build();
         onEatScript = new JavaBeanStringPropertyBuilder().bean(item).name("onEatScript").build();
 
+
+        // setup the observableVerbInstance's list
+        final List<ObservableVerbInstance> customVerbInstances = item.getCustomVerbs().values().stream()
+                .map { verbInstance -> new ObservableVerbInstance(verbInstance)}
+                .collect(Collectors.toList())
+        this.observableCustomVerbInstances = FXCollections.observableList(customVerbInstances)
+
+        // listen to changes in the observableList of verbs, so that we can update the original items in the adventure
+        observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
+                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
+                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
+                        new Function<ObservableVerbInstance, UUID>() {
+                            @Override
+                            UUID apply(ObservableVerbInstance verbInstance) {
+                                return verbInstance.getId()
+                            }
+                        },
+                        new Function<ObservableVerbInstance, CustomVerbInstance>() {
+                            @Override
+                            CustomVerbInstance apply(ObservableVerbInstance verbInstance) {
+                                return verbInstance.getVerbInstance()
+                            }
+                        }))
+
+                item.setCustomVerbs(verbs)
+            }
+        })
 
         // setup the observableItem's list
         final List<ObservableItem> childItems = item.getItems().values().stream()
@@ -182,6 +216,10 @@ class ObservableItem implements ObservableDomainObject {
     }
     JavaBeanStringProperty onEatScriptProperty() {
         this.onEatScript
+    }
+
+    ObservableList<ObservableVerbInstance> getObservableCustomVerbInstances() {
+        this.observableCustomVerbInstances
     }
 
     ObservableList<ObservableItem> getObservableItems() {

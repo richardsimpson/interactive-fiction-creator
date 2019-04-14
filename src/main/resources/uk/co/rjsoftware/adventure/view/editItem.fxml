@@ -49,7 +49,18 @@
           </Tab>
             <Tab text="Verbs">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="verbsTableView" layoutX="7.0" layoutY="6.0" prefHeight="494.0" prefWidth="644.0">
+                           <columns>
+                              <TableColumn fx:id="verbColumn" prefWidth="132.0" text="Verb" />
+                              <TableColumn fx:id="scriptColumn" prefWidth="480.0" text="Script" />
+                           </columns>
+                        </TableView>
+                        <Button fx:id="addVerbButton" layoutX="667.0" layoutY="14.0" mnemonicParsing="false" text="Add..." />
+                        <Button fx:id="editVerbButton" layoutX="667.0" layoutY="48.0" mnemonicParsing="false" text="Edit..." />
+                        <Button fx:id="deleteVerbButton" layoutX="667.0" layoutY="83.0" mnemonicParsing="false" text="Delete" />
+                     </children></AnchorPane>
               </content>
             </Tab>
             <Tab text="Items">

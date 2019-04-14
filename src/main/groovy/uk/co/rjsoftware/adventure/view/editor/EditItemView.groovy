@@ -8,17 +8,26 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
+import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
+import javafx.util.Callback
 import javafx.util.StringConverter
+import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.ContentVisibility
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableVerbInstance
+
+import java.util.function.Function
+import java.util.stream.Collectors
+
+import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
 class EditItemView extends AbstractDialogView {
@@ -35,6 +44,16 @@ class EditItemView extends AbstractDialogView {
     @FXML private CheckBox droppableCheckBox
     @FXML private TextArea descriptionTextArea
     @FXML private TextArea descriptionScriptTextArea
+
+    // Verbs tab
+    @FXML private TableView<ObservableVerbInstance> verbsTableView
+    @FXML private TableColumn<ObservableVerbInstance, UUID> verbColumn
+    @FXML private TableColumn<ObservableVerbInstance, String> scriptColumn
+
+    @FXML private Button addVerbButton
+    @FXML private Button editVerbButton
+    @FXML private Button deleteVerbButton
+
 
     // Items Tab
     @FXML private Button addItemButton
@@ -73,16 +92,17 @@ class EditItemView extends AbstractDialogView {
 
     private AbstractDialogView view
     private BorderPane parent
+    private final Adventure adventure
     private final ObservableItem observableItem
 
-    EditItemView(ObservableItem observableItem, BorderPane parent) {
+    EditItemView(Adventure adventure, ObservableItem observableItem, BorderPane parent) {
         super("../editItem.fxml")
         this.parent = parent
+        this.adventure = adventure
         this.observableItem = observableItem
     }
 
     // TODO: Add ability to edit:
-    //       verbs
     //       synonyms
 
     private descriptionScriptEnabledOnChange(boolean newValue) {
@@ -119,6 +139,55 @@ class EditItemView extends AbstractDialogView {
 
         // setup the anchor panes based on the initial value of the script flag
         descriptionScriptEnabledOnChange(this.descriptionScriptEnabledCheckBox.isSelected())
+
+        // Verbs Tab
+
+        // get a handy map of the adventure's custom verbs
+        final List<CustomVerb> customVerbList = this.adventure.getCustomVerbs()
+        final Map<UUID, CustomVerb> customVerbMap = customVerbList.stream()
+                .collect(Collectors.toMap(
+                new Function<CustomVerb, UUID>() {
+                    @Override
+                    UUID apply(CustomVerb customVerb) {
+                        return customVerb.getId()
+                    }
+                },
+                new Function<CustomVerb, CustomVerb>() {
+                    @Override
+                    CustomVerb apply(CustomVerb customVerb) {
+                        return customVerb
+                    }
+                }
+        ))
+
+        // Setup the table view of the custom verbs
+
+        verbColumn.setCellValueFactory({ cellData -> cellData.getValue().idProperty()})
+        scriptColumn.setCellValueFactory({ cellData -> cellData.getValue().scriptProperty()})
+
+        // have the verbColumn display the verb name instead of the UUID id field
+        verbColumn.setCellFactory(new Callback<TableColumn<ObservableVerbInstance, UUID>, TableCell<ObservableVerbInstance, UUID>>() {
+            @Override
+            TableCell<ObservableVerbInstance, UUID> call(TableColumn<ObservableVerbInstance, UUID> param) {
+                new TableCell<ObservableVerbInstance, UUID>() {
+                    @Override
+                    void updateItem(UUID id, boolean empty) {
+                        super.updateItem(id, empty)
+                        if (empty) {
+                            setText(null)
+                        } else {
+                            setText(customVerbMap.get(id).getName())
+                        }
+                    }
+                }
+            }
+        })
+
+        verbsTableView.setItems(this.observableItem.getObservableCustomVerbInstances())
+
+        addVerbButton.setOnAction(this.&addVerbButtonClick)
+        editVerbButton.setOnAction(this.&editVerbButtonClick)
+        deleteVerbButton.setOnAction(this.&deleteVerbButtonClick)
 
         // Items Tab
 
@@ -182,15 +251,32 @@ class EditItemView extends AbstractDialogView {
         this.onEatScriptTextArea.textProperty().bindBidirectional(this.observableItem.onEatScriptProperty())
     }
 
+    private void addVerbButtonClick(ActionEvent event) {
+        final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
+        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
+        if (editVerbInstanceView.showModal(getStage()) == mrOk) {
+            this.verbsTableView.getItems().add(newObservableVerbInstance)
+        }
+    }
+
+    private void editVerbButtonClick(ActionEvent event) {
+        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, this.verbsTableView.getSelectionModel().getSelectedItem())
+        editVerbInstanceView.showModal(getStage())
+    }
+
+    private void deleteVerbButtonClick(ActionEvent event) {
+        this.verbsTableView.getItems().remove(this.verbsTableView.getSelectionModel().getSelectedIndex())
+    }
+
     private void addItemButtonClick(ActionEvent event) {
         final ObservableItem newObservableItem = new ObservableItem()
         this.itemsTableView.getItems().add(newObservableItem)
-        this.view = new EditItemView(newObservableItem, this.parent)
+        this.view = new EditItemView(this.adventure, newObservableItem, this.parent)
         this.view.show(this.parent)
     }
 
     private void editItemButtonClick(ActionEvent event) {
-        this.view = new EditItemView(this.itemsTableView.getSelectionModel().getSelectedItem(), this.parent)
+        this.view = new EditItemView(this.adventure, this.itemsTableView.getSelectionModel().getSelectedItem(), this.parent)
         this.view.show(this.parent)
     }
 

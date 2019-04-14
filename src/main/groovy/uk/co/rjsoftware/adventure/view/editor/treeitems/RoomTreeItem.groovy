@@ -34,7 +34,7 @@ class RoomTreeItem extends CustomTreeItem {
 
     @Override
     protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
-        new ItemTreeItem((ObservableItem)item, treeItem, getParentForView())
+        new ItemTreeItem(adventure, (ObservableItem)item, treeItem, getParentForView())
     }
 
     @Override

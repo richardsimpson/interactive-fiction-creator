@@ -304,6 +304,15 @@ class Item implements ItemContainer, VerbContainer {
         this.customVerbs.get(verb.getId()).getScript()
     }
 
+    Map<UUID, CustomVerbInstance> getCustomVerbs() {
+        this.customVerbs
+    }
+
+    void setCustomVerbs(Map<UUID, CustomVerbInstance> customVerbs) {
+        this.customVerbs.clear()
+        this.customVerbs.putAll(customVerbs)
+    }
+
     //
     // Switchable
     //
