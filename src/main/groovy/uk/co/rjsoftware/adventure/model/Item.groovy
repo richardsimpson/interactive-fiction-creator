@@ -50,7 +50,6 @@ class Item implements ItemContainer, VerbContainer {
 
         this.name = name
         this.displayName = displayName
-        this.synonyms.add(displayName)
         this.synonyms.addAll(synonyms)
         this.description = description
     }
@@ -141,6 +140,13 @@ class Item implements ItemContainer, VerbContainer {
 
     void addSynonym(String synonym) {
         this.synonyms.add(synonym)
+    }
+
+    List<String> getDisplayNameAndSynonyms() {
+        final List<String> result = new ArrayList<String>(this.synonyms.size()+1)
+        result.add(this.displayName)
+        result.addAll(this.synonyms)
+        result
     }
 
     ItemContainer getParent() {

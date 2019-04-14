@@ -201,7 +201,7 @@ class AdventureController {
             return result
         }
 
-        iterateNounSynonyms(nouns.get(0), nouns.get(0).getSynonyms(), inputWords, result)
+        iterateNounSynonyms(nouns.get(0), nouns.get(0).getDisplayNameAndSynonyms(), inputWords, result)
 
         determineNouns(nouns.tail(), inputWords, result)
     }

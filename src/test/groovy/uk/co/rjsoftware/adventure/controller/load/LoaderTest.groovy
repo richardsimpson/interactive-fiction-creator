@@ -67,7 +67,8 @@ class LoaderTest {
         assertEquals(3, bedroom.getItems().size())
 
         final Item lamp = bedroom.getItemByName("lamp")
-        assertEquals(["lamp", "lampshade", "shade"], lamp.getSynonyms())
+        assertEquals(["lampshade", "shade"], lamp.getSynonyms())
+        assertEquals(["lamp", "lampshade", "shade"], lamp.getDisplayNameAndSynonyms())
         assertEquals("description", lamp.getDescription())
         assertEquals(true, lamp.isVisible())
         assertEquals(false, lamp.isScenery())
@@ -80,7 +81,8 @@ class LoaderTest {
         assertEquals("extraDescriptionWhenSwitchedOff", lamp.getExtraDescriptionWhenSwitchedOff())
 
         final Item tv = bedroom.getItemByName("tv")
-        assertEquals(["tv", "television"], tv.getSynonyms())
+        assertEquals(["television"], tv.getSynonyms())
+        assertEquals(["tv", "television"], tv.getDisplayNameAndSynonyms())
         assertEquals("description", tv.getDescription())
         assertEquals(true, tv.isVisible())
         assertEquals(false, tv.isScenery())
