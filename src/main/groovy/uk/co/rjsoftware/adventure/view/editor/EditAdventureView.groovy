@@ -50,8 +50,15 @@ class EditAdventureView extends AbstractDialogView {
 
     }
 
-    // TODO: Add ability to edit:
-    //       rooms
+    // TODO: Add ability to:
+    // - Add / Delete rooms
+    // - Move Items
+    //
+    // To do this, Add a top bar to the Room and Item views, with 'Move' and "Delete' buttons.
+    // Add a bar to the adventure view for consistency, but without the buttons
+    // Add a Toolbar with 'Add Room' button
+    // Bonus points, add a play button to the Toolbar
+
 
     protected void onShow() {
         this.titleTextField.textProperty().bindBidirectional(this.observableAdventure.titleProperty())
