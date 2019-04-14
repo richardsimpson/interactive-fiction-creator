@@ -1,6 +1,8 @@
 package uk.co.rjsoftware.adventure.view.editor.model
 
 import groovy.transform.TypeChecked
+import javafx.beans.property.adapter.JavaBeanObjectProperty
+import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanStringProperty
 import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
 import javafx.collections.FXCollections
@@ -8,6 +10,7 @@ import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
+import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 
 import java.util.stream.Collectors
@@ -18,6 +21,7 @@ class ObservableAdventure implements ObservableDomainObject {
     private final Adventure adventure
     private final JavaBeanStringProperty introduction
     private final JavaBeanStringProperty title
+    private final JavaBeanObjectProperty<Item> player
     private final JavaBeanStringProperty waitText
     private final JavaBeanStringProperty getText
     private final ObservableList<ObservableCustomVerb> observableCustomVerbs
@@ -27,6 +31,7 @@ class ObservableAdventure implements ObservableDomainObject {
         this.adventure = adventure
         this.introduction = new JavaBeanStringPropertyBuilder().bean(adventure).name("introduction").build();
         this.title = new JavaBeanStringPropertyBuilder().bean(adventure).name("title").build();
+        this.player = new JavaBeanObjectPropertyBuilder<Item>().bean(adventure).name("player").build()
         this.waitText = new JavaBeanStringPropertyBuilder().bean(adventure).name("waitText").build();
         this.getText = new JavaBeanStringPropertyBuilder().bean(adventure).name("getText").build();
 
@@ -72,6 +77,10 @@ class ObservableAdventure implements ObservableDomainObject {
 
     JavaBeanStringProperty titleProperty() {
         this.title
+    }
+
+    JavaBeanObjectProperty<Item> playerProperty() {
+        this.player
     }
 
     JavaBeanStringProperty waitTextProperty() {

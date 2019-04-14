@@ -9,6 +9,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import uk.co.rjsoftware.adventure.model.CustomVerbInstance
+import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 
 import java.util.function.Function
@@ -77,6 +78,18 @@ class ObservableRoom implements ObservableDomainObject {
                 .map { item -> new ObservableItem(item)}
                 .collect(Collectors.toList())
         this.observableItems = FXCollections.observableList(items)
+
+        // listen to changes in the observableList of items, so that we can update the original items in the adventure
+        observableItems.addListener(new ListChangeListener<ObservableItem>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableItem> c) {
+                final List<Item> tempItems = observableItems.stream()
+                    .map {it.getItem()}
+                    .collect(Collectors.toList())
+                room.setItems(tempItems)
+            }
+        })
+
     }
 
     JavaBeanStringProperty nameProperty() {

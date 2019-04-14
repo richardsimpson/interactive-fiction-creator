@@ -135,10 +135,26 @@ class ObservableItem implements ObservableDomainObject {
                 .map { childItem -> new ObservableItem(childItem)}
                 .collect(Collectors.toList())
         this.observableItems = FXCollections.observableList(childItems)
+
+        // listen to changes in the observableList of items, so that we can update the original items in the adventure
+        observableItems.addListener(new ListChangeListener<ObservableItem>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableItem> c) {
+                final List<Item> tempItems = observableItems.stream()
+                        .map {it.getItem() }
+                        .collect(Collectors.toList())
+                item.setItems(tempItems)
+            }
+        })
+
     }
 
     ObservableItem() {
         this(new Item("New Item"))
+    }
+
+    Item getItem() {
+        this.item
     }
 
     JavaBeanStringProperty nameProperty() {

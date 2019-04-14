@@ -3,12 +3,18 @@ package uk.co.rjsoftware.adventure.view.editor
 import groovy.transform.TypeChecked
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.control.TableColumn.CellEditEvent
 import javafx.util.Callback
+import javafx.util.StringConverter
+import uk.co.rjsoftware.adventure.model.Adventure
+import uk.co.rjsoftware.adventure.model.ContentVisibility
+import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableCustomVerb
@@ -22,6 +28,7 @@ class EditAdventureView extends AbstractDialogView {
     @FXML private TextArea introductionTextArea
     @FXML private TextArea waitTextTextArea
     @FXML private TextArea getTextTextArea
+    @FXML private ComboBox playerComboBox
 
     @FXML private TableView<ObservableCustomVerb> verbsTableView
     @FXML private TableColumn<ObservableCustomVerb, String> nameColumn
@@ -33,10 +40,12 @@ class EditAdventureView extends AbstractDialogView {
     @FXML private Button deleteButton
 
 
+    private final Adventure adventure
     private final ObservableAdventure observableAdventure
 
-    EditAdventureView(ObservableAdventure observableAdventure) {
+    EditAdventureView(Adventure adventure, ObservableAdventure observableAdventure) {
         super("../editAdventure.fxml")
+        this.adventure = adventure
         this.observableAdventure = observableAdventure
 
     }
@@ -50,6 +59,26 @@ class EditAdventureView extends AbstractDialogView {
         this.introductionTextArea.textProperty().bindBidirectional(this.observableAdventure.introductionProperty())
         this.waitTextTextArea.textProperty().bindBidirectional(this.observableAdventure.waitTextProperty())
         this.getTextTextArea.textProperty().bindBidirectional(this.observableAdventure.getTextProperty())
+
+        final ObservableList<Item> observableAllItems = FXCollections.observableArrayList(this.adventure.getAllItems().values())
+        this.playerComboBox.setItems(observableAllItems)
+        this.playerComboBox.setConverter(new StringConverter<Item>() {
+            @Override
+            public String toString(Item item) {
+                if (item == null){
+                    return null
+                } else {
+                    return item.getName()
+                }
+            }
+
+            @Override
+            public Item fromString(String name) {
+                return null
+            }
+        })
+
+        this.playerComboBox.valueProperty().bindBidirectional(this.observableAdventure.playerProperty())
 
         // Setup the table view of the custom verbs
 

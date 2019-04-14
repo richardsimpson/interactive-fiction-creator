@@ -68,6 +68,8 @@ class EditRoomView extends AbstractDialogView {
     // TODO: Add ability to edit:
     //       exits
 
+    // TODO: Bug: Add 'New ItemXXX'.  See in player list.  Add 'New ItemYYY'.  See in player list.  Add 'New Item' as a sub-item.  Playerlist now shows 'New ItemXXX' and 'New Item'.  New ItemYYY has disappeared.
+
     private descriptionScriptEnabledOnChange(boolean newValue) {
         if (newValue) {
             descriptionScriptAnchorPane.setVisible(true)

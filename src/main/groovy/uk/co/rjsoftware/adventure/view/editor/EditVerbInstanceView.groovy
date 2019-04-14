@@ -35,17 +35,17 @@ class EditVerbInstanceView extends AbstractEditDomainObjectDialogView {
             @Override
             public String toString(CustomVerb verb) {
                 if (verb == null){
-                    return null;
+                    return null
                 } else {
-                    return verb.getName();
+                    return verb.getName()
                 }
             }
 
             @Override
             public CustomVerb fromString(String name) {
-                return null;
+                return null
             }
-        });
+        })
 
         if (this.verbInstance.getId() != null) {
             final CustomVerb verb = this.adventure.getCustomVerbs().find {verb -> verb.getId() == this.verbInstance.getId()}

@@ -385,6 +385,13 @@ class Item implements ItemContainer, VerbContainer {
         this.items
     }
 
+    Map<String, Item> setItems(List<Item> newItems) {
+        this.items.clear()
+        for (Item item : newItems) {
+            addItem(item)
+        }
+    }
+
     Map<String, Item> getAllItems() {
         final Map<String, Item> items = new HashMap<>()
         items.putAll(this.items)
