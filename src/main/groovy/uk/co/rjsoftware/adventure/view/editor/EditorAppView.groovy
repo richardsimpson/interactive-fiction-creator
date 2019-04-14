@@ -70,7 +70,7 @@ class EditorAppView extends AbstractDialogView {
                 final CustomComponent component = newValue.getValue().getComponent()
 
                 // Add the component to the editor view, if it's not already there
-                if (component.getParent() != EditorAppView.this.mapPane) {
+                if (component != null && component.getParent() != EditorAppView.this.mapPane) {
                     component.setLayoutX(100)
                     component.setLayoutY(100)
 

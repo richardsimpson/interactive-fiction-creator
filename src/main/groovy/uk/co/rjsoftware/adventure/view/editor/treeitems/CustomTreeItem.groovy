@@ -107,7 +107,9 @@ abstract class CustomTreeItem {
 
     abstract protected AbstractDialogView createDialogView()
 
-    abstract CustomComponent getComponent()
+    CustomComponent getComponent() {
+        null
+    }
 
     ContextMenu getContextMenu() {
         this.contextMenu

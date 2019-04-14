@@ -6,8 +6,6 @@ import javafx.scene.layout.BorderPane
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.EditItemView
-import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
-import uk.co.rjsoftware.adventure.view.editor.components.ItemComponent
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 
@@ -16,13 +14,11 @@ class ItemTreeItem extends CustomTreeItem {
 
     private final Adventure adventure
     private final ObservableItem observableItem
-    private final ItemComponent component
 
     ItemTreeItem(Adventure adventure, ObservableItem observableItem, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         super(treeItem, parent, observableItem)
         this.adventure = adventure
         this.observableItem = observableItem
-        component = new ItemComponent(observableItem)
 
         for (ObservableItem childObservableItem : observableItem.getObservableItems()) {
             addItem(childObservableItem)
@@ -37,10 +33,6 @@ class ItemTreeItem extends CustomTreeItem {
     @Override
     protected AbstractDialogView createDialogView() {
         new EditItemView(adventure, observableItem, getParentForView())
-    }
-
-    CustomComponent getComponent() {
-        this.component
     }
 
     // toString() is used by the TreeItem to determine th text to display
