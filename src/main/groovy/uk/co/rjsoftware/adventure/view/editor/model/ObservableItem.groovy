@@ -131,7 +131,7 @@ class ObservableItem implements ObservableDomainObject {
         })
 
         // setup the observableItem's list
-        final List<ObservableItem> childItems = item.getItems().values().stream()
+        final List<ObservableItem> childItems = item.getItems().stream()
                 .map { childItem -> new ObservableItem(childItem)}
                 .collect(Collectors.toList())
         this.observableItems = FXCollections.observableList(childItems)

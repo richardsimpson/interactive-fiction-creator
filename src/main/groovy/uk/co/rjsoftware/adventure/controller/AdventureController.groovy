@@ -34,7 +34,7 @@ class AdventureController {
     private boolean confirmingEndGame = false
 
     private List<Verb> verbs = new ArrayList<>()
-    private Map<String, Item> nouns = new HashMap<>()
+    private List<Item> nouns = new ArrayList<>()
     private Map<String, Room> rooms = new HashMap<>()
 
 
@@ -83,9 +83,7 @@ class AdventureController {
             rooms.put(room.getName().toUpperCase(), room)
         }
 
-        for (Map.Entry<String, Item> itemEntry : this.adventure.getAllItems()) {
-            nouns.put(itemEntry.key.toUpperCase(), itemEntry.value)
-        }
+        nouns.addAll(this.adventure.getAllItems())
 
         this.player = this.adventure.getPlayer()
         if (this.player == null) {
@@ -189,7 +187,7 @@ class AdventureController {
         }
 
         determineNouns(
-                this.nouns.values().findAll {item -> isItemInRoomOrPlayerInventory(item)}.asList(),
+                this.nouns.findAll {item -> isItemInRoomOrPlayerInventory(item)}.asList(),
                 inputWords, result)
 
         iterateInputToFindNouns(inputWords.tail(), result)
@@ -435,7 +433,7 @@ class AdventureController {
             if (!this.currentRoom.getItems().isEmpty()) {
                 boolean firstItemOutput = false
 
-                for (Item item : this.currentRoom.getItems().values()) {
+                for (Item item : this.currentRoom.getSortedItems()) {
                     if (item.isVisible() && !item.isScenery() && item != this.player) {
                         if (!firstItemOutput) {
                             firstItemOutput = true
@@ -608,7 +606,7 @@ class AdventureController {
             say("Nothing")
         }
         else {
-            for (Item item : this.player.getItems().values()) {
+            for (Item item : this.player.getSortedItems()) {
                 say(item.getDisplayName())
             }
         }

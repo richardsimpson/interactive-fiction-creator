@@ -59,7 +59,7 @@ class EditAdventureView extends AbstractDialogView {
         this.waitTextTextArea.textProperty().bindBidirectional(this.observableAdventure.waitTextProperty())
         this.getTextTextArea.textProperty().bindBidirectional(this.observableAdventure.getTextProperty())
 
-        final ObservableList<Item> observableAllItems = FXCollections.observableArrayList(this.adventure.getAllItems().values())
+        final ObservableList<Item> observableAllItems = FXCollections.observableArrayList(this.adventure.getAllItems())
         this.playerComboBox.setItems(observableAllItems)
         this.playerComboBox.setConverter(new StringConverter<Item>() {
             @Override

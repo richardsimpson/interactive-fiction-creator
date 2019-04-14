@@ -41,13 +41,15 @@ class Item implements ItemContainer, VerbContainer {
 
     private final Map<UUID, CustomVerbInstance> customVerbs = new HashMap<>()
     // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
-    private final Map<String, Item> items = new TreeMap<>()
+    private final List<Item> items = new ArrayList<>()
     private boolean itemExamined = false
 
+    private Item(UUID id) {
+        this.id = id
+    }
+
     Item(String name, String displayName, List<String> synonyms, String description) {
-
         this.id = UUID.randomUUID()
-
         this.name = name
         this.displayName = displayName
         this.synonyms.addAll(synonyms)
@@ -67,8 +69,12 @@ class Item implements ItemContainer, VerbContainer {
     }
 
     Item copy(ItemContainer parent) {
-        final Item itemCopy = new Item(this.name, this.displayName, synonyms, description)
+        final Item itemCopy = new Item(this.id)
 
+        itemCopy.name = this.name
+        itemCopy.displayName = this.displayName
+        itemCopy.synonyms.addAll(this.synonyms)
+        itemCopy.description = this.description
         itemCopy.descriptionScript = this.descriptionScript
         itemCopy.descriptionScriptEnabled = this.descriptionScriptEnabled
         itemCopy.visible = this.visible
@@ -94,11 +100,13 @@ class Item implements ItemContainer, VerbContainer {
         itemCopy.eatMessage = this.eatMessage
         itemCopy.onEatScript = this.onEatScript
 
-        itemCopy.parent = parent
+        // Do NOT copy the parent.  That should be set via the class doing the copying
 
+        // TODO: Create a copy of the verbs
         itemCopy.customVerbs.putAll(this.customVerbs)
-        for (Map.Entry<String, Item> entry : this.items) {
-            itemCopy.items.put(entry.key, entry.value.copy(itemCopy))
+
+        for (Item item : this.items) {
+            itemCopy.addItem(item.copy(itemCopy))
         }
         itemCopy.itemExamined = this.itemExamined
 
@@ -277,7 +285,7 @@ class Item implements ItemContainer, VerbContainer {
                 result += System.lineSeparator() + "Nothing."
             }
 
-            for (Item item : this.items.values()) {
+            for (Item item : getSortedItems()) {
                 result += System.lineSeparator() + item.getDisplayName()
             }
         }
@@ -295,7 +303,7 @@ class Item implements ItemContainer, VerbContainer {
                 result += System.lineSeparator() + "Nothing."
             }
 
-            for (Item item : this.items.values()) {
+            for (Item item : getSortedItems()) {
                 result += System.lineSeparator() + "    " + item.getDisplayName()
             }
         }
@@ -381,23 +389,27 @@ class Item implements ItemContainer, VerbContainer {
     ContentVisibility getContentVisibility() { this.contentVisibility }
     void setContentVisibility(ContentVisibility contentVisibility) { this.contentVisibility = contentVisibility }
 
-    Map<String, Item> getItems() {
+    List<Item> getItems() {
         this.items
     }
 
-    Map<String, Item> setItems(List<Item> newItems) {
+    List<Item> getSortedItems() {
+        this.items.sort(false) {o1, o2 -> o1.name.compareTo(o2.name)}
+    }
+
+    void setItems(List<Item> newItems) {
         this.items.clear()
         for (Item item : newItems) {
             addItem(item)
         }
     }
 
-    Map<String, Item> getAllItems() {
-        final Map<String, Item> items = new HashMap<>()
-        items.putAll(this.items)
+    List<Item> getAllItems() {
+        final List<Item> items = new ArrayList<>()
+        items.addAll(this.items)
 
-        for (Item item : this.items.values()) {
-            items.putAll(item.getAllItems())
+        for (Item item : this.items) {
+            items.addAll(item.getAllItems())
         }
 
         items
@@ -405,24 +417,27 @@ class Item implements ItemContainer, VerbContainer {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.put(item.getName().toUpperCase(), item)
+            this.items.add(item)
             item.setParent(this)
         }
     }
 
     Item getItemByName(String itemName) {
-        this.items.get(itemName.toUpperCase())
+        final String itemNameToGet = itemName.toUpperCase()
+        this.items.find {
+            itemNameToGet.equals(it.getName().toUpperCase())
+        }
     }
 
     void removeItem(Item item) {
         if (contains(item)) {
-            this.items.remove(item.getName().toUpperCase())
+            this.items.remove(item)
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.containsKey(item.getName().toUpperCase())
+        this.items.any {it.getId().equals(item.id)}
     }
 
     void setItemExamined(boolean itemExamined) {

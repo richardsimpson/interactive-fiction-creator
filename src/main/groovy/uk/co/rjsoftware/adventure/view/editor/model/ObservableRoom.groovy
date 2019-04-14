@@ -74,7 +74,7 @@ class ObservableRoom implements ObservableDomainObject {
         })
 
         // setup the observableItem's list
-        final List<ObservableItem> items = room.getItems().values().stream()
+        final List<ObservableItem> items = room.getItems().stream()
                 .map { item -> new ObservableItem(item)}
                 .collect(Collectors.toList())
         this.observableItems = FXCollections.observableList(items)

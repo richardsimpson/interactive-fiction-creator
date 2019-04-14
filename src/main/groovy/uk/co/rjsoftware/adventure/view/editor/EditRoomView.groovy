@@ -68,13 +68,6 @@ class EditRoomView extends AbstractDialogView {
     // TODO: Add ability to edit:
     //       exits
 
-    // TODO: Bug: Add 'New ItemXXX'.  See in player list. Add 'New Item' as a sub-item.  Playerlist now shows 'New Item'.  New ItemXXX has disappeared.
-    // It's because:
-    // 1) Adventure.getAllItems creates an uber map of all items.
-    // 2) Creating an item gives it the name 'New Item'.
-    // 3) The key of the map is the item name.
-    // 4) The key doesn't change when the item's name changes.
-
     private descriptionScriptEnabledOnChange(boolean newValue) {
         if (newValue) {
             descriptionScriptAnchorPane.setVisible(true)

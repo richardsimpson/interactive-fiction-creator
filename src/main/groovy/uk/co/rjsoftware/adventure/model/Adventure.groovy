@@ -91,18 +91,21 @@ class Adventure {
         this.rooms = rooms
     }
 
-    Map<String, Item> getAllItems() {
-        final Map<String, Item> items = new HashMap<>()
+    List<Item> getAllItems() {
+        final List<Item> items = new ArrayList<>()
 
         for (Room room : getRooms()) {
-            items.putAll(room.getAllItems())
+            items.addAll(room.getAllItems())
         }
 
         items
     }
 
     Item getItemByName(String itemName) {
-        getAllItems().get(itemName.toUpperCase())
+        final String itemNameToGet = itemName.toUpperCase()
+        getAllItems().find {
+            itemNameToGet.equals(it.getName().toUpperCase())
+        }
     }
 
     void addCustomVerb(CustomVerb customVerb) {

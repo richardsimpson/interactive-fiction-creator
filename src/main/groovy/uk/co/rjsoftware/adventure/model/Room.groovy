@@ -9,7 +9,7 @@ class Room implements ItemContainer, VerbContainer {
     private final Map<Direction, Exit> exits = new TreeMap<>()
     private final Map<UUID, CustomVerbInstance> customVerbs = new HashMap<>()
     // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
-    private final Map<String, Item> items = new TreeMap<>()
+    private final List<Item> items = new ArrayList<>()
     private String name
     private String description
     private String descriptionScript
@@ -19,6 +19,10 @@ class Room implements ItemContainer, VerbContainer {
     private String afterLeaveRoomScript
     private String beforeEnterRoomFirstTimeScript
     private String afterEnterRoomFirstTimeScript
+
+    private Room(UUID id) {
+        this.id = id
+    }
 
     Room(String name, String description,
          String beforeEnterRoomScript = null, String afterEnterRoomScript = null,
@@ -41,14 +45,16 @@ class Room implements ItemContainer, VerbContainer {
     }
 
     Room copy() {
-        final Room roomCopy = new Room(this.name)
+        final Room roomCopy = new Room(this.id)
+
+        roomCopy.name = this.name
 
         for (Exit exit : this.exits.values()) {
             roomCopy.addExit(exit.copy())
         }
         roomCopy.customVerbs.putAll(customVerbs)
-        for (Map.Entry<String, Item> entry : this.items) {
-            roomCopy.items.put(entry.key, entry.value.copy(roomCopy))
+        for (Item item : this.items) {
+            roomCopy.addItem(item.copy(roomCopy))
         }
         roomCopy.description = this.description
         roomCopy.descriptionScript = this.descriptionScript
@@ -112,43 +118,50 @@ class Room implements ItemContainer, VerbContainer {
 
     void addItem(Item item) {
         if (!contains(item)) {
-            this.items.put(item.getName().toUpperCase(), item)
+            this.items.add(item)
             item.setParent(this)
         }
     }
 
     Item getItemByName(String itemName) {
-        this.items.get(itemName.toUpperCase())
+        final String itemNameToGet = itemName.toUpperCase()
+        this.items.find {
+            itemNameToGet.equals(it.getName().toUpperCase())
+        }
     }
 
     void removeItem(Item item) {
         if (contains(item)) {
-            this.items.remove(item.getName().toUpperCase())
+            this.items.remove(item)
             item.setParent(null)
         }
     }
 
     boolean contains(Item item) {
-        this.items.containsKey(item.getName().toUpperCase())
+        this.items.any {it.getId().equals(item.id)}
     }
 
-    Map<String, Item> getItems() {
+    List<Item> getItems() {
         this.items
     }
 
-    Map<String, Item> setItems(List<Item> newItems) {
+    List<Item> getSortedItems() {
+        this.items.sort(false) {o1, o2 -> o1.name.compareTo(o2.name)}
+    }
+
+    void setItems(List<Item> newItems) {
         this.items.clear()
         for (Item item : newItems) {
             addItem(item)
         }
     }
 
-    Map<String, Item> getAllItems() {
-        final Map<String, Item> items = new HashMap<>()
-        items.putAll(this.items)
+    List<Item> getAllItems() {
+        final List<Item> items = new ArrayList<>()
+        items.addAll(this.items)
 
-        for (Item item : this.items.values()) {
-            items.putAll(item.getAllItems())
+        for (Item item : this.items) {
+            items.addAll(item.getAllItems())
         }
 
         items
