@@ -3,12 +3,17 @@ package uk.co.rjsoftware.adventure.view.editor
 import groovy.transform.TypeChecked
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
+import javafx.event.ActionEvent
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.BorderPane
 import javafx.util.StringConverter
 import uk.co.rjsoftware.adventure.model.ContentVisibility
 import uk.co.rjsoftware.adventure.model.CustomVerb
@@ -30,6 +35,15 @@ class EditItemView extends AbstractDialogView {
     @FXML private CheckBox droppableCheckBox
     @FXML private TextArea descriptionTextArea
     @FXML private TextArea descriptionScriptTextArea
+
+    // Items Tab
+    @FXML private Button addItemButton
+    @FXML private Button editItemButton
+    @FXML private Button deleteItemButton
+
+    @FXML private TableView<ObservableItem> itemsTableView
+    @FXML private TableColumn<ObservableItem, String> nameColumn
+    @FXML private TableColumn<ObservableItem, String> descriptionColumn
 
     // Features Tab
     @FXML private CheckBox switchableCheckBox
@@ -57,16 +71,18 @@ class EditItemView extends AbstractDialogView {
     @FXML private TextArea eatMessageTextArea
     @FXML private TextArea onEatScriptTextArea
 
+    private AbstractDialogView view
+    private BorderPane parent
     private final ObservableItem observableItem
 
-    EditItemView(ObservableItem observableItem) {
+    EditItemView(ObservableItem observableItem, BorderPane parent) {
         super("../editItem.fxml")
+        this.parent = parent
         this.observableItem = observableItem
     }
 
     // TODO: Add ability to edit:
     //       verbs
-    //       items
     //       synonyms
 
     private descriptionScriptEnabledOnChange(boolean newValue) {
@@ -103,6 +119,21 @@ class EditItemView extends AbstractDialogView {
 
         // setup the anchor panes based on the initial value of the script flag
         descriptionScriptEnabledOnChange(this.descriptionScriptEnabledCheckBox.isSelected())
+
+        // Items Tab
+
+        // Setup the table view of the items
+
+        itemsTableView.setEditable(true)
+
+        nameColumn.setCellValueFactory({ cellData -> cellData.getValue().nameProperty()})
+        descriptionColumn.setCellValueFactory({ cellData -> cellData.getValue().descriptionProperty()})
+
+        itemsTableView.setItems(this.observableItem.getObservableItems())
+
+        addItemButton.setOnAction(this.&addItemButtonClick)
+        editItemButton.setOnAction(this.&editItemButtonClick)
+        deleteItemButton.setOnAction(this.&deleteItemButtonClick)
 
         // Features Tab
         this.switchableCheckBox.selectedProperty().bindBidirectional(this.observableItem.switchableProperty())
@@ -149,6 +180,22 @@ class EditItemView extends AbstractDialogView {
         // Edible Tab
         this.eatMessageTextArea.textProperty().bindBidirectional(this.observableItem.eatMessageProperty())
         this.onEatScriptTextArea.textProperty().bindBidirectional(this.observableItem.onEatScriptProperty())
+    }
+
+    private void addItemButtonClick(ActionEvent event) {
+        final ObservableItem newObservableItem = new ObservableItem()
+        this.itemsTableView.getItems().add(newObservableItem)
+        this.view = new EditItemView(newObservableItem, this.parent)
+        this.view.show(this.parent)
+    }
+
+    private void editItemButtonClick(ActionEvent event) {
+        this.view = new EditItemView(this.itemsTableView.getSelectionModel().getSelectedItem(), this.parent)
+        this.view.show(this.parent)
+    }
+
+    private void deleteItemButtonClick(ActionEvent event) {
+        this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
     }
 
 }
