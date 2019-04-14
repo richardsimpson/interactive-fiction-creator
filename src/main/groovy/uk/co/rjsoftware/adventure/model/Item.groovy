@@ -68,7 +68,7 @@ class Item implements ItemContainer, VerbContainer {
         this(name, name)
     }
 
-    Item copy(ItemContainer parent) {
+    Item copy() {
         final Item itemCopy = new Item(this.id)
 
         itemCopy.name = this.name
@@ -106,7 +106,7 @@ class Item implements ItemContainer, VerbContainer {
         itemCopy.customVerbs.putAll(this.customVerbs)
 
         for (Item item : this.items) {
-            itemCopy.addItem(item.copy(itemCopy))
+            itemCopy.addItem(item.copy())
         }
         itemCopy.itemExamined = this.itemExamined
 

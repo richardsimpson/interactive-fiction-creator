@@ -1,5 +1,6 @@
 package uk.co.rjsoftware.adventure.view.editor.model
 
+import groovy.transform.TailRecursive
 import groovy.transform.TypeChecked
 import javafx.beans.property.adapter.JavaBeanObjectProperty
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
@@ -116,5 +117,10 @@ class ObservableAdventure implements ObservableDomainObject {
     List<CustomVerb> getCustomVerbs() {
         this.adventure.getCustomVerbs()
     }
+
+    void deleteRoom(ObservableRoom room) {
+        this.getObservableRooms().remove(room)
+    }
+
 }
 

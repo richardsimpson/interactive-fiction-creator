@@ -189,7 +189,7 @@ class EditRoomView extends AbstractDialogView {
 
     private void addItemButtonClick(ActionEvent event) {
         final ObservableItem newObservableItem = new ObservableItem()
-        this.itemsTableView.getItems().add(newObservableItem)
+        this.observableRoom.addItem(newObservableItem)
         this.view = new EditItemView(this.observableAdventure, newObservableItem, this.parent)
         this.view.show(this.parent)
     }
@@ -204,7 +204,7 @@ class EditRoomView extends AbstractDialogView {
     }
 
     private void deleteRoomButtonClick(ActionEvent event) {
-        this.observableAdventure.getObservableRooms().remove(this.observableRoom)
+        this.observableAdventure.deleteRoom(this.observableRoom)
         //this.close()
     }
 }

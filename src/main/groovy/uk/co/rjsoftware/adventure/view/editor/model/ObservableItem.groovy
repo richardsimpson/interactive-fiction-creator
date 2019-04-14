@@ -2,12 +2,7 @@ package uk.co.rjsoftware.adventure.view.editor.model
 
 import groovy.transform.TypeChecked
 import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.adapter.JavaBeanBooleanProperty
-import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder
-import javafx.beans.property.adapter.JavaBeanObjectProperty
-import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder
-import javafx.beans.property.adapter.JavaBeanStringProperty
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder
+import javafx.beans.property.adapter.*
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
@@ -20,7 +15,7 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 
 @TypeChecked
-class ObservableItem implements ObservableDomainObject {
+class ObservableItem implements ObservableDomainObject, ObservableItemContainer {
 
     private final Item item
     // General Tab
@@ -61,6 +56,7 @@ class ObservableItem implements ObservableDomainObject {
     private final ObservableList<ObservableItem> observableItems
     private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
 
+    private ObservableItemContainer parent
 
     ObservableItem(Item item) {
         this.item = item
@@ -135,6 +131,11 @@ class ObservableItem implements ObservableDomainObject {
                 .map { childItem -> new ObservableItem(childItem)}
                 .collect(Collectors.toList())
         this.observableItems = FXCollections.observableList(childItems)
+
+        // fixup the parent references
+        for (ObservableItem observableItem : this.observableItems) {
+            observableItem.setParent(this)
+        }
 
         // listen to changes in the observableList of items, so that we can update the original items in the adventure
         observableItems.addListener(new ListChangeListener<ObservableItem>() {
@@ -298,4 +299,45 @@ class ObservableItem implements ObservableDomainObject {
     ObservableList<? extends ObservableDomainObject> getObservableTreeItemChildren() {
         this.observableItems
     }
+
+    ObservableItemContainer getParent() {
+        this.parent
+    }
+
+    void setParent(ObservableItemContainer newParent) {
+        if (this.parent != newParent) {
+            ObservableItemContainer oldParent = this.parent
+
+            if (oldParent != null) {
+                oldParent.removeItem(this)
+            }
+
+            this.parent = newParent
+
+            if (this.parent != null) {
+                this.parent.addItem(this)
+            }
+        }
+    }
+
+    @Override
+    void addItem(ObservableItem item) {
+        if (!contains(item)) {
+            this.observableItems.add(item)
+            item.setParent(this)
+        }
+    }
+
+    @Override
+    void removeItem(ObservableItem item) {
+        if (contains(item)) {
+            this.observableItems.remove(item)
+            item.setParent(null)
+        }
+    }
+
+    boolean contains(ObservableItem item) {
+        this.observableItems.any {it.getItem().getId().equals(item.getItem().id)}
+    }
+
 }

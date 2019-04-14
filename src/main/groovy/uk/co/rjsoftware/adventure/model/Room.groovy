@@ -54,7 +54,7 @@ class Room implements ItemContainer, VerbContainer {
         }
         roomCopy.customVerbs.putAll(customVerbs)
         for (Item item : this.items) {
-            roomCopy.addItem(item.copy(roomCopy))
+            roomCopy.addItem(item.copy())
         }
         roomCopy.description = this.description
         roomCopy.descriptionScript = this.descriptionScript

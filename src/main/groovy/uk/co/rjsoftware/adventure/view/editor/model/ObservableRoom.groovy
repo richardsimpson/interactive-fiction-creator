@@ -17,7 +17,7 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 
 @TypeChecked
-class ObservableRoom implements ObservableDomainObject {
+class ObservableRoom implements ObservableDomainObject, ObservableItemContainer {
 
     private final Room room
     private final JavaBeanStringProperty name
@@ -78,6 +78,11 @@ class ObservableRoom implements ObservableDomainObject {
                 .map { item -> new ObservableItem(item)}
                 .collect(Collectors.toList())
         this.observableItems = FXCollections.observableList(items)
+
+        // fixup the parent references
+        for (ObservableItem observableItem : this.observableItems) {
+            observableItem.setParent(this)
+        }
 
         // listen to changes in the observableList of items, so that we can update the original items in the adventure
         observableItems.addListener(new ListChangeListener<ObservableItem>() {
@@ -149,5 +154,26 @@ class ObservableRoom implements ObservableDomainObject {
     ObservableList<? extends ObservableDomainObject> getObservableTreeItemChildren() {
         getObservableItems()
     }
+
+    @Override
+    void addItem(ObservableItem item) {
+        if (!contains(item)) {
+            this.observableItems.add(item)
+            item.setParent(this)
+        }
+    }
+
+    @Override
+    void removeItem(ObservableItem item) {
+        if (contains(item)) {
+            this.observableItems.remove(item)
+            item.setParent(null)
+        }
+    }
+
+    boolean contains(ObservableItem item) {
+        this.observableItems.any {it.getItem().getId().equals(item.getItem().id)}
+    }
+
 }
 
