@@ -8,6 +8,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
 import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -31,6 +32,8 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 
 @TypeChecked
 class EditItemView extends AbstractDialogView {
+
+    @FXML private Label headerLabel
 
     // General Tab
     @FXML private CheckBox descriptionScriptEnabledCheckBox
@@ -116,6 +119,8 @@ class EditItemView extends AbstractDialogView {
     }
 
     protected void onShow() {
+        this.headerLabel.textProperty().bindBidirectional(this.observableItem.nameProperty())
+
         // General Tab
         this.nameTextField.textProperty().bindBidirectional(this.observableItem.nameProperty())
         this.displayNameTextField.textProperty().bindBidirectional(this.observableItem.displayNameProperty())

@@ -15,6 +15,8 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrNone
 @TypeChecked
 abstract class AbstractDialogView {
 
+    private static final String EDITOR_CSS = "editor.css"
+
     private final String fxmlLocation
     private Stage stage
     private Stage owner
@@ -40,6 +42,7 @@ abstract class AbstractDialogView {
 
         // create and show the dialog
         final Scene scene = new Scene(rootLayout)
+        scene.getStylesheets().add(EDITOR_CSS)
         stage.setScene(scene)
         stage.setResizable(this.resizable)
         onShow()
@@ -59,6 +62,7 @@ abstract class AbstractDialogView {
 
         // create and show the dialog
         final Scene scene = new Scene(rootLayout)
+        scene.getStylesheets().add(EDITOR_CSS)
         stage = new Stage()
         stage.initOwner(owner)
         stage.initModality(Modality.WINDOW_MODAL)

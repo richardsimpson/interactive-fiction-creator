@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
@@ -10,85 +12,116 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="621.0" prefWidth="766.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <TabPane layoutX="14.0" layoutY="14.0" prefHeight="554.0" prefWidth="737.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="General">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="496.0" prefWidth="622.0">
-                     <children>
-                        <AnchorPane fx:id="descriptionAnchorPane" layoutX="15.0" layoutY="87.0" prefHeight="279.0" prefWidth="708.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="14.0">
-                           <children>
-                              <Label text="Description:" />
-                              <TextArea fx:id="descriptionTextArea" layoutX="92.0" prefHeight="266.0" prefWidth="616.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="92.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                        <Label layoutX="17.0" layoutY="22.0" text="Name:" />
-                        <TextField fx:id="nameTextField" layoutX="108.0" layoutY="17.0" />
-                        <CheckBox fx:id="descriptionScriptEnabledCheckBox" layoutX="107.0" layoutY="62.0" mnemonicParsing="false" text="Script?" />
-                        <AnchorPane fx:id="descriptionScriptAnchorPane" layoutX="15.0" layoutY="87.0" prefHeight="279.0" prefWidth="708.0">
-                           <children>
-                              <Label text="Description:" />
-                              <TextArea fx:id="descriptionScriptTextArea" layoutX="92.0" prefHeight="266.0" prefWidth="616.0" />
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Verbs">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="verbsTableView" layoutX="7.0" layoutY="6.0" prefHeight="494.0" prefWidth="644.0">
-                           <columns>
-                              <TableColumn fx:id="verbColumn" prefWidth="132.0" text="Verb" />
-                              <TableColumn fx:id="scriptColumn" prefWidth="480.0" text="Script" />
-                           </columns>
-                        </TableView>
-                        <Button fx:id="addVerbButton" layoutX="667.0" layoutY="14.0" mnemonicParsing="false" text="Add..." />
-                        <Button fx:id="editVerbButton" layoutX="668.0" layoutY="48.0" mnemonicParsing="false" text="Edit..." />
-                        <Button fx:id="deleteVerbButton" layoutX="666.0" layoutY="83.0" mnemonicParsing="false" text="Delete" />
-                     </children></AnchorPane>
-            </content>
-          </Tab>
-            <Tab text="Items">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="itemsTableView" layoutX="6.0" layoutY="7.0" prefHeight="494.0" prefWidth="644.0">
-                           <columns>
-                              <TableColumn fx:id="nameColumn" prefWidth="132.0" text="Item" />
-                              <TableColumn fx:id="descriptionColumn" prefWidth="480.0" text="Description" />
-                           </columns>
-                        </TableView>
-                        <Button fx:id="addItemButton" layoutX="662.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Add..." />
-                        <Button fx:id="editItemButton" layoutX="662.0" layoutY="41.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Edit..." />
-                        <Button fx:id="deleteItemButton" layoutX="662.0" layoutY="75.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Delete" />
-                     </children></AnchorPane>
-              </content>
-            </Tab>
-            <Tab text="Scripts">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Label layoutX="6.0" layoutY="6.0" text="Script To Run Before Entering Room:" />
-                        <TextArea fx:id="beforeEnterRoomScriptTextArea" layoutX="6.0" layoutY="23.0" prefHeight="74.0" prefWidth="724.0" />
-                        <Label layoutX="6.0" layoutY="104.0" text="Script To Run After Entering Room:" />
-                        <TextArea fx:id="afterEnterRoomScriptTextArea" layoutX="7.0" layoutY="121.0" prefHeight="74.0" prefWidth="724.0" />
-                        <Label layoutX="6.0" layoutY="300.0" text="Script To Run Before Entering Room For First Time:" />
-                        <TextArea fx:id="beforeEnterRoomFirstTimeScriptTextArea" layoutX="7.0" layoutY="317.0" prefHeight="74.0" prefWidth="724.0" />
-                        <Label layoutX="6.0" layoutY="398.0" text="Script To Run After Entering Room For First Time:" />
-                        <TextArea fx:id="afterEnterRoomFirstTimeScriptTextArea" layoutX="6.0" layoutY="415.0" prefHeight="74.0" prefWidth="724.0" />
-                        <Label layoutX="6.0" layoutY="202.0" text="Script To Run After Leaving Room:" />
-                        <TextArea fx:id="afterLeaveRoomScriptTextArea" layoutX="6.0" layoutY="219.0" prefHeight="74.0" prefWidth="724.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-   </children>
-</AnchorPane>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <BorderPane styleClass="header-border-pane">
+            <left>
+                <Label fx:id="headerLabel" styleClass="header-label" text="Header" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="4.0" left="10.0" top="4.0" />
+                    </BorderPane.margin>
+                </Label>
+            </left>
+            <right>
+                <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <buttons>
+                        <Button fx:id="moveRoomButton" mnemonicParsing="false" text="Move..." />
+                        <Button fx:id="deleteRoomButton" mnemonicParsing="false" text="Delete" />
+                    </buttons>
+                    <BorderPane.margin>
+                        <Insets right="10.0" />
+                    </BorderPane.margin>
+                </ButtonBar>
+            </right>
+            <VBox.margin>
+                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+            </VBox.margin>
+        </BorderPane>
+        <AnchorPane>
+            <children>
+                <TabPane prefHeight="554.0" prefWidth="737.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="General">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="496.0" prefWidth="622.0">
+                                    <children>
+                                        <AnchorPane fx:id="descriptionAnchorPane" layoutX="15.0" layoutY="87.0" prefHeight="279.0" prefWidth="708.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="14.0">
+                                            <children>
+                                                <Label text="Description:" />
+                                                <TextArea fx:id="descriptionTextArea" layoutX="92.0" prefHeight="266.0" prefWidth="616.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="92.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                            </children>
+                                        </AnchorPane>
+                                        <Label layoutX="17.0" layoutY="22.0" text="Name:" />
+                                        <TextField fx:id="nameTextField" layoutX="108.0" layoutY="17.0" />
+                                        <CheckBox fx:id="descriptionScriptEnabledCheckBox" layoutX="107.0" layoutY="62.0" mnemonicParsing="false" text="Script?" />
+                                        <AnchorPane fx:id="descriptionScriptAnchorPane" layoutX="15.0" layoutY="87.0" prefHeight="279.0" prefWidth="708.0">
+                                            <children>
+                                                <Label text="Description:" />
+                                                <TextArea fx:id="descriptionScriptTextArea" layoutX="92.0" prefHeight="266.0" prefWidth="616.0" />
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Verbs">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <TableView fx:id="verbsTableView" layoutX="7.0" layoutY="6.0" prefHeight="494.0" prefWidth="644.0">
+                                            <columns>
+                                                <TableColumn fx:id="verbColumn" prefWidth="132.0" text="Verb" />
+                                                <TableColumn fx:id="scriptColumn" prefWidth="480.0" text="Script" />
+                                            </columns>
+                                        </TableView>
+                                        <Button fx:id="addVerbButton" layoutX="667.0" layoutY="14.0" mnemonicParsing="false" text="Add..." />
+                                        <Button fx:id="editVerbButton" layoutX="668.0" layoutY="48.0" mnemonicParsing="false" text="Edit..." />
+                                        <Button fx:id="deleteVerbButton" layoutX="666.0" layoutY="83.0" mnemonicParsing="false" text="Delete" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Items">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <TableView fx:id="itemsTableView" layoutX="6.0" layoutY="7.0" prefHeight="494.0" prefWidth="644.0">
+                                            <columns>
+                                                <TableColumn fx:id="nameColumn" prefWidth="132.0" text="Item" />
+                                                <TableColumn fx:id="descriptionColumn" prefWidth="480.0" text="Description" />
+                                            </columns>
+                                        </TableView>
+                                        <Button fx:id="addItemButton" layoutX="662.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Add..." />
+                                        <Button fx:id="editItemButton" layoutX="662.0" layoutY="41.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Edit..." />
+                                        <Button fx:id="deleteItemButton" layoutX="662.0" layoutY="75.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Delete" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Scripts">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <Label layoutX="6.0" layoutY="6.0" text="Script To Run Before Entering Room:" />
+                                        <TextArea fx:id="beforeEnterRoomScriptTextArea" layoutX="6.0" layoutY="23.0" prefHeight="74.0" prefWidth="724.0" />
+                                        <Label layoutX="6.0" layoutY="104.0" text="Script To Run After Entering Room:" />
+                                        <TextArea fx:id="afterEnterRoomScriptTextArea" layoutX="7.0" layoutY="121.0" prefHeight="74.0" prefWidth="724.0" />
+                                        <Label layoutX="6.0" layoutY="300.0" text="Script To Run Before Entering Room For First Time:" />
+                                        <TextArea fx:id="beforeEnterRoomFirstTimeScriptTextArea" layoutX="7.0" layoutY="317.0" prefHeight="74.0" prefWidth="724.0" />
+                                        <Label layoutX="6.0" layoutY="398.0" text="Script To Run After Entering Room For First Time:" />
+                                        <TextArea fx:id="afterEnterRoomFirstTimeScriptTextArea" layoutX="6.0" layoutY="415.0" prefHeight="74.0" prefWidth="724.0" />
+                                        <Label layoutX="6.0" layoutY="202.0" text="Script To Run After Leaving Room:" />
+                                        <TextArea fx:id="afterLeaveRoomScriptTextArea" layoutX="6.0" layoutY="219.0" prefHeight="74.0" prefWidth="724.0" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

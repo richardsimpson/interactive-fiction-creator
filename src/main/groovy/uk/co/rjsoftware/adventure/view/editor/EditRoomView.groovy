@@ -23,6 +23,10 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 @TypeChecked
 class EditRoomView extends AbstractDialogView {
 
+    @FXML private Label headerLabel
+    @FXML private Button moveRoomButton
+    @FXML private Button deleteRoomButton
+
     @FXML private TextField nameTextField
     @FXML private CheckBox descriptionScriptEnabledCheckBox
     @FXML private AnchorPane descriptionAnchorPane
@@ -80,6 +84,7 @@ class EditRoomView extends AbstractDialogView {
     }
 
     protected void onShow() {
+        this.headerLabel.textProperty().bindBidirectional(this.observableRoom.nameProperty())
         this.nameTextField.textProperty().bindBidirectional(this.observableRoom.nameProperty())
 
         this.descriptionScriptEnabledCheckBox.selectedProperty().bindBidirectional(this.observableRoom.descriptionScriptEnabledProperty())
@@ -157,6 +162,8 @@ class EditRoomView extends AbstractDialogView {
         afterEnterRoomFirstTimeScriptTextArea.textProperty().bindBidirectional(this.observableRoom.afterEnterRoomFirstTimeScriptProperty())
 
         // wire up the remaining buttons
+        moveRoomButton.setOnAction(this.&moveRoomButtonClick)
+        deleteRoomButton.setOnAction(this.&deleteRoomButtonClick)
         addVerbButton.setOnAction(this.&addVerbButtonClick)
         editVerbButton.setOnAction(this.&editVerbButtonClick)
         deleteVerbButton.setOnAction(this.&deleteVerbButtonClick)
@@ -198,4 +205,17 @@ class EditRoomView extends AbstractDialogView {
         this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
     }
 
+    private void moveRoomButtonClick(ActionEvent event) {
+//        final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
+//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
+//        if (editVerbInstanceView.showModal(getStage()) == mrOk) {
+//            this.verbsTableView.getItems().add(newObservableVerbInstance)
+//        }
+    }
+
+    private void deleteRoomButtonClick(ActionEvent event) {
+        this.observableRoom.
+        this.adventure.getRooms().remove(this.observableRoom.getRoom())
+        //this.close()
+    }
 }

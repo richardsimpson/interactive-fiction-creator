@@ -24,6 +24,8 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 @TypeChecked
 class EditAdventureView extends AbstractDialogView {
 
+    @FXML private Label headerLabel
+
     @FXML private TextField titleTextField
     @FXML private TextArea introductionTextArea
     @FXML private TextArea waitTextTextArea
@@ -61,6 +63,8 @@ class EditAdventureView extends AbstractDialogView {
 
 
     protected void onShow() {
+        this.headerLabel.textProperty().bindBidirectional(this.observableAdventure.titleProperty())
+
         this.titleTextField.textProperty().bindBidirectional(this.observableAdventure.titleProperty())
         this.introductionTextArea.textProperty().bindBidirectional(this.observableAdventure.introductionProperty())
         this.waitTextTextArea.textProperty().bindBidirectional(this.observableAdventure.waitTextProperty())
