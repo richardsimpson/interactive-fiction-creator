@@ -303,18 +303,12 @@ class EditItemView extends AbstractDialogView {
     }
 
     private void moveThisItemButtonClick(ActionEvent event) {
-//        final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
-//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.observableAdventure, newObservableVerbInstance)
-//        if (editVerbInstanceView.showModal(getStage()) == mrOk) {
-//            this.verbsTableView.getItems().add(newObservableVerbInstance)
-//        }
+        MoveItemView moveItemView = new MoveItemView(this.observableAdventure, this.observableItem)
+        moveItemView.showModal(getStage())
     }
 
     private void deleteThisItemButtonClick(ActionEvent event) {
         this.observableItem.getParent().removeItem(this.observableItem)
-//        final ItemContainer t = this.observableItem.getItem().getParent()
-//
-//        this.observableAdventure.getObservableRooms().remove(this.observableRoom)
-//        //this.close()
+        //this.close()
     }
 }

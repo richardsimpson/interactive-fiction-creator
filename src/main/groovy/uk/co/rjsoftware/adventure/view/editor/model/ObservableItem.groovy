@@ -340,4 +340,15 @@ class ObservableItem implements ObservableDomainObject, ObservableItemContainer 
         this.observableItems.any {it.getItem().getId().equals(item.getItem().id)}
     }
 
+    List<ObservableItem> getAllObservableItems() {
+        final List<ObservableItem> items = new ArrayList<>()
+        items.addAll(this.observableItems)
+
+        for (ObservableItem item : this.observableItems) {
+            items.addAll(item.getAllObservableItems())
+        }
+
+        items
+    }
+
 }
