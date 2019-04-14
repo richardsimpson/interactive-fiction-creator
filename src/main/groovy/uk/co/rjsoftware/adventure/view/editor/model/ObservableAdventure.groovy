@@ -108,5 +108,13 @@ class ObservableAdventure implements ObservableDomainObject {
     ObservableList<? extends ObservableDomainObject> getObservableTreeItemChildren() {
         this.observableRooms
     }
+
+    List<Item> getAllItems() {
+        this.adventure.getAllItems()
+    }
+
+    List<CustomVerb> getCustomVerbs() {
+        this.adventure.getCustomVerbs()
+    }
 }
 

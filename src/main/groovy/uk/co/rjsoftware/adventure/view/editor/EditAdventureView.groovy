@@ -41,13 +41,10 @@ class EditAdventureView extends AbstractDialogView {
     @FXML private Button editButton
     @FXML private Button deleteButton
 
-
-    private final Adventure adventure
     private final ObservableAdventure observableAdventure
 
-    EditAdventureView(Adventure adventure, ObservableAdventure observableAdventure) {
+    EditAdventureView(ObservableAdventure observableAdventure) {
         super("../editAdventure.fxml")
-        this.adventure = adventure
         this.observableAdventure = observableAdventure
 
     }
@@ -61,6 +58,8 @@ class EditAdventureView extends AbstractDialogView {
     // Add a Toolbar with 'Add Room' button
     // Bonus points, add a play button to the Toolbar
 
+    // TODO: When delete a Room / Item, switch to viewing the newly selected item.
+
 
     protected void onShow() {
         this.headerLabel.textProperty().bindBidirectional(this.observableAdventure.titleProperty())
@@ -70,7 +69,7 @@ class EditAdventureView extends AbstractDialogView {
         this.waitTextTextArea.textProperty().bindBidirectional(this.observableAdventure.waitTextProperty())
         this.getTextTextArea.textProperty().bindBidirectional(this.observableAdventure.getTextProperty())
 
-        final ObservableList<Item> observableAllItems = FXCollections.observableArrayList(this.adventure.getAllItems())
+        final ObservableList<Item> observableAllItems = FXCollections.observableArrayList(this.observableAdventure.getAllItems())
         this.playerComboBox.setItems(observableAllItems)
         this.playerComboBox.setConverter(new StringConverter<Item>() {
             @Override

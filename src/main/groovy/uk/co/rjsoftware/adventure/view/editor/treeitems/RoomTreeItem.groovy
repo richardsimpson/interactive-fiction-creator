@@ -8,6 +8,7 @@ import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.EditRoomView
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
 import uk.co.rjsoftware.adventure.view.editor.components.RoomComponent
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
@@ -15,14 +16,14 @@ import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 @TypeChecked
 class RoomTreeItem extends CustomTreeItem {
 
-    private final Adventure adventure
+    private final ObservableAdventure observableAdventure
     private final ObservableRoom observableRoom
     private final RoomComponent component
     private final TreeItem<CustomTreeItem> treeItem
 
-    RoomTreeItem(Adventure adventure, ObservableRoom observableRoom, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
+    RoomTreeItem(ObservableAdventure observableAdventure, ObservableRoom observableRoom, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         super(treeItem, parent, observableRoom)
-        this.adventure = adventure
+        this.observableAdventure = observableAdventure
         this.observableRoom = observableRoom
         this.component = new RoomComponent(observableRoom, this)
         this.treeItem = treeItem
@@ -34,12 +35,12 @@ class RoomTreeItem extends CustomTreeItem {
 
     @Override
     protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
-        new ItemTreeItem(adventure, (ObservableItem)item, treeItem, getParentForView())
+        new ItemTreeItem(observableAdventure, (ObservableItem)item, treeItem, getParentForView())
     }
 
     @Override
     protected AbstractDialogView createDialogView() {
-        new EditRoomView(adventure, observableRoom, getParentForView())
+        new EditRoomView(observableAdventure, observableRoom, getParentForView())
     }
 
     CustomComponent getComponent() {

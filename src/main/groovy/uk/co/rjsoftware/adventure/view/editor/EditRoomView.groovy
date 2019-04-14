@@ -8,9 +8,9 @@ import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.util.Callback
-import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableVerbInstance
@@ -24,7 +24,6 @@ import static uk.co.rjsoftware.adventure.view.ModalResult.mrOk
 class EditRoomView extends AbstractDialogView {
 
     @FXML private Label headerLabel
-    @FXML private Button moveRoomButton
     @FXML private Button deleteRoomButton
 
     @FXML private TextField nameTextField
@@ -59,13 +58,13 @@ class EditRoomView extends AbstractDialogView {
 
     private AbstractDialogView view
     private BorderPane parent
-    private final Adventure adventure
+    private final ObservableAdventure observableAdventure
     private final ObservableRoom observableRoom
 
-    EditRoomView(Adventure adventure, ObservableRoom observableRoom, BorderPane parent) {
+    EditRoomView(ObservableAdventure observableAdventure, ObservableRoom observableRoom, BorderPane parent) {
         super("../editRoom.fxml")
         this.parent = parent
-        this.adventure = adventure
+        this.observableAdventure = observableAdventure
         this.observableRoom = observableRoom
     }
 
@@ -103,7 +102,7 @@ class EditRoomView extends AbstractDialogView {
         descriptionScriptEnabledOnChange(this.descriptionScriptEnabledCheckBox.isSelected())
 
         // get a handy map of the adventure's custom verbs
-        final List<CustomVerb> customVerbList = this.adventure.getCustomVerbs()
+        final List<CustomVerb> customVerbList = this.observableAdventure.getCustomVerbs()
         final Map<UUID, CustomVerb> customVerbMap = customVerbList.stream()
                 .collect(Collectors.toMap(
                 new Function<CustomVerb, UUID>() {
@@ -162,7 +161,6 @@ class EditRoomView extends AbstractDialogView {
         afterEnterRoomFirstTimeScriptTextArea.textProperty().bindBidirectional(this.observableRoom.afterEnterRoomFirstTimeScriptProperty())
 
         // wire up the remaining buttons
-        moveRoomButton.setOnAction(this.&moveRoomButtonClick)
         deleteRoomButton.setOnAction(this.&deleteRoomButtonClick)
         addVerbButton.setOnAction(this.&addVerbButtonClick)
         editVerbButton.setOnAction(this.&editVerbButtonClick)
@@ -174,14 +172,14 @@ class EditRoomView extends AbstractDialogView {
 
     private void addVerbButtonClick(ActionEvent event) {
         final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
-        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
+        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.observableAdventure, newObservableVerbInstance)
         if (editVerbInstanceView.showModal(getStage()) == mrOk) {
             this.verbsTableView.getItems().add(newObservableVerbInstance)
         }
     }
 
     private void editVerbButtonClick(ActionEvent event) {
-        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, this.verbsTableView.getSelectionModel().getSelectedItem())
+        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.observableAdventure, this.verbsTableView.getSelectionModel().getSelectedItem())
         editVerbInstanceView.showModal(getStage())
     }
 
@@ -192,12 +190,12 @@ class EditRoomView extends AbstractDialogView {
     private void addItemButtonClick(ActionEvent event) {
         final ObservableItem newObservableItem = new ObservableItem()
         this.itemsTableView.getItems().add(newObservableItem)
-        this.view = new EditItemView(this.adventure, newObservableItem, this.parent)
+        this.view = new EditItemView(this.observableAdventure, newObservableItem, this.parent)
         this.view.show(this.parent)
     }
 
     private void editItemButtonClick(ActionEvent event) {
-        this.view = new EditItemView(this.adventure, this.itemsTableView.getSelectionModel().getSelectedItem(), this.parent)
+        this.view = new EditItemView(this.observableAdventure, this.itemsTableView.getSelectionModel().getSelectedItem(), this.parent)
         this.view.show(this.parent)
     }
 
@@ -205,17 +203,8 @@ class EditRoomView extends AbstractDialogView {
         this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
     }
 
-    private void moveRoomButtonClick(ActionEvent event) {
-//        final ObservableVerbInstance newObservableVerbInstance = new ObservableVerbInstance()
-//        EditVerbInstanceView editVerbInstanceView = new EditVerbInstanceView(this.adventure, newObservableVerbInstance)
-//        if (editVerbInstanceView.showModal(getStage()) == mrOk) {
-//            this.verbsTableView.getItems().add(newObservableVerbInstance)
-//        }
-    }
-
     private void deleteRoomButtonClick(ActionEvent event) {
-        this.observableRoom.
-        this.adventure.getRooms().remove(this.observableRoom.getRoom())
+        this.observableAdventure.getObservableRooms().remove(this.observableRoom)
         //this.close()
     }
 }

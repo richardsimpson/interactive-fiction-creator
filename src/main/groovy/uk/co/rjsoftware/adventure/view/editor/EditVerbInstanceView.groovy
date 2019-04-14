@@ -9,6 +9,7 @@ import javafx.util.StringConverter
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
 import uk.co.rjsoftware.adventure.view.AbstractEditDomainObjectDialogView
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableVerbInstance
 
 @TypeChecked
@@ -17,19 +18,19 @@ class EditVerbInstanceView extends AbstractEditDomainObjectDialogView {
     @FXML private ComboBox<CustomVerb> verbComboBox
     @FXML private TextArea scriptTextArea
 
-    private final Adventure adventure
+    private final ObservableAdventure observableAdventure
     private final ObservableVerbInstance verbInstance
 
-    EditVerbInstanceView(Adventure adventure, ObservableVerbInstance verbInstance) {
+    EditVerbInstanceView(ObservableAdventure observableAdventure, ObservableVerbInstance verbInstance) {
         super("../editVerbInstance.fxml")
-        this.adventure = adventure
+        this.observableAdventure = observableAdventure
         this.verbInstance = verbInstance
     }
 
     protected void onShow() {
         this.scriptTextArea.setText(verbInstance.getScript())
 
-        this.verbComboBox.setItems(FXCollections.observableArrayList(this.adventure.getCustomVerbs()))
+        this.verbComboBox.setItems(FXCollections.observableArrayList(this.observableAdventure.getCustomVerbs()))
 
         this.verbComboBox.setConverter(new StringConverter<CustomVerb>() {
             @Override
@@ -48,7 +49,7 @@ class EditVerbInstanceView extends AbstractEditDomainObjectDialogView {
         })
 
         if (this.verbInstance.getId() != null) {
-            final CustomVerb verb = this.adventure.getCustomVerbs().find {verb -> verb.getId() == this.verbInstance.getId()}
+            final CustomVerb verb = this.observableAdventure.getCustomVerbs().find {verb -> verb.getId() == this.verbInstance.getId()}
             this.verbComboBox.getSelectionModel().select(verb)
         }
     }

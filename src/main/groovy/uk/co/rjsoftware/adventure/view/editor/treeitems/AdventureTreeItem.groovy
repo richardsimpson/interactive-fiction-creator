@@ -13,12 +13,10 @@ import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 @TypeChecked
 class AdventureTreeItem extends CustomTreeItem {
 
-    private final Adventure adventure
     private final ObservableAdventure observableAdventure
 
-    AdventureTreeItem(Adventure adventure, ObservableAdventure observableAdventure, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
+    AdventureTreeItem(ObservableAdventure observableAdventure, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         super(treeItem, parent, observableAdventure)
-        this.adventure = adventure
         this.observableAdventure = observableAdventure
 
         for (ObservableRoom observableRoom : observableAdventure.getObservableRooms()) {
@@ -28,12 +26,12 @@ class AdventureTreeItem extends CustomTreeItem {
 
     @Override
     protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
-        new RoomTreeItem(adventure, (ObservableRoom)item, treeItem, getParentForView())
+        new RoomTreeItem(observableAdventure, (ObservableRoom)item, treeItem, getParentForView())
     }
 
     @Override
     protected AbstractDialogView createDialogView() {
-        new EditAdventureView(adventure, observableAdventure)
+        new EditAdventureView(observableAdventure)
     }
 
     // toString() is used by the TreeItem to determine th text to display

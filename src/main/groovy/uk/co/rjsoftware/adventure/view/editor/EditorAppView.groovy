@@ -110,7 +110,7 @@ class EditorAppView extends AbstractDialogView {
         // add the adventure rooms / items to the treeView
         final ObservableAdventure observableAdventure = new ObservableAdventure(adventure)
         final TreeItem<CustomTreeItem> root = new TreeItem<>()
-        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(adventure, observableAdventure, root, editPane)
+        final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(observableAdventure, root, editPane)
         root.setValue(adventureTreeItem)
         root.setExpanded(true);
 

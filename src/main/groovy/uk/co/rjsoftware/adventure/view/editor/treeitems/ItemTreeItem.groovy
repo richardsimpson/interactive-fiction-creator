@@ -6,18 +6,19 @@ import javafx.scene.layout.BorderPane
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.EditItemView
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 
 @TypeChecked
 class ItemTreeItem extends CustomTreeItem {
 
-    private final Adventure adventure
+    private final ObservableAdventure observableAdventure
     private final ObservableItem observableItem
 
-    ItemTreeItem(Adventure adventure, ObservableItem observableItem, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
+    ItemTreeItem(ObservableAdventure observableAdventure, ObservableItem observableItem, TreeItem<CustomTreeItem> treeItem, BorderPane parent) {
         super(treeItem, parent, observableItem)
-        this.adventure = adventure
+        this.observableAdventure = observableAdventure
         this.observableItem = observableItem
 
         for (ObservableItem childObservableItem : observableItem.getObservableItems()) {
@@ -27,12 +28,12 @@ class ItemTreeItem extends CustomTreeItem {
 
     @Override
     protected CustomTreeItem createChildCustomTreeItem(ObservableDomainObject item, TreeItem<CustomTreeItem> treeItem) {
-        new ItemTreeItem(adventure, (ObservableItem)item, treeItem, getParentForView())
+        new ItemTreeItem(observableAdventure, (ObservableItem)item, treeItem, getParentForView())
     }
 
     @Override
     protected AbstractDialogView createDialogView() {
-        new EditItemView(adventure, observableItem, getParentForView())
+        new EditItemView(observableAdventure, observableItem, getParentForView())
     }
 
     // toString() is used by the TreeItem to determine th text to display

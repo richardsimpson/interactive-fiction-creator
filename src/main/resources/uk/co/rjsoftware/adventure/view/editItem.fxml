@@ -29,8 +29,8 @@
             <right>
                 <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <buttons>
-                        <Button fx:id="moveItemButton" mnemonicParsing="false" text="Move..." />
-                        <Button fx:id="deleteItemButton" mnemonicParsing="false" text="Delete" />
+                        <Button fx:id="moveThisItemButton" mnemonicParsing="false" text="Move..." />
+                        <Button fx:id="deleteThisItemButton" mnemonicParsing="false" text="Delete" />
                     </buttons>
                     <BorderPane.margin>
                         <Insets right="10.0" />
