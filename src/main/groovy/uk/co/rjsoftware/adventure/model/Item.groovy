@@ -130,6 +130,11 @@ class Item implements ItemContainer, VerbContainer {
         this.synonyms
     }
 
+    void setSynonyms(List<String> synonyms) {
+        this.synonyms.clear()
+        this.synonyms.addAll(synonyms)
+    }
+
     void clearSynonyms() {
         this.synonyms.clear()
     }

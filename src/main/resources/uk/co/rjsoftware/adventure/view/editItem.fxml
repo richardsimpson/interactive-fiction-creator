@@ -21,9 +21,9 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="510.0" prefWidth="438.0">
                      <children>
                         <Label layoutX="17.0" layoutY="85.0" text="Synonyms:" />
-                        <TextField fx:id="nameTextField" layoutX="116.0" layoutY="14.0" />
-                        <TextField fx:id="displayNameTextField" layoutX="116.0" layoutY="46.0" />
-                        <TextField disable="true" layoutX="116.0" layoutY="79.0" />
+                        <TextField fx:id="nameTextField" layoutX="116.0" layoutY="14.0" prefHeight="27.0" prefWidth="248.0" />
+                        <TextField fx:id="displayNameTextField" layoutX="116.0" layoutY="46.0" prefHeight="27.0" prefWidth="248.0" />
+                        <TextField fx:id="synonymsTextField" disable="true" editable="false" layoutX="116.0" layoutY="79.0" prefHeight="27.0" prefWidth="603.0" />
                         <Label layoutX="18.0" layoutY="19.0" text="Name:" />
                         <Label layoutX="18.0" layoutY="51.0" text="Display Name:" />
                         <CheckBox fx:id="visibleCheckBox" layoutX="116.0" layoutY="116.0" mnemonicParsing="false" text="Visible" />
@@ -43,6 +43,7 @@
                               <TextArea fx:id="descriptionScriptTextArea" layoutX="97.0" prefHeight="266.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
+                        <Button fx:id="editSynonymsButton" layoutX="725.0" layoutY="79.0" mnemonicParsing="false" text="Edit..." />
                      </children>
                   </AnchorPane>
             </content>

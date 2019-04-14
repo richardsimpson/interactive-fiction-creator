@@ -38,6 +38,8 @@ class EditItemView extends AbstractDialogView {
     @FXML private AnchorPane descriptionScriptAnchorPane
     @FXML private TextField nameTextField
     @FXML private TextField displayNameTextField
+    @FXML private TextField synonymsTextField
+    @FXML private Button editSynonymsButton
     @FXML private CheckBox visibleCheckBox
     @FXML private CheckBox sceneryCheckBox
     @FXML private CheckBox gettableCheckBox
@@ -102,9 +104,6 @@ class EditItemView extends AbstractDialogView {
         this.observableItem = observableItem
     }
 
-    // TODO: Add ability to edit:
-    //       synonyms
-
     private descriptionScriptEnabledOnChange(boolean newValue) {
         if (newValue) {
             descriptionScriptAnchorPane.setVisible(true)
@@ -120,6 +119,7 @@ class EditItemView extends AbstractDialogView {
         // General Tab
         this.nameTextField.textProperty().bindBidirectional(this.observableItem.nameProperty())
         this.displayNameTextField.textProperty().bindBidirectional(this.observableItem.displayNameProperty())
+        this.synonymsTextField.textProperty().bindBidirectional(this.observableItem.displayedSynonymsProperty())
         this.visibleCheckBox.selectedProperty().bindBidirectional(this.observableItem.visibleProperty())
         this.sceneryCheckBox.selectedProperty().bindBidirectional(this.observableItem.sceneryProperty())
         this.gettableCheckBox.selectedProperty().bindBidirectional(this.observableItem.gettableProperty())
@@ -139,6 +139,8 @@ class EditItemView extends AbstractDialogView {
 
         // setup the anchor panes based on the initial value of the script flag
         descriptionScriptEnabledOnChange(this.descriptionScriptEnabledCheckBox.isSelected())
+
+        editSynonymsButton.setOnAction(this.&editSynonymsButtonClick)
 
         // Verbs Tab
 
@@ -282,6 +284,11 @@ class EditItemView extends AbstractDialogView {
 
     private void deleteItemButtonClick(ActionEvent event) {
         this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
+    }
+
+    private void editSynonymsButtonClick(ActionEvent event) {
+        EditItemSynonymsView editItemSynonymsView = new EditItemSynonymsView(this.observableItem)
+        editItemSynonymsView.showModal(getStage())
     }
 
 }

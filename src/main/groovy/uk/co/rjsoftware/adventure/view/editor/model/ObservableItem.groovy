@@ -1,6 +1,7 @@
 package uk.co.rjsoftware.adventure.view.editor.model
 
 import groovy.transform.TypeChecked
+import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.adapter.JavaBeanBooleanProperty
 import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanObjectProperty
@@ -25,6 +26,8 @@ class ObservableItem implements ObservableDomainObject {
     // General Tab
     private final JavaBeanStringProperty name
     private final JavaBeanStringProperty displayName
+    private final ObservableList<String> synonyms
+    private final SimpleStringProperty displayedSynonyms
     private final JavaBeanBooleanProperty visible
     private final JavaBeanBooleanProperty scenery
     private final JavaBeanBooleanProperty gettable
@@ -65,6 +68,8 @@ class ObservableItem implements ObservableDomainObject {
         // General Tab
         name = new JavaBeanStringPropertyBuilder().bean(item).name("name").build();
         displayName = new JavaBeanStringPropertyBuilder().bean(item).name("displayName").build();
+        this.synonyms = FXCollections.observableList(item.getSynonyms())
+        displayedSynonyms = new SimpleStringProperty(item.getSynonyms().toListString())
         visible = new JavaBeanBooleanPropertyBuilder().bean(item).name("visible").build();
         scenery = new JavaBeanBooleanPropertyBuilder().bean(item).name("scenery").build();
         gettable = new JavaBeanBooleanPropertyBuilder().bean(item).name("gettable").build();
@@ -139,81 +144,123 @@ class ObservableItem implements ObservableDomainObject {
     JavaBeanStringProperty nameProperty() {
         this.name
     }
+
     JavaBeanStringProperty displayNameProperty() {
         this.displayName
     }
+
+    SimpleStringProperty displayedSynonymsProperty() {
+        this.displayedSynonyms
+    }
+
+    ObservableList<String> getSynonyms() {
+        FXCollections.observableArrayList(this.item.getSynonyms())
+    }
+
+    void setSynonyms(ObservableList<String> synonyms) {
+        if (this.synonyms != synonyms) {
+            this.synonyms.setAll(synonyms)
+        }
+        this.displayedSynonyms.set(synonyms.toListString())
+        this.item.setSynonyms(synonyms)
+    }
+
     JavaBeanBooleanProperty visibleProperty() {
         this.visible
     }
+
     JavaBeanBooleanProperty sceneryProperty() {
         this.scenery
     }
+
     JavaBeanBooleanProperty gettableProperty() {
         this.gettable
     }
+
     JavaBeanBooleanProperty droppableProperty() {
         this.droppable
     }
+
     JavaBeanStringProperty descriptionProperty() {
         this.description
     }
+
     JavaBeanStringProperty descriptionScriptProperty() {
         this.descriptionScript
     }
+
     JavaBeanBooleanProperty descriptionScriptEnabledProperty() {
         this.descriptionScriptEnabled
     }
+
     JavaBeanBooleanProperty switchableProperty() {
         this.switchable
     }
+
     JavaBeanBooleanProperty containerProperty() {
         this.container
     }
+
     JavaBeanBooleanProperty edibleProperty() {
         this.edible
     }
+
     JavaBeanBooleanProperty switchedOnProperty() {
         this.switchedOn
     }
+
     JavaBeanStringProperty switchOnMessageProperty() {
         this.switchOnMessage
     }
+
     JavaBeanStringProperty switchOffMessageProperty() {
         this.switchOffMessage
     }
+
     JavaBeanStringProperty extraDescriptionWhenSwitchedOnProperty() {
         this.extraDescriptionWhenSwitchedOn
     }
+
     JavaBeanStringProperty extraDescriptionWhenSwitchedOffProperty() {
         this.extraDescriptionWhenSwitchedOff
     }
+
     JavaBeanBooleanProperty openableProperty() {
         this.openable
     }
+
     JavaBeanBooleanProperty closeableProperty() {
         this.closeable
     }
+
     JavaBeanBooleanProperty openProperty() {
         this.open
     }
+
     JavaBeanObjectProperty<ContentVisibility> contentVisibilityProperty() {
         this.contentVisibility
     }
+
     JavaBeanStringProperty openMessageProperty() {
         this.openMessage
     }
+
     JavaBeanStringProperty closeMessageProperty() {
         this.closeMessage
     }
+
     JavaBeanStringProperty onOpenScriptProperty() {
         this.onOpenScript
     }
+
     JavaBeanStringProperty onCloseScriptProperty() {
         this.onCloseScript
     }
+
     JavaBeanStringProperty eatMessageProperty() {
         this.eatMessage
     }
+
     JavaBeanStringProperty onEatScriptProperty() {
         this.onEatScript
     }
