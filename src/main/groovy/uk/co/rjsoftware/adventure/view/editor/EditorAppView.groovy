@@ -8,6 +8,8 @@ import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
@@ -84,6 +86,8 @@ class EditorAppView extends AbstractDialogView {
         });
 
         addRoomButton.setOnAction(this.&addRoomButtonClick)
+        Image imageAdd = new Image(getClass().getResourceAsStream("add.png"));
+        addRoomButton.setGraphic(new ImageView(imageAdd))
     }
 
     private void addRoomButtonClick(ActionEvent event) {
