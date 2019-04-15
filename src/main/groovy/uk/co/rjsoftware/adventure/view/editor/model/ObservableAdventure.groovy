@@ -122,6 +122,10 @@ class ObservableAdventure implements ObservableDomainObject {
         this.getObservableRooms().remove(room)
     }
 
+    void addRoom(ObservableRoom room) {
+        this.getObservableRooms().add(room)
+    }
+
     List<ObservableItemContainer> getAllItemContainers() {
         final List<ObservableItemContainer> allItems = new ArrayList<>()
         allItems.addAll(this.observableRooms)

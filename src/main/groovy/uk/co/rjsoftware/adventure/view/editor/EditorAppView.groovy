@@ -40,9 +40,12 @@ class EditorAppView extends AbstractDialogView {
 
     @FXML private MenuItem loadMenuItem = null
 
+    @FXML private Button addRoomButton
+
     private ResizeComponent resizeComponent
 
-    private Adventure adventure
+    private ObservableAdventure observableAdventure
+    private AbstractDialogView view
 
     private List<LoadListener> loadListeners = new ArrayList()
 
@@ -79,8 +82,16 @@ class EditorAppView extends AbstractDialogView {
                 }
             }
         });
+
+        addRoomButton.setOnAction(this.&addRoomButtonClick)
     }
 
+    private void addRoomButtonClick(ActionEvent event) {
+        final ObservableRoom newObservableRoom = new ObservableRoom()
+        this.observableAdventure.addRoom(newObservableRoom)
+        this.view = new EditRoomView(this.observableAdventure, newObservableRoom, this.editPane)
+        this.view.show(this.editPane)
+    }
     private void loadAdventureInternal() {
         FileChooser fileChooser = new FileChooser()
         fileChooser.setTitle("Open Adventure")
@@ -105,10 +116,8 @@ class EditorAppView extends AbstractDialogView {
     }
 
     void loadAdventure(Adventure adventure) {
-        this.adventure = adventure
-
         // add the adventure rooms / items to the treeView
-        final ObservableAdventure observableAdventure = new ObservableAdventure(adventure)
+        this.observableAdventure = new ObservableAdventure(adventure)
         final TreeItem<CustomTreeItem> root = new TreeItem<>()
         final AdventureTreeItem adventureTreeItem = new AdventureTreeItem(observableAdventure, root, editPane)
         root.setValue(adventureTreeItem)

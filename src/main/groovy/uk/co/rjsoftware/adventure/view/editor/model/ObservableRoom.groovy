@@ -97,6 +97,10 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
 
     }
 
+    ObservableRoom() {
+        this(new Room("New Room"))
+    }
+
     JavaBeanStringProperty nameProperty() {
         this.name
     }

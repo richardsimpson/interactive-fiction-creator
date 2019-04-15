@@ -49,13 +49,8 @@ class EditAdventureView extends AbstractDialogView {
 
     }
 
-    // TODO: Add ability to:
-    // - Add rooms
-    //
-    // Add a Toolbar with 'Add Room' button
-    // Bonus points, add a play button to the Toolbar
+    // TODO: Add a play button to the Toolbar
 
-    // TODO: When delete a Room / Item, switch to viewing the newly selected item.
 
 
     protected void onShow() {
