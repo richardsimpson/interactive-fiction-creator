@@ -7,9 +7,9 @@ import javafx.scene.input.MouseEvent
 class MultiEventHandler<T extends Event> implements EventHandler<T> {
 
     private List<EventHandler<T>> handlers = new ArrayList<>()
-    private EventHandler<T> baseHandler
+    private EventHandler<? super T> baseHandler
 
-    void addBaseHandler(EventHandler<? super Event> eventHandler) {
+    void addBaseHandler(EventHandler<? super T> eventHandler) {
         this.baseHandler = eventHandler
 
         if (eventHandler != null) {
@@ -17,7 +17,7 @@ class MultiEventHandler<T extends Event> implements EventHandler<T> {
         }
     }
 
-    void addHandler(EventHandler<? super Event> eventHandler) {
+    void addHandler(EventHandler<? super T> eventHandler) {
         if (eventHandler != null) {
             handlers.add(eventHandler)
         }
@@ -27,7 +27,7 @@ class MultiEventHandler<T extends Event> implements EventHandler<T> {
         handlers.remove(eventHandler)
     }
 
-    EventHandler<T> getBaseHandler() {
+    EventHandler<? super T> getBaseHandler() {
         this.baseHandler
     }
 
