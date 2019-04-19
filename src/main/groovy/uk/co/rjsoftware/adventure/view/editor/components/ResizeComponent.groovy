@@ -1,22 +1,16 @@
 package uk.co.rjsoftware.adventure.view.editor.components
 
 import groovy.transform.TypeChecked
-import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.input.MouseEvent
-import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.Border
-import javafx.scene.layout.BorderStroke
-import javafx.scene.layout.BorderStrokeStyle
-import javafx.scene.layout.Pane
-import javafx.scene.layout.Region
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 
 @TypeChecked
 class ResizeComponent extends AnchorPane {
 
-    private static final int DRAG_NODE_SIZE = 10
+    private static final int DRAG_NODE_SIZE = 8
     private static final int DRAG_NODE_RADIUS = DRAG_NODE_SIZE.intdiv(2).intValue()
 
     private final Rectangle dragNodeN = new Rectangle(DRAG_NODE_SIZE, DRAG_NODE_SIZE, Color.BLACK)
@@ -30,11 +24,6 @@ class ResizeComponent extends AnchorPane {
 
     private final Parent pane
 
-    private double currentX
-    private double currentY
-    private double offsetX
-    private double offsetY
-
     private Region componentToResize
 
     private boolean currentlyDraggingNode
@@ -44,7 +33,6 @@ class ResizeComponent extends AnchorPane {
 
     ResizeComponent(Parent pane) {
         this.pane = pane
-        this.pane.setOnMouseClicked(this.&onMouseClickedParentPane)
 
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)))
 
@@ -125,11 +113,8 @@ class ResizeComponent extends AnchorPane {
         this.setOnMousePressed(onMousePressedMultiEventHandler)
         this.setOnMouseReleased(onMouseReleasedMultiEventHandler)
 
-        this.offsetX = offsetX
-        this.offsetY = offsetY
-
-        currentX = node.getLayoutX()
-        currentY = node.getLayoutY()
+        final double currentX = node.getLayoutX()
+        final double currentY = node.getLayoutY()
 
         setLayoutX(currentX)
         setLayoutY(currentY)
@@ -331,25 +316,12 @@ class ResizeComponent extends AnchorPane {
         AnchorPane.setBottomAnchor(dragNodeW, heightOffset)
     }
 
-    void updateLocation() {
+    private void updateLocation() {
         setLayoutX(componentToResize.getLayoutX())
         setLayoutY(componentToResize.getLayoutY())
     }
 
-    void registerComponent(Region node) {
-        final MultiEventHandler<MouseEvent> onMousePressedMultiEventHandler = new MultiEventHandler<>()
-        onMousePressedMultiEventHandler.addHandler(this.&onMousePressedComponent)
-        onMousePressedMultiEventHandler.addBaseHandler(node.getOnMousePressed())
-
-        final MultiEventHandler<MouseEvent> onMouseReleasedMultiEventHandler = new MultiEventHandler<>()
-        onMouseReleasedMultiEventHandler.addHandler(this.&onMouseReleasedComponent)
-        onMouseReleasedMultiEventHandler.addBaseHandler(node.getOnMouseReleased())
-
-        node.setOnMousePressed(onMousePressedMultiEventHandler)
-        node.setOnMouseReleased(onMouseReleasedMultiEventHandler)
-    }
-
-    private void onMousePressedComponent(MouseEvent event) {
+    void onMousePressedComponent(MouseEvent event) {
         final Region region = event.getSource() as Region
 
         println("component pressed")
@@ -367,7 +339,7 @@ class ResizeComponent extends AnchorPane {
         this.pane.getChildren().add(moveComponent)
     }
 
-    private void onMouseReleasedComponent(MouseEvent event) {
+    void onMouseReleasedComponent(MouseEvent event) {
         if (currentlyDraggingComponent) {
             currentlyDraggingComponent = false
             println("component released")
@@ -419,11 +391,8 @@ class ResizeComponent extends AnchorPane {
         }
     }
 
-    private void onMouseClickedParentPane(MouseEvent event) {
-        if (event.target == this.pane) {
-            println("pane clicked")
-            this.pane.getChildren().remove(this)
-        }
+    void removeComponent() {
+        this.pane.getChildren().remove(this)
     }
 
 }

@@ -20,14 +20,12 @@ import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.LoadEvent
 import uk.co.rjsoftware.adventure.view.LoadListener
 import uk.co.rjsoftware.adventure.view.editor.components.CustomComponent
-import uk.co.rjsoftware.adventure.view.editor.components.ResizeComponent
+import uk.co.rjsoftware.adventure.view.editor.components.SelectMode
+import uk.co.rjsoftware.adventure.view.editor.components.SelectorComponent
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
-import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.treeitems.AdventureTreeItem
 import uk.co.rjsoftware.adventure.view.editor.treeitems.CustomTreeItem
-import uk.co.rjsoftware.adventure.view.editor.treeitems.ItemTreeItem
-import uk.co.rjsoftware.adventure.view.editor.treeitems.RoomTreeItem
 
 import java.nio.file.Paths
 
@@ -44,7 +42,9 @@ class EditorAppView extends AbstractDialogView {
 
     @FXML private Button addRoomButton
 
-    private ResizeComponent resizeComponent
+    @FXML private ToggleButton drawLinesButton
+
+    private SelectorComponent selectorComponent
 
     private ObservableAdventure observableAdventure
     private AbstractDialogView view
@@ -52,7 +52,7 @@ class EditorAppView extends AbstractDialogView {
     private List<LoadListener> loadListeners = new ArrayList()
 
     @FXML void initialize() {
-        resizeComponent = new ResizeComponent(this.mapPane)
+        selectorComponent = new SelectorComponent(this.mapPane)
     }
 
     EditorAppView() {
@@ -79,7 +79,7 @@ class EditorAppView extends AbstractDialogView {
                     component.setLayoutX(100)
                     component.setLayoutY(100)
 
-                    resizeComponent.registerComponent(component)
+                    selectorComponent.registerComponent(component)
                     EditorAppView.this.mapPane.getChildren().add(component)
                 }
             }
@@ -88,6 +88,8 @@ class EditorAppView extends AbstractDialogView {
         addRoomButton.setOnAction(this.&addRoomButtonClick)
         Image imageAdd = new Image(getClass().getResourceAsStream("add.png"));
         addRoomButton.setGraphic(new ImageView(imageAdd))
+
+        drawLinesButton.setOnAction(this.&drawLinesButtonClick)
     }
 
     private void addRoomButtonClick(ActionEvent event) {
@@ -96,6 +98,18 @@ class EditorAppView extends AbstractDialogView {
         this.view = new EditRoomView(this.observableAdventure, newObservableRoom, this.editPane)
         this.view.show(this.editPane)
     }
+
+    private void drawLinesButtonClick(ActionEvent event) {
+        if (drawLinesButton.isSelected()) {
+            println("drawLinesButton selected")
+            this.selectorComponent.setSelectMode(SelectMode.CONNECTOR)
+        }
+        else {
+            println("drawLinesButton UNselected")
+            this.selectorComponent.setSelectMode(SelectMode.RESIZE)
+        }
+    }
+
     private void loadAdventureInternal() {
         FileChooser fileChooser = new FileChooser()
         fileChooser.setTitle("Open Adventure")
