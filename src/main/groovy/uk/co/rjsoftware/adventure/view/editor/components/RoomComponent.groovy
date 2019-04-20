@@ -26,11 +26,12 @@ class RoomComponent extends CustomComponent {
         this.setMinSize(MIN_WIDTH, MIN_HEIGHT)
 
         this.name.setFont(Font.font("Helvetica", FontWeight.BOLD, 20))
+        this.name.setMouseTransparent(true)
 
         this.description.setWrapText(true)
         this.description.setMaxWidth(200)
-
         this.description.setFont(Font.font("Arial", FontPosture.ITALIC, 13))
+        this.description.setMouseTransparent(true)
 
         this.getChildren().add(name)
         this.getChildren().add(description)

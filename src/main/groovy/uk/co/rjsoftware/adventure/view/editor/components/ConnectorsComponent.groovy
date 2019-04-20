@@ -1,7 +1,9 @@
 package uk.co.rjsoftware.adventure.view.editor.components
 
 import groovy.transform.TypeChecked
+import javafx.scene.Node
 import javafx.scene.Parent
+import javafx.scene.input.MouseDragEvent
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
@@ -24,7 +26,8 @@ class ConnectorsComponent extends AnchorPane {
 
     private final Parent pane
 
-    private Region componentToResize
+    private CustomComponent componentToControl
+    private PathComponent path = new PathComponent()
 
     private boolean currentlyDraggingNode
 
@@ -50,37 +53,29 @@ class ConnectorsComponent extends AnchorPane {
         AnchorPane.setTopAnchor(connectorNodeNW, -DRAG_NODE_RADIUS)
         AnchorPane.setLeftAnchor(connectorNodeNW, -DRAG_NODE_RADIUS)
 
-        connectorNodeN.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeN.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeN.setOnMouseDragged(this.&nodeNOnMouseDragged)
+        connectorNodeN.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeN.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeE.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeE.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeE.setOnMouseDragged(this.&nodeEOnMouseDragged)
+        connectorNodeE.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeE.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeS.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeS.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeS.setOnMouseDragged(this.&nodeSOnMouseDragged)
+        connectorNodeS.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeS.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeW.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeW.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeW.setOnMouseDragged(this.&nodeWOnMouseDragged)
+        connectorNodeW.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeW.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeNE.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeNE.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeNE.setOnMouseDragged(this.&nodeNEOnMouseDragged)
+        connectorNodeNE.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeNE.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeSE.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeSE.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeSE.setOnMouseDragged(this.&nodeSEOnMouseDragged)
+        connectorNodeSE.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeSE.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeSW.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeSW.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeSW.setOnMouseDragged(this.&nodeSWOnMouseDragged)
+        connectorNodeSW.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeSW.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
-        connectorNodeNW.setOnMousePressed(this.&nodeOnMousePressed)
-        connectorNodeNW.setOnMouseReleased(this.&nodeOnMouseReleased)
-        connectorNodeNW.setOnMouseDragged(this.&nodeNWOnMouseDragged)
+        connectorNodeNW.setOnDragDetected(this.&nodeOnDragDetected)
+        connectorNodeNW.setOnMouseDragReleased(this.&nodeOnMouseDragReleased)
 
         this.getChildren().add(connectorNodeN)
         this.getChildren().add(connectorNodeE)
@@ -92,77 +87,44 @@ class ConnectorsComponent extends AnchorPane {
         this.getChildren().add(connectorNodeNW)
     }
 
-    void setComponentToControl(Region node, double offsetX, double offsetY) {
-        componentToResize = node
+    private void nodeOnDragDetected(MouseEvent event) {
+        println("drag detected.")
+        println("target: " + event.getTarget())
+        println("source: " + event.getSource())
 
-        final double currentX = node.getLayoutX()
-        final double currentY = node.getLayoutY()
-
-        setLayoutX(currentX)
-        setLayoutY(currentY)
-
-        setMinSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
-        setMaxSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
-        setPrefSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
-    }
-
-    private void nodeOnMousePressed(MouseEvent event) {
-        println("node pressed")
         this.currentlyDraggingNode = true
+
+        Circle sourceCircle = (Circle)event.getTarget()
+        sourceCircle.startFullDrag()
+
+        this.path.setLayoutX(this.componentToControl.getLayoutX() + sourceCircle.getLayoutX())
+        this.path.setLayoutY(this.componentToControl.getLayoutY() + sourceCircle.getLayoutY())
+        this.path.setEndpoint(0, 0)
+        this.pane.getChildren().add(this.path)
     }
 
-    private void nodeOnMouseReleased(MouseEvent event) {
-        println("node released")
+    private void nodeOnMouseDragReleased(MouseDragEvent event) {
+        println("drag release detected.")
+        println("target: " + event.getTarget())
+        println("source: " + event.getSource())
+
+        event.consume()
+        this.currentlyDraggingNode = false
+
+        if (event.getGestureSource() == event.getSource()) {
+            // TODO: Start and end nodes are the same - remove the line
+        }
+
+        Circle targetCircle = (Circle)event.getTarget()
+        final double nodeX = targetCircle.getLayoutX() + targetCircle.getParent().getLayoutX()
+        final double nodeY = targetCircle.getLayoutY() + targetCircle.getParent().getLayoutY()
+
+        this.path.setEndpoint(nodeX - this.path.getLayoutX(), nodeY - this.path.getLayoutY())
     }
 
-    //
-    // Dragging of corner nodes
-    //
-
-    private void nodeNOnMouseDragged(MouseEvent event) {
-        println("nodeN dragged")
-//        final double currentWidth = componentToResize.getWidth()
-//        final double currentHeight = componentToResize.getHeight()
-//        final double currentX = componentToResize.getLayoutX()
-//        final double currentY = componentToResize.getLayoutY()
-//
-//        final double newDesiredHeight = currentHeight - event.getY() + DRAG_NODE_RADIUS
-//        final double newY = currentY - (newDesiredHeight-currentHeight)
-//
-//        repositionComponent(false, currentX, true, newY, currentWidth, newDesiredHeight)
+    void onMouseDragReleasedMapPane(MouseDragEvent event) {
+        this.pane.getChildren().remove(this.path)
     }
-
-    private void nodeEOnMouseDragged(MouseEvent event) {
-        println("nodeE dragged")
-    }
-
-    private void nodeSOnMouseDragged(MouseEvent event) {
-        println("nodeS dragged")
-    }
-
-    private void nodeWOnMouseDragged(MouseEvent event) {
-        println("nodeW dragged")
-    }
-
-    private void nodeNEOnMouseDragged(MouseEvent event) {
-        println("nodeNE dragged")
-    }
-
-    private void nodeSEOnMouseDragged(MouseEvent event) {
-        println("nodeSE dragged")
-    }
-
-    private void nodeSWOnMouseDragged(MouseEvent event) {
-        println("nodeSW dragged")
-    }
-
-    private void nodeNWOnMouseDragged(MouseEvent event) {
-        println("nodeNW dragged")
-    }
-
-    //
-    // END OF Dragging of corner nodes
-    //
 
     @Override
     void resize(double width, double height) {
@@ -184,26 +146,46 @@ class ConnectorsComponent extends AnchorPane {
         AnchorPane.setBottomAnchor(connectorNodeW, heightOffset)
     }
 
-    void onMousePressedComponent(MouseEvent event) {
-        final Region region = event.getSource() as Region
-
-        println("component pressed")
-
+    private void setComponentToControl(CustomComponent node) {
         // remove the existing connectors component, if any
         this.pane.getChildren().remove(this)
 
-        // add the connectors component, over the selected item
-        setComponentToControl(region, event.getX(), event.getY())
+        componentToControl = node
+
+        final double currentX = node.getLayoutX()
+        final double currentY = node.getLayoutY()
+
+        setLayoutX(currentX)
+        setLayoutY(currentY)
+
+        setMinSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
+        setMaxSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
+        setPrefSize(node.getLayoutBounds().getWidth(), node.getLayoutBounds().getHeight())
         this.pane.getChildren().add(this)
     }
 
-    void onMouseReleasedComponent(MouseEvent event) {
-        println("component released")
+    void removeComponent() {
+        this.pane.getChildren().remove(this)
+        this.componentToControl = null
     }
 
-    void removeComponent() {
-        println("pane clicked")
-        this.pane.getChildren().remove(this)
+    void onMouseMovedMapPane(MouseEvent event) {
+        final Node node = event.getPickResult().getIntersectedNode()
+        if (node instanceof CustomComponent && node != componentToControl) {
+            setComponentToControl((CustomComponent)node)
+        }
+    }
+
+    void onMouseDraggedMapPane(MouseEvent event) {
+        final Node node = event.getPickResult().getIntersectedNode()
+
+        if (node instanceof CustomComponent && node != componentToControl) {
+            setComponentToControl((CustomComponent)node)
+        }
+
+        if (this.currentlyDraggingNode) {
+            this.path.setEndpoint(event.getX() - this.path.getLayoutX(), event.getY() - this.path.getLayoutY())
+        }
     }
 
 }
