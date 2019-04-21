@@ -107,8 +107,8 @@ class ObservableItem implements ObservableDomainObject, ObservableItemContainer 
         observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
             @Override
             void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
-                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
-                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
+                final Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
+                final Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
                         new Function<ObservableVerbInstance, UUID>() {
                             @Override
                             UUID apply(ObservableVerbInstance verbInstance) {

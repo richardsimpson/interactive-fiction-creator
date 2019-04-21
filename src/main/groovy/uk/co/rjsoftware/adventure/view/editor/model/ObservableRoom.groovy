@@ -9,6 +9,8 @@ import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import uk.co.rjsoftware.adventure.model.CustomVerbInstance
+import uk.co.rjsoftware.adventure.model.Direction
+import uk.co.rjsoftware.adventure.model.Exit
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 
@@ -31,6 +33,7 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
     private final JavaBeanStringProperty afterEnterRoomFirstTimeScript
     private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
     private final ObservableList<ObservableItem> observableItems
+    private final ObservableList<ObservableExit> observableExits
 
     ObservableRoom(Room room) {
         this.room = room
@@ -95,6 +98,34 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
             }
         })
 
+        // setup the observableExit's list
+        final List<ObservableExit> currentExits = room.getExits().values().stream()
+                .map { exit -> new ObservableExit(exit)}
+                .collect(Collectors.toList())
+        this.observableExits = FXCollections.observableList(currentExits)
+
+        // listen to changes in the observableList of exits, so that we can update the original exits in the adventure
+        observableExits.addListener(new ListChangeListener<ObservableExit>() {
+            @Override
+            void onChanged(ListChangeListener.Change<? extends ObservableExit> c) {
+                final Stream<ObservableExit> tempExits = observableExits.stream()
+                final Map<Direction, Exit> newExits = tempExits.collect(Collectors.toMap(
+                        new Function<ObservableExit, Direction>() {
+                            @Override
+                            Direction apply(ObservableExit exit) {
+                                return exit.directionProperty().get()
+                            }
+                        },
+                        new Function<ObservableExit, Exit>() {
+                            @Override
+                            Exit apply(ObservableExit exit) {
+                                return exit.getExit()
+                            }
+                        }))
+
+                room.setExits(newExits)
+            }
+        })
     }
 
     ObservableRoom() {
@@ -143,6 +174,10 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
 
     ObservableList<ObservableItem> getObservableItems() {
         this.observableItems
+    }
+
+    ObservableList<ObservableExit> getObservableExits() {
+        this.observableExits
     }
 
     Room getRoom() {

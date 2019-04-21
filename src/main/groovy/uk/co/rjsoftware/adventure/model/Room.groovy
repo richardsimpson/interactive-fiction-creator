@@ -116,6 +116,11 @@ class Room implements ItemContainer, VerbContainer {
         this.exits.get(direction)
     }
 
+    void setExits(Map<Direction, Exit> exits) {
+        this.exits.clear()
+        this.exits.putAll(exits)
+    }
+
     void addItem(Item item) {
         if (!contains(item)) {
             this.items.add(item)

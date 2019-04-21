@@ -100,6 +100,26 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
+                  <Tab text="Exits">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TableView fx:id="exitsTableView" layoutX="6.0" layoutY="7.0" prefHeight="494.0" prefWidth="644.0">
+                                 <columns>
+                                    <TableColumn fx:id="directionColumn" prefWidth="110.0" text="Direction" />
+                                    <TableColumn fx:id="destinationColumn" prefWidth="236.0" text="Destination" />
+                                    <TableColumn fx:id="sceneryColumn" prefWidth="75.0" text="Scenery" />
+                                    <TableColumn fx:id="prefixColumn" prefWidth="75.0" text="Prefix" />
+                                    <TableColumn fx:id="suffixColumn" prefWidth="75.0" text="Suffix" />
+                                 </columns>
+                              </TableView>
+                              <Button fx:id="addExitButton" layoutX="662.0" layoutY="7.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Add..." />
+                              <Button fx:id="editIExitButton" layoutX="662.0" layoutY="41.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Edit..." />
+                              <Button fx:id="deleteExitButton" layoutX="662.0" layoutY="75.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="61.0" text="Delete" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
                         <Tab text="Scripts">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

@@ -9,8 +9,11 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.util.Callback
 import uk.co.rjsoftware.adventure.model.CustomVerb
+import uk.co.rjsoftware.adventure.model.Direction
+import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.AbstractDialogView
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableExit
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableItem
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableVerbInstance
@@ -49,6 +52,13 @@ class EditRoomView extends AbstractDialogView {
     @FXML private TableView<ObservableItem> itemsTableView
     @FXML private TableColumn<ObservableItem, String> nameColumn
     @FXML private TableColumn<ObservableItem, String> descriptionColumn
+
+    @FXML private TableView<ObservableExit> exitsTableView
+    @FXML private TableColumn<ObservableExit, Direction> directionColumn
+    @FXML private TableColumn<ObservableExit, ObservableRoom> destinationColumn
+    @FXML private TableColumn<ObservableExit, Boolean> sceneryColumn
+    @FXML private TableColumn<ObservableExit, String> prefixColumn
+    @FXML private TableColumn<ObservableExit, String> suffixColumn
 
     @FXML private TextArea beforeEnterRoomScriptTextArea
     @FXML private TextArea afterEnterRoomScriptTextArea
@@ -153,6 +163,37 @@ class EditRoomView extends AbstractDialogView {
         descriptionColumn.setCellValueFactory({ cellData -> cellData.getValue().descriptionProperty()})
 
         itemsTableView.setItems(this.observableRoom.getObservableItems())
+
+        //Exits tab
+
+        directionColumn.setCellValueFactory({ cellData -> cellData.getValue().directionProperty()})
+        destinationColumn.setCellValueFactory({ cellData -> cellData.getValue().destinationProperty()})
+        sceneryColumn.setCellValueFactory({ cellData -> cellData.getValue().sceneryProperty()})
+        prefixColumn.setCellValueFactory({ cellData -> cellData.getValue().prefixProperty()})
+        suffixColumn.setCellValueFactory({ cellData -> cellData.getValue().suffixProperty()})
+
+        // have the destinationColumn display the room name instead of the toString of the ObservableROom
+        destinationColumn.setCellFactory(new Callback<TableColumn<ObservableExit, ObservableRoom>, TableCell<ObservableExit, ObservableRoom>>() {
+            @Override
+            TableCell<ObservableExit, Room> call(TableColumn<ObservableExit, ObservableRoom> param) {
+                new TableCell<ObservableExit, Room>() {
+                    @Override
+                    void updateItem(Room room, boolean empty) {
+                        super.updateItem(room, empty)
+                        if (empty) {
+                            setText(null)
+                        } else {
+                            setText(room.getName())
+                        }
+                    }
+                }
+            }
+        })
+
+        exitsTableView.setItems(this.observableRoom.getObservableExits())
+
+
+        // Scripts tab
 
         beforeEnterRoomScriptTextArea.textProperty().bindBidirectional(this.observableRoom.beforeEnterRoomScriptProperty())
         afterEnterRoomScriptTextArea.textProperty().bindBidirectional(this.observableRoom.afterEnterRoomScriptProperty())
