@@ -39,11 +39,14 @@ class ConnectorsComponent extends AnchorPane {
 
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)))
 
-        // TODO: Add support for the NE, SE, SW, NW
         connectorNodeN.setUserData(Direction.NORTH)
         connectorNodeE.setUserData(Direction.EAST)
         connectorNodeS.setUserData(Direction.SOUTH)
         connectorNodeW.setUserData(Direction.WEST)
+        connectorNodeNE.setUserData(Direction.NORTHEAST)
+        connectorNodeSE.setUserData(Direction.SOUTHEAST)
+        connectorNodeSW.setUserData(Direction.SOUTHWEST)
+        connectorNodeNW.setUserData(Direction.NORTHWEST)
 
         AnchorPane.setTopAnchor(connectorNodeN, -DRAG_NODE_RADIUS)
         AnchorPane.setRightAnchor(connectorNodeE, -DRAG_NODE_RADIUS)

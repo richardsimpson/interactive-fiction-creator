@@ -10,6 +10,10 @@ class StandardVerbs {
     static final Verb SOUTH = new Verb("South", "South", ["SOUTH", "S"])
     static final Verb EAST = new Verb("East", "East", ["EAST", "E"])
     static final Verb WEST = new Verb("West", "West", ["WEST", "W"])
+    static final Verb NORTHEAST = new Verb("Northeast", "Northeast", ["NORTHEAST", "NE"])
+    static final Verb SOUTHEAST = new Verb("Southeast", "Southeast", ["SOUTHEAST", "SE"])
+    static final Verb SOUTHWEST = new Verb("Southwest", "Southwest", ["SOUTHWEST", "SW"])
+    static final Verb NORTHWEST = new Verb("Northwest", "Northwest", ["NORTHWEST", "NW"])
     static final Verb UP = new Verb("Up", "Up", ["UP", "U"])
     static final Verb DOWN = new Verb("Down", "Down", ["DOWN", "D"])
     static final Verb LOOK = new Verb("Look", "Look", ["LOOK", "L"])
@@ -26,8 +30,8 @@ class StandardVerbs {
     static final Verb EAT = new Verb("Eat", "Eat", ["EAT {noun}"])
     static final Verb RESTART = new Verb("Restart", "Restart", ["RESTART"])
 
-    private static final List<Verb> verbs = [NORTH, SOUTH, EAST, WEST, UP, DOWN, LOOK, EXITS, EXAMINE,
-                                             GET, DROP, INVENTORY, TURNON, TURNOFF, WAIT, OPEN, CLOSE, EAT,
+    private static final List<Verb> verbs = [NORTH, SOUTH, EAST, WEST, NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST, UP, DOWN,
+                                             LOOK, EXITS, EXAMINE, GET, DROP, INVENTORY, TURNON, TURNOFF, WAIT, OPEN, CLOSE, EAT,
                                              RESTART]
 
     // TODO: Add these verbs:

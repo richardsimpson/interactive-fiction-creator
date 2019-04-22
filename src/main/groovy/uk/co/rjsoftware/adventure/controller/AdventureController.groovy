@@ -398,6 +398,10 @@ class AdventureController {
             case "SOUTH" : move(Direction.SOUTH); break
             case "EAST" : move(Direction.EAST); break
             case "WEST" : move(Direction.WEST); break
+            case "NORTHEAST" : move(Direction.NORTHEAST); break
+            case "SOUTHEAST" : move(Direction.SOUTHEAST); break
+            case "SOUTHWEST" : move(Direction.SOUTHWEST); break
+            case "NORTHWEST" : move(Direction.NORTHWEST); break
             case "UP" : move(Direction.UP); break
             case "DOWN" : move(Direction.DOWN); break
             case "LOOK" : look(); break

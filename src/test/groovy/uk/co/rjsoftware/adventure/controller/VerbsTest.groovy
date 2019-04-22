@@ -62,15 +62,15 @@ class VerbsTest {
         livingRoom.addVerb(relax, new CustomVerbInstance(livingRoom.getId(),"say('You sit on the floor, and veg out in front of the TV.')"))
         garden.addVerb(relax , new CustomVerbInstance(garden.getId(), "say('You sunbathe for a while.  Difficult without anything to sit on though.')"))
 
-        //           kitchen    landing
-        //                |      |
-        //                N      U
-        //                |      |
+        //          kitchen    landing
+        //        /       |      |
+        //       /        N      U
+        //      /         |      |
         //study ----W---- livingRoom ----E---- diningRoom
-        //                |      |
-        //                S      D
-        //                |      |
-        //            garden    cellar
+        //      \         |      |
+        //       \        S      D
+        //        \       |      |
+        //          garden     cellar
 
         study.addExit(new Exit(Direction.EAST, livingRoom))
         livingRoom.addExit(new Exit(Direction.NORTH, kitchen))
@@ -82,6 +82,11 @@ class VerbsTest {
         kitchen.addExit(new Exit(Direction.SOUTH, livingRoom))
         diningRoom.addExit(new Exit(Direction.WEST, livingRoom))
         garden.addExit(new Exit(Direction.NORTH, livingRoom))
+
+        study.addExit(new Exit(Direction.NORTHEAST, kitchen))
+        study.addExit(new Exit(Direction.SOUTHEAST, garden))
+        kitchen.addExit(new Exit(Direction.SOUTHWEST, study))
+        garden.addExit(new Exit(Direction.NORTHWEST, study))
 
         for (Verb verb : StandardVerbs.getVerbs()) {
             verbs.put(verb.getVerb(), verb)
@@ -179,6 +184,58 @@ class VerbsTest {
     void testWest() {
         for (String verbString : this.verbs.get("WEST").getSynonyms()) {
             setup()
+            mainWindow.fireCommand(new CommandEvent(verbString))
+            assertEquals(study, this.classUnderTest.getCurrentRoom())
+        }
+    }
+
+    @Test
+    void testNorthEast() {
+        for (String verbString : this.verbs.get("NORTHEAST").getSynonyms()) {
+            setup()
+
+            mainWindow.fireCommand(new CommandEvent("west"))
+            mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+            assertEquals(kitchen, this.classUnderTest.getCurrentRoom())
+        }
+    }
+
+    @Test
+    void testSouthEast() {
+        for (String verbString : this.verbs.get("SOUTHEAST").getSynonyms()) {
+            setup()
+
+            mainWindow.fireCommand(new CommandEvent("west"))
+            mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+            assertEquals(garden, this.classUnderTest.getCurrentRoom())
+        }
+    }
+
+    @Test
+    void testSouthWest() {
+        for (String verbString : this.verbs.get("SOUTHWEST").getSynonyms()) {
+            setup()
+
+            mainWindow.fireCommand(new CommandEvent("north"))
+            mainWindow.clearMessages()
+
+            mainWindow.fireCommand(new CommandEvent(verbString))
+            assertEquals(study, this.classUnderTest.getCurrentRoom())
+        }
+    }
+
+    @Test
+    void testNorthWest() {
+        for (String verbString : this.verbs.get("NORTHWEST").getSynonyms()) {
+            setup()
+
+            mainWindow.fireCommand(new CommandEvent("south"))
+            mainWindow.clearMessages()
+
             mainWindow.fireCommand(new CommandEvent(verbString))
             assertEquals(study, this.classUnderTest.getCurrentRoom())
         }
@@ -328,7 +385,7 @@ class VerbsTest {
 
             assertMessagesAreCorrect([
                     study.getDescription(),
-                    "From here you can go East",
+                    "From here you can go East, Northeast, Southeast",
                     ""
             ])
         }

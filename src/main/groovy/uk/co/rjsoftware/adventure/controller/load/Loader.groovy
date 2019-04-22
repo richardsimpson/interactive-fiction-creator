@@ -166,6 +166,10 @@ class RoomDelegate {
     private Direction EAST = Direction.EAST
     private Direction SOUTH = Direction.SOUTH
     private Direction WEST = Direction.WEST
+    private Direction NORTHEAST = Direction.NORTHEAST
+    private Direction SOUTHEAST = Direction.SOUTHEAST
+    private Direction SOUTHWEST = Direction.SOUTHWEST
+    private Direction NORTHWEST = Direction.NORTHWEST
     private Direction UP = Direction.UP
     private Direction DOWN = Direction.DOWN
 

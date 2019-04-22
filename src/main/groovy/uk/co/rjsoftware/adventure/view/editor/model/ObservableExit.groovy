@@ -91,10 +91,6 @@ class ObservableExit {
 
     }
 
-    ObservableExit() {
-        this(new Exit(Direction.NORTH))
-    }
-
     Exit getExit() {
         this.exit
     }
