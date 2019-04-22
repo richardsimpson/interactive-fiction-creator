@@ -7,6 +7,9 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.text.Font
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
+import uk.co.rjsoftware.adventure.model.Direction
+import uk.co.rjsoftware.adventure.model.Exit
+import uk.co.rjsoftware.adventure.view.editor.model.ObservableExit
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.treeitems.RoomTreeItem
 
@@ -19,6 +22,9 @@ class RoomComponent extends CustomComponent {
     private Label name = new Label()
     private Label description = new Label()
     private ObservableRoom room
+
+    private Map<Direction, PathComponent> exits = new HashMap<>()
+    private Map<Direction, PathComponent> entrances = new HashMap<>()
 
     RoomComponent(ObservableRoom room, RoomTreeItem roomTreeItem) {
         this.room = room
@@ -50,6 +56,19 @@ class RoomComponent extends CustomComponent {
             }
         })
 
+    }
+
+    void addExit(Direction direction, PathComponent pathComponent, RoomComponent destination) {
+        this.exits.put(direction, pathComponent)
+        this.room.addExit(
+                new ObservableExit(
+                        new Exit(direction, destination.room.getRoom())
+                )
+        )
+    }
+
+    void addEntrance(Direction direction, PathComponent pathComponent) {
+        this.entrances.put(direction, pathComponent)
     }
 
 }

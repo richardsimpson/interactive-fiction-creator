@@ -6,10 +6,13 @@ import javafx.scene.shape.Path
 
 class PathComponent extends Path {
 
-    final LineTo line
+    private final LineTo line
+    private final RoomComponent sourceRoom
+    private RoomComponent targetRoom
 
-    PathComponent() {
+    PathComponent(RoomComponent sourceRoom) {
         super()
+        this.sourceRoom = sourceRoom
         final MoveTo moveTo = new MoveTo(0, 0)
         this.line = new LineTo(0, 0)
 
@@ -19,5 +22,9 @@ class PathComponent extends Path {
     void setEndpoint(double x, double y) {
         line.setX(x)
         line.setY(y)
+    }
+
+    void setTargetRoom(RoomComponent targetRoom) {
+        this.targetRoom = targetRoom
     }
 }

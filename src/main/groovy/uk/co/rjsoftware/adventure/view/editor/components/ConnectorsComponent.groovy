@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import uk.co.rjsoftware.adventure.model.Direction
 
 @TypeChecked
 class ConnectorsComponent extends AnchorPane {
@@ -26,15 +27,23 @@ class ConnectorsComponent extends AnchorPane {
 
     private final Parent pane
 
-    private CustomComponent componentToControl
-    private PathComponent path = new PathComponent()
+    private RoomComponent componentToControl
+    private PathComponent path
 
     private boolean currentlyDraggingNode
+    private RoomComponent sourceRoom
+    private Direction sourceDirection
 
     ConnectorsComponent(Parent pane) {
         this.pane = pane
 
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)))
+
+        // TODO: Add support for the NE, SE, SW, NW
+        connectorNodeN.setUserData(Direction.NORTH)
+        connectorNodeE.setUserData(Direction.EAST)
+        connectorNodeS.setUserData(Direction.SOUTH)
+        connectorNodeW.setUserData(Direction.WEST)
 
         AnchorPane.setTopAnchor(connectorNodeN, -DRAG_NODE_RADIUS)
         AnchorPane.setRightAnchor(connectorNodeE, -DRAG_NODE_RADIUS)
@@ -92,15 +101,19 @@ class ConnectorsComponent extends AnchorPane {
         println("target: " + event.getTarget())
         println("source: " + event.getSource())
 
-        this.currentlyDraggingNode = true
 
         Circle sourceCircle = (Circle)event.getTarget()
         sourceCircle.startFullDrag()
 
+        this.sourceRoom = ((ConnectorsComponent)sourceCircle.getParent()).componentToControl
+        this.sourceDirection = (Direction)sourceCircle.getUserData()
+
+        this.path = new PathComponent(sourceRoom)
         this.path.setLayoutX(this.componentToControl.getLayoutX() + sourceCircle.getLayoutX())
         this.path.setLayoutY(this.componentToControl.getLayoutY() + sourceCircle.getLayoutY())
         this.path.setEndpoint(0, 0)
         this.pane.getChildren().add(this.path)
+        this.currentlyDraggingNode = true
     }
 
     private void nodeOnMouseDragReleased(MouseDragEvent event) {
@@ -111,15 +124,27 @@ class ConnectorsComponent extends AnchorPane {
         event.consume()
         this.currentlyDraggingNode = false
 
-        if (event.getGestureSource() == event.getSource()) {
+        if (event.getGestureSource() == event.getTarget()) {
             // TODO: Start and end nodes are the same - remove the line
         }
 
         Circle targetCircle = (Circle)event.getTarget()
+        RoomComponent targetRoom = ((ConnectorsComponent)targetCircle.getParent()).componentToControl
+        Direction targetDirection = (Direction)targetCircle.getUserData()
+
         final double nodeX = targetCircle.getLayoutX() + targetCircle.getParent().getLayoutX()
         final double nodeY = targetCircle.getLayoutY() + targetCircle.getParent().getLayoutY()
 
         this.path.setEndpoint(nodeX - this.path.getLayoutX(), nodeY - this.path.getLayoutY())
+        this.path.setTargetRoom(targetRoom)
+
+        // add an exit from source to target
+        this.sourceRoom.addExit(sourceDirection, this.path, targetRoom)
+        targetRoom.addEntrance(targetDirection, this.path)
+
+        // then add an exit from target to source
+        targetRoom.addExit(targetDirection,this.path, this.sourceRoom)
+        this.sourceRoom.addEntrance(sourceDirection, this.path)
     }
 
     void onMouseDragReleasedMapPane(MouseDragEvent event) {
@@ -146,7 +171,7 @@ class ConnectorsComponent extends AnchorPane {
         AnchorPane.setBottomAnchor(connectorNodeW, heightOffset)
     }
 
-    private void setComponentToControl(CustomComponent node) {
+    private void setComponentToControl(RoomComponent node) {
         // remove the existing connectors component, if any
         this.pane.getChildren().remove(this)
 
@@ -171,16 +196,16 @@ class ConnectorsComponent extends AnchorPane {
 
     void onMouseMovedMapPane(MouseEvent event) {
         final Node node = event.getPickResult().getIntersectedNode()
-        if (node instanceof CustomComponent && node != componentToControl) {
-            setComponentToControl((CustomComponent)node)
+        if (node instanceof RoomComponent && node != componentToControl) {
+            setComponentToControl((RoomComponent)node)
         }
     }
 
     void onMouseDraggedMapPane(MouseEvent event) {
         final Node node = event.getPickResult().getIntersectedNode()
 
-        if (node instanceof CustomComponent && node != componentToControl) {
-            setComponentToControl((CustomComponent)node)
+        if (node instanceof RoomComponent && node != componentToControl) {
+            setComponentToControl((RoomComponent)node)
         }
 
         if (this.currentlyDraggingNode) {
