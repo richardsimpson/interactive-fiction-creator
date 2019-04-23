@@ -244,6 +244,8 @@ class ResizeComponent extends AnchorPane {
 
     private repositionComponent(boolean movingX, double newX, boolean movingY, double newY, double newDesiredWidth, double newDesiredHeight) {
 
+        // TODO: Consider using resize, reloate and resizeRelocate to reduce the number of times that the paths need to be computed.
+
         // attempt to set the components new X / Y / width / height
         if (movingX) {
             componentToResize.setLayoutX(newX)

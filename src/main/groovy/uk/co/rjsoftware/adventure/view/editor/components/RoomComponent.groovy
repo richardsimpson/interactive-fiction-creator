@@ -1,6 +1,8 @@
 package uk.co.rjsoftware.adventure.view.editor.components
 
 import groovy.transform.TypeChecked
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.event.EventHandler
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
@@ -56,6 +58,29 @@ class RoomComponent extends CustomComponent {
             }
         })
 
+        final ChangeListener<Number> changeListener = new ChangeListener<Number>() {
+            @Override
+            void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                updateAllPaths()
+            }
+        }
+        layoutXProperty().addListener(changeListener)
+        layoutYProperty().addListener(changeListener)
+        widthProperty().addListener(changeListener)
+        heightProperty().addListener(changeListener)
+    }
+
+    private void updateAllPaths() {
+        // TODO: Update all the unique paths in the exits and entrances.
+
+        // get a unique list of the paths
+        final Set<PathComponent> paths = new HashSet<>(this.exits.values())
+        paths.addAll(this.entrances.values())
+
+        // tell all of them to update the endpoint that connects to this room component
+        for (PathComponent path : paths) {
+            path.updatePathTo(this)
+        }
     }
 
     void addExit(Direction direction, PathComponent pathComponent, RoomComponent destination) {

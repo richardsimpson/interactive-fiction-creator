@@ -47,6 +47,7 @@ class MoveComponent extends AnchorPane {
     }
 
     void mouseReleased() {
+        // TODO: Consider using resize, reloate and resizeRelocate to reduce the number of times that the paths need to be computed.
         componentToMove.setLayoutX(getLayoutX())
         componentToMove.setLayoutY(getLayoutY())
     }

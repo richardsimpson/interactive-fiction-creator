@@ -108,13 +108,10 @@ class ConnectorsComponent extends AnchorPane {
         Circle sourceCircle = (Circle)event.getTarget()
         sourceCircle.startFullDrag()
 
-        this.sourceRoom = ((ConnectorsComponent)sourceCircle.getParent()).componentToControl
+        this.sourceRoom = this.componentToControl
         this.sourceDirection = (Direction)sourceCircle.getUserData()
 
-        this.path = new PathComponent(sourceRoom)
-        this.path.setLayoutX(this.componentToControl.getLayoutX() + sourceCircle.getLayoutX())
-        this.path.setLayoutY(this.componentToControl.getLayoutY() + sourceCircle.getLayoutY())
-        this.path.setEndpoint(0, 0)
+        this.path = new PathComponent(sourceRoom, sourceDirection)
         this.pane.getChildren().add(this.path)
         this.currentlyDraggingNode = true
     }
@@ -132,14 +129,10 @@ class ConnectorsComponent extends AnchorPane {
         }
 
         Circle targetCircle = (Circle)event.getTarget()
-        RoomComponent targetRoom = ((ConnectorsComponent)targetCircle.getParent()).componentToControl
+        RoomComponent targetRoom = componentToControl
         Direction targetDirection = (Direction)targetCircle.getUserData()
 
-        final double nodeX = targetCircle.getLayoutX() + targetCircle.getParent().getLayoutX()
-        final double nodeY = targetCircle.getLayoutY() + targetCircle.getParent().getLayoutY()
-
-        this.path.setEndpoint(nodeX - this.path.getLayoutX(), nodeY - this.path.getLayoutY())
-        this.path.setTargetRoom(targetRoom)
+        this.path.setTarget(targetRoom, targetDirection)
 
         // add an exit from source to target
         this.sourceRoom.addExit(sourceDirection, this.path, targetRoom)
