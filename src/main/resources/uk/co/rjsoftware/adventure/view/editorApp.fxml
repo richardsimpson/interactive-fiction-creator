@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -37,10 +38,13 @@
                            <ToggleButton fx:id="drawLinesButton" mnemonicParsing="false" text="Draw Lines" />
                           </items>
                       </ToolBar>
-                      <ScrollPane fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0">
+                      <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                           <content>
-                              <Pane fx:id="mapPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="479.0" />
+                              <Pane fx:id="mapPane" minHeight="2000.0" minWidth="2000.0" prefHeight="200.0" prefWidth="200.0" />
                           </content>
+                        <VBox.margin>
+                           <Insets />
+                        </VBox.margin>
                       </ScrollPane>
                   </VBox>
 
