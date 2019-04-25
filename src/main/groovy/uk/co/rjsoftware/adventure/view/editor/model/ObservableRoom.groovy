@@ -34,6 +34,7 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
     private final ObservableList<ObservableVerbInstance> observableCustomVerbInstances
     private final ObservableList<ObservableItem> observableItems
     private final ObservableList<ObservableExit> observableExits
+    private final ObservableList<ObservableEntrance> observableEntrances
 
     ObservableRoom(Room room) {
         this.room = room
@@ -57,20 +58,9 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
         observableCustomVerbInstances.addListener(new ListChangeListener<ObservableVerbInstance>() {
             @Override
             void onChanged(ListChangeListener.Change<? extends ObservableVerbInstance> c) {
-                Stream<ObservableVerbInstance> tempVerbs = observableCustomVerbInstances.stream()
-                Map<UUID, CustomVerbInstance> verbs = tempVerbs.collect(Collectors.toMap(
-                        new Function<ObservableVerbInstance, UUID>() {
-                            @Override
-                            UUID apply(ObservableVerbInstance verbInstance) {
-                                return verbInstance.getId()
-                            }
-                        },
-                        new Function<ObservableVerbInstance, CustomVerbInstance>() {
-                            @Override
-                            CustomVerbInstance apply(ObservableVerbInstance verbInstance) {
-                                return verbInstance.getVerbInstance()
-                            }
-                        }))
+                final Map<UUID, CustomVerbInstance> verbs = ObservableRoom.this.observableCustomVerbInstances.collectEntries {
+                    verbInstance -> [verbInstance.getId(), verbInstance.getVerbInstance()]
+                }
 
                 room.setCustomVerbs(verbs)
             }
@@ -108,24 +98,19 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
         observableExits.addListener(new ListChangeListener<ObservableExit>() {
             @Override
             void onChanged(ListChangeListener.Change<? extends ObservableExit> c) {
-                final Stream<ObservableExit> tempExits = observableExits.stream()
-                final Map<Direction, Exit> newExits = tempExits.collect(Collectors.toMap(
-                        new Function<ObservableExit, Direction>() {
-                            @Override
-                            Direction apply(ObservableExit exit) {
-                                return exit.directionProperty().get()
-                            }
-                        },
-                        new Function<ObservableExit, Exit>() {
-                            @Override
-                            Exit apply(ObservableExit exit) {
-                                return exit.getExit()
-                            }
-                        }))
+                final List<Exit> newExits = ObservableRoom.this.observableExits.collect {
+                    it.getExit()
+                }
 
                 room.setExits(newExits)
             }
         })
+
+        // setup the observableEntrances's list
+        final List<ObservableEntrance> currentEntrances = room.getEntrances().stream()
+                .map { entrance -> new ObservableEntrance(entrance)}
+                .collect(Collectors.toList())
+        this.observableEntrances = FXCollections.observableList(currentEntrances)
     }
 
     ObservableRoom() {
@@ -178,6 +163,10 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
 
     ObservableList<ObservableExit> getObservableExits() {
         this.observableExits
+    }
+
+    ObservableList<ObservableEntrance> getObservableEntrances() {
+        this.observableEntrances
     }
 
     Room getRoom() {

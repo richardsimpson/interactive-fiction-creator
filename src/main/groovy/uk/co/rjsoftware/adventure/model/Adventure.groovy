@@ -25,16 +25,24 @@ class Adventure {
         for (Room room : this.rooms) {
             adventureCopy.rooms.add(room.copy())
         }
+
         adventureCopy.customVerbs.addAll(this.customVerbs)
         adventureCopy.waitText = this.waitText
         adventureCopy.getText = this.getText
 
-        // now fixup the room references (exits)
+        // now fixup the room references (exits).  This also fixes the entrances, because they are the same objects
         for (Room room : this.rooms) {
             final Room roomCopy = adventureCopy.getRoomByName(room.getName())
             for (Exit exit : room.exits.values()) {
                 final Exit exitCopy = roomCopy.getExit(exit.getDirection())
                 exitCopy.setDestination(adventureCopy.getRoomByName(exit.getDestination().name))
+            }
+        }
+
+        // now fixup the entrances on the rooms.
+        for (Room room : adventureCopy.rooms) {
+            for (Exit exit : room.getExits().values()) {
+                exit.getDestination().addEntrance(exit)
             }
         }
 

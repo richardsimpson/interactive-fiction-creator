@@ -81,7 +81,7 @@ class EditorAppView extends AbstractDialogView {
                     component.setLayoutY(100)
 
                     selectorComponent.registerComponent(component)
-                    EditorAppView.this.mapPane.getChildren().add(component)
+                    component.show(EditorAppView.this.mapPane, EditorAppView.this.observableAdventure)
                 }
             }
         });

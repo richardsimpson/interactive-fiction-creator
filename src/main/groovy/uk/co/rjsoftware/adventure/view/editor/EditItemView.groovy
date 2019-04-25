@@ -157,21 +157,7 @@ class EditItemView extends AbstractDialogView {
 
         // get a handy map of the adventure's custom verbs
         final List<CustomVerb> customVerbList = this.observableAdventure.getCustomVerbs()
-        final Map<UUID, CustomVerb> customVerbMap = customVerbList.stream()
-                .collect(Collectors.toMap(
-                new Function<CustomVerb, UUID>() {
-                    @Override
-                    UUID apply(CustomVerb customVerb) {
-                        return customVerb.getId()
-                    }
-                },
-                new Function<CustomVerb, CustomVerb>() {
-                    @Override
-                    CustomVerb apply(CustomVerb customVerb) {
-                        return customVerb
-                    }
-                }
-        ))
+        final Map<UUID, CustomVerb> customVerbMap = customVerbList.collectEntries { customVerb -> [customVerb.getId(), customVerb] }
 
         // Setup the table view of the custom verbs
 

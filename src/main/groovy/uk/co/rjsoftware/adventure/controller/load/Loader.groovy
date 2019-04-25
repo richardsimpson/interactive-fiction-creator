@@ -160,7 +160,7 @@ class RoomDelegate {
     private Room room
     private final Adventure adventure
 
-    private final Map<Direction, Tuple2<String, Optional<Closure>>> forwardRoomReferences = new HashMap<>()
+    private final Map<Direction, Tuple3<String, Direction, Optional<Closure>>> forwardRoomReferences = new HashMap<>()
 
     private Direction NORTH = Direction.NORTH
     private Direction EAST = Direction.EAST
@@ -210,20 +210,18 @@ class RoomDelegate {
         this.room.setAfterEnterRoomFirstTimeScript(StringUtils.sanitiseString(script))
     }
 
-    private boolean exit(Direction direction, String destination, Optional<Closure> closure) {
-        Exit exit = this.room.getExit(direction)
-        if (exit == null) {
-            exit = new Exit(direction)
-            this.room.addExit(exit)
-        }
-
+    private boolean exit(Direction direction, String destination, Direction entranceDirection, Optional<Closure> closure) {
         Room room = this.adventure.getRoomByName(destination)
         if (room == null) {
-            this.forwardRoomReferences.put(direction, new Tuple2<>(destination, closure))
+            this.forwardRoomReferences.put(direction, new Tuple3<>(destination, entranceDirection, closure))
             false
         }
         else {
-            exit.setDestination(room)
+            Exit exit = this.room.getExit(direction)
+            if (exit == null) {
+                exit = new Exit(direction, room, entranceDirection)
+                this.room.addExit(exit)
+            }
 
             closure.ifPresent {clo ->
                 clo.delegate = new ExitDelegate(exit)
@@ -235,17 +233,25 @@ class RoomDelegate {
         }
     }
 
+    private void exit(Direction direction, String destination, Direction entranceDirection, Closure closure) {
+        exit(direction, destination, entranceDirection, Optional.of(closure))
+    }
+
+    private void exit(Direction direction, String destination, Direction entranceDirection) {
+        exit(direction, destination, entranceDirection, Optional.empty())
+    }
+
     private void exit(Direction direction, String destination, Closure closure) {
-        exit(direction, destination, Optional.of(closure))
+        exit(direction, destination, direction.getOppositeDirection(), closure)
     }
 
     private void exit(Direction direction, String destination) {
-        exit(direction, destination, Optional.empty())
+        exit(direction, destination, direction.getOppositeDirection())
     }
 
     void resolveForwardRoomReferences() {
-        for (Map.Entry<Direction, Tuple2<String, Optional<Closure>>> entry : this.forwardRoomReferences) {
-            final boolean ableToResolve = exit(entry.key, entry.value.getFirst(), entry.value.getSecond())
+        for (Map.Entry<Direction, Tuple3<String, Direction, Optional<Closure>>> entry : this.forwardRoomReferences) {
+            final boolean ableToResolve = exit(entry.key, entry.value.getFirst(), entry.value.getSecond(), entry.value.getThird())
             if (!ableToResolve) {
                 throw new RuntimeException("Room '${this.room.name}' contains an exit to a room named '${entry.value.getFirst()}', which does not exist.")
             }

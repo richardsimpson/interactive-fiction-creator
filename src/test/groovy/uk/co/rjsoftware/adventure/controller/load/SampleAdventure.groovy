@@ -74,6 +74,8 @@ adventure {
         afterEnterRoomFirstTimeScript "afterEnterRoomFirstTimeScript2"
 
         exit(WEST, "bedroom")
+        exit(NORTH, "toilet", EAST)
+
     }
 
     room ("roomWithDescriptionClosure") {
@@ -81,12 +83,19 @@ adventure {
         descriptionScript """
             say 'roomDescriptionClosure'
         """
+
         item("itemWithDescriptionClosure") {
             descriptionScriptEnabled true
             descriptionScript """
                 say 'itemDescriptionClosure'
             """
         }
+    }
+
+    room ("toilet") {
+        description "custom description2"
+
+        exit(EAST, "landing", WEST)
     }
 
 }
