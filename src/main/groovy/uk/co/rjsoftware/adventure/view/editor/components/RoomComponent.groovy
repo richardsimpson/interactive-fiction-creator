@@ -31,7 +31,7 @@ class RoomComponent extends CustomComponent {
     private ObservableRoom room
 
     private Map<Direction, PathComponent> exits = new HashMap<>()
-    private Map<Direction, PathComponent> entrances = new HashMap<>()
+    private List<PathComponent> entrances = new ArrayList<>()
 
     RoomComponent(ObservableRoom room, RoomTreeItem roomTreeItem) {
         this.room = room
@@ -91,8 +91,7 @@ class RoomComponent extends CustomComponent {
                 path.setTarget(targetRoom, entranceDirection)
                 pane.getChildren().add(path)
                 this.exits.put(direction, path)
-                // TODO: Support multiple entrances in the same direction
-                targetRoom.entrances.put(entranceDirection, path)
+                targetRoom.entrances.add(path)
             }
         }
 
@@ -110,7 +109,7 @@ class RoomComponent extends CustomComponent {
                     path.setTarget(this, entranceDirection)
                     pane.getChildren().add(path)
                     sourceRoom.exits.put(originDirection, path)
-                    this.entrances.put(entranceDirection, path)
+                    this.entrances.add(path)
                 }
             }
         }
@@ -123,11 +122,9 @@ class RoomComponent extends CustomComponent {
     }
 
     private void updateAllPaths() {
-        // TODO: Update all the unique paths in the exits and entrances.
-
         // get a unique list of the paths
         final Set<PathComponent> paths = new HashSet<>(this.exits.values())
-        paths.addAll(this.entrances.values())
+        paths.addAll(this.entrances)
 
         // tell all of them to update the endpoint that connects to this room component
         for (PathComponent path : paths) {
@@ -144,8 +141,8 @@ class RoomComponent extends CustomComponent {
         )
     }
 
-    void addEntrance(Direction direction, PathComponent pathComponent) {
-        this.entrances.put(direction, pathComponent)
+    void addEntrance(PathComponent pathComponent) {
+        this.entrances.add(pathComponent)
     }
 
 }

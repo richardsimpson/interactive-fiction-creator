@@ -136,11 +136,11 @@ class ConnectorsComponent extends AnchorPane {
 
         // add an exit from source to target
         this.sourceRoom.addExit(sourceDirection, this.path, targetRoom, targetDirection)
-        targetRoom.addEntrance(targetDirection, this.path)
+        targetRoom.addEntrance(this.path)
 
         // then add an exit from target to source
         targetRoom.addExit(targetDirection, this.path, this.sourceRoom, sourceDirection)
-        this.sourceRoom.addEntrance(sourceDirection, this.path)
+        this.sourceRoom.addEntrance(this.path)
     }
 
     void onMouseDragReleasedMapPane(MouseDragEvent event) {
