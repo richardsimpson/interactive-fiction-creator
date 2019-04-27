@@ -11,13 +11,12 @@ import uk.co.rjsoftware.adventure.model.Room
 class ObservableEntrance {
 
     private final Entrance entrance
-    private final JavaBeanObjectProperty<Room> origin
+    private ObservableRoom observableOrigin
     private final JavaBeanObjectProperty<Direction> originDirection
     private final JavaBeanObjectProperty<Direction> entranceDirection
 
     ObservableEntrance(Entrance entrance) {
         this.entrance = entrance
-        this.origin = new JavaBeanObjectPropertyBuilder().bean(entrance).name("origin").build();
         this.originDirection = new JavaBeanObjectPropertyBuilder().bean(entrance).name("originDirection").build();
         this.entranceDirection = new JavaBeanObjectPropertyBuilder().bean(entrance).name("entranceDirection").build();
     }
@@ -26,12 +25,12 @@ class ObservableEntrance {
         this.entrance
     }
 
-    JavaBeanObjectProperty<Room> originProperty() {
-        this.origin
+    ObservableRoom getObservableOrigin() {
+        this.observableOrigin
     }
 
-    Room getOrigin() {
-        this.origin.get()
+    void setObservableOrigin(ObservableRoom origin) {
+        this.observableOrigin = origin
     }
 
     JavaBeanObjectProperty entranceDirectionProperty() {

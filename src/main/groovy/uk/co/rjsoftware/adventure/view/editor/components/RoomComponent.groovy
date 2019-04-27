@@ -81,7 +81,7 @@ class RoomComponent extends CustomComponent {
 
         // create paths for all the exits that lead to RoomComponents that are already visible (or are this room)
         for (ObservableExit observableExit : this.room.getObservableExits()) {
-            final Room destination = observableExit.getDestination()
+            final ObservableRoom destination = observableExit.getObservableDestination()
             final Direction direction = observableExit.getDirection()
             final Direction entranceDirection = observableExit.getEntranceDirection()
 
@@ -97,7 +97,7 @@ class RoomComponent extends CustomComponent {
 
         // create paths for all entrances that lead to RoomComponents that are already visible (or are this room)
         for (ObservableEntrance observableEntrance : this.room.getObservableEntrances()) {
-            final Room origin = observableEntrance.getOrigin()
+            final ObservableRoom origin = observableEntrance.getObservableOrigin()
             final Direction originDirection = observableEntrance.getOriginDirection()
             final Direction entranceDirection = observableEntrance.getEntranceDirection()
 
@@ -115,9 +115,9 @@ class RoomComponent extends CustomComponent {
         }
     }
 
-    private RoomComponent findRoomComponent(Room room, Pane pane) {
+    private RoomComponent findRoomComponent(ObservableRoom room, Pane pane) {
         (RoomComponent)pane.getChildren().stream().find { Node node ->
-            node instanceof RoomComponent && ((RoomComponent)node).room.getRoom() == room
+            node instanceof RoomComponent && ((RoomComponent)node).room == room
         }
     }
 
@@ -136,7 +136,8 @@ class RoomComponent extends CustomComponent {
         this.exits.put(direction, pathComponent)
         this.room.addExit(
                 new ObservableExit(
-                        new Exit(direction, destination.room.getRoom(), entranceDirection)
+                        new Exit(direction, destination.room.getRoom(), entranceDirection),
+                        this.room, destination.room
                 )
         )
     }

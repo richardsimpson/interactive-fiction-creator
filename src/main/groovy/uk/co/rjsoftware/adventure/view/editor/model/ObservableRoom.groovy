@@ -94,6 +94,11 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
                 .collect(Collectors.toList())
         this.observableExits = FXCollections.observableList(currentExits)
 
+        // Fixup the origins on the exits
+        for (ObservableExit observableExit : currentExits) {
+            observableExit.setObservableOrigin(this)
+        }
+
         // listen to changes in the observableList of exits, so that we can update the original exits in the adventure
         observableExits.addListener(new ListChangeListener<ObservableExit>() {
             @Override
@@ -119,6 +124,10 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
 
     JavaBeanStringProperty nameProperty() {
         this.name
+    }
+
+    String getName() {
+        this.name.get()
     }
 
     JavaBeanStringProperty descriptionProperty() {

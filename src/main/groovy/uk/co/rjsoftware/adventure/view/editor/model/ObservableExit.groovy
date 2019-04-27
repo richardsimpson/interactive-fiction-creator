@@ -1,6 +1,7 @@
 package uk.co.rjsoftware.adventure.view.editor.model
 
 import groovy.transform.TypeChecked
+import javafx.beans.Observable
 import javafx.beans.property.adapter.JavaBeanBooleanProperty
 import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder
 import javafx.beans.property.adapter.JavaBeanObjectProperty
@@ -24,8 +25,10 @@ import java.util.stream.Stream
 class ObservableExit {
 
     private final Exit exit
+    private ObservableRoom observableOrigin
     private final JavaBeanObjectProperty<Direction> direction
     private final JavaBeanObjectProperty<Room> destination
+    private ObservableRoom observableDestination
     private final JavaBeanObjectProperty<Direction> entranceDirection
     private final JavaBeanBooleanProperty scenery
     private final JavaBeanStringProperty prefix
@@ -43,10 +46,24 @@ class ObservableExit {
 
     }
 
+    ObservableExit(Exit exit, ObservableRoom origin, ObservableRoom destination) {
+        this(exit)
+        this.observableOrigin = origin
+        this.observableDestination = destination
+    }
+
     Exit getExit() {
         this.exit
     }
-    
+
+    void setObservableOrigin(ObservableRoom origin) {
+        this.observableOrigin = origin
+    }
+
+    ObservableRoom getObservableOrigin() {
+        this.observableOrigin
+    }
+
     JavaBeanObjectProperty directionProperty() {
         this.direction
     }
@@ -59,8 +76,12 @@ class ObservableExit {
         this.destination
     }
 
-    Room getDestination() {
-        this.destination.get()
+    void setObservableDestination(ObservableRoom destination) {
+        this.observableDestination = destination
+    }
+
+    ObservableRoom getObservableDestination() {
+        this.observableDestination
     }
 
     JavaBeanObjectProperty entranceDirectionProperty() {

@@ -11,6 +11,7 @@ import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import uk.co.rjsoftware.adventure.model.Adventure
 import uk.co.rjsoftware.adventure.model.CustomVerb
+import uk.co.rjsoftware.adventure.model.Exit
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 
@@ -70,6 +71,21 @@ class ObservableAdventure implements ObservableDomainObject {
             }
         })
 
+        // now fixup the room references (exits).
+        for (ObservableRoom observableRoom : this.observableRooms) {
+            for (ObservableExit observableExit : observableRoom.getObservableExits()) {
+                ObservableRoom destination = getRoomByName(observableExit.getExit().getDestination().getName())
+                observableExit.setObservableDestination(destination)
+            }
+        }
+
+        // Fixup the origins on the entrances
+        for (ObservableRoom observableRoom : this.observableRooms) {
+            for (ObservableEntrance observableEntrance : observableRoom.getObservableEntrances()) {
+                ObservableRoom origin = getRoomByName(observableEntrance.getEntrance().getOrigin().getName())
+                observableEntrance.setObservableOrigin(origin)
+            }
+        }
     }
 
     JavaBeanStringProperty introductionProperty() {
@@ -98,6 +114,12 @@ class ObservableAdventure implements ObservableDomainObject {
 
     ObservableList<ObservableRoom> getObservableRooms() {
         this.observableRooms
+    }
+
+    private ObservableRoom getRoomByName(String roomName) {
+        this.observableRooms.find {room ->
+            room.getName().equals(roomName)
+        }
     }
 
     @Override
