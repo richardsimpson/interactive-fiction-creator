@@ -22,7 +22,7 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 
 @TypeChecked
-class ObservableExit {
+class ObservableExit implements ObservableEntrance {
 
     private final Exit exit
     private ObservableRoom observableOrigin
@@ -52,6 +52,10 @@ class ObservableExit {
         this.observableDestination = destination
     }
 
+    ObservableExit() {
+        this(new Exit())
+    }
+
     Exit getExit() {
         this.exit
     }
@@ -72,36 +76,84 @@ class ObservableExit {
         this.direction.get()
     }
 
-    JavaBeanObjectProperty<Room> destinationProperty() {
-        this.destination
+    @Override
+    Direction getOriginDirection() {
+        this.direction.get()
     }
 
-    void setObservableDestination(ObservableRoom destination) {
-        this.observableDestination = destination
+    void setDirection(Direction direction) {
+        this.direction.set(direction)
     }
 
     ObservableRoom getObservableDestination() {
         this.observableDestination
     }
 
-    JavaBeanObjectProperty entranceDirectionProperty() {
-        this.entranceDirection
+    JavaBeanObjectProperty<Room> destinationProperty() {
+        this.destination
+    }
+
+    void setObservableDestination(ObservableRoom destination) {
+        if (this.observableDestination != destination) {
+            if (this.observableDestination != null) {
+                this.observableDestination.removeEntrance(this)
+            }
+
+            this.observableDestination = destination
+            this.destination.set(destination.getRoom())
+
+            if (this.observableDestination != null) {
+                this.observableDestination.addEntrance(this)
+            }
+        }
     }
 
     Direction getEntranceDirection() {
         this.entranceDirection.get()
     }
 
+    JavaBeanObjectProperty entranceDirectionProperty() {
+        this.entranceDirection
+    }
+
+    void setEntranceDirection(Direction direction) {
+        this.entranceDirection.set(direction)
+    }
+
+    boolean isScenery() {
+        this.scenery.get()
+    }
+
     JavaBeanBooleanProperty sceneryProperty() {
         this.scenery
+    }
+
+    void setScenery(boolean isScenery) {
+        this.scenery.set(isScenery)
+    }
+
+    String getPrefix() {
+        this.prefix.get()
     }
 
     JavaBeanStringProperty prefixProperty() {
         this.prefix
     }
 
+    void setPrefix(String prefix) {
+        this.prefix.set(prefix)
+    }
+
+    String getSuffix() {
+        this.suffix.get()
+    }
+
     JavaBeanStringProperty suffixProperty() {
         this.suffix
+    }
+
+    void setSuffix(String suffix) {
+        this.suffix.set(suffix)
     }
 
 }

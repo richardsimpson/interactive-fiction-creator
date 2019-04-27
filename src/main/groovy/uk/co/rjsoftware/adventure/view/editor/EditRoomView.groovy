@@ -60,6 +60,10 @@ class EditRoomView extends AbstractDialogView {
     @FXML private TableColumn<ObservableExit, String> prefixColumn
     @FXML private TableColumn<ObservableExit, String> suffixColumn
 
+    @FXML private Button addExitButton
+    @FXML private Button editExitButton
+    @FXML private Button deleteExitButton
+
     @FXML private TextArea beforeEnterRoomScriptTextArea
     @FXML private TextArea afterEnterRoomScriptTextArea
     @FXML private TextArea afterLeaveRoomScriptTextArea
@@ -77,9 +81,6 @@ class EditRoomView extends AbstractDialogView {
         this.observableAdventure = observableAdventure
         this.observableRoom = observableRoom
     }
-
-    // TODO: Add ability to edit:
-    //       exits
 
     private descriptionScriptEnabledOnChange(boolean newValue) {
         if (newValue) {
@@ -195,6 +196,9 @@ class EditRoomView extends AbstractDialogView {
         addItemButton.setOnAction(this.&addItemButtonClick)
         editItemButton.setOnAction(this.&editItemButtonClick)
         deleteItemButton.setOnAction(this.&deleteItemButtonClick)
+        addExitButton.setOnAction(this.&addExitButtonClick)
+        editExitButton.setOnAction(this.&editExitButtonClick)
+        deleteExitButton.setOnAction(this.&deleteExitButtonClick)
     }
 
     private void addVerbButtonClick(ActionEvent event) {
@@ -230,8 +234,26 @@ class EditRoomView extends AbstractDialogView {
         this.itemsTableView.getItems().remove(this.itemsTableView.getSelectionModel().getSelectedIndex())
     }
 
+    private void addExitButtonClick(ActionEvent event) {
+        final ObservableExit newObservableExit = new ObservableExit()
+        newObservableExit.setObservableOrigin(this.observableRoom)
+
+        final EditExitView editExitView = new EditExitView(this.observableAdventure, newObservableExit)
+        if (editExitView.showModal(getStage()) == mrOk) {
+            this.exitsTableView.getItems().add(newObservableExit)
+        }
+    }
+
+    private void editExitButtonClick(ActionEvent event) {
+        final EditExitView editExitView = new EditExitView(this.observableAdventure, this.exitsTableView.getSelectionModel().getSelectedItem())
+        editExitView.showModal(getStage())
+    }
+
+    private void deleteExitButtonClick(ActionEvent event) {
+        this.exitsTableView.getItems().remove(this.exitsTableView.getSelectionModel().getSelectedIndex())
+    }
+
     private void deleteRoomButtonClick(ActionEvent event) {
         this.observableAdventure.deleteRoom(this.observableRoom)
-        //this.close()
     }
 }

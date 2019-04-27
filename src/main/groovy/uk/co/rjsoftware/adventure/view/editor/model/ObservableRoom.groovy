@@ -9,14 +9,11 @@ import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import uk.co.rjsoftware.adventure.model.CustomVerbInstance
-import uk.co.rjsoftware.adventure.model.Direction
 import uk.co.rjsoftware.adventure.model.Exit
 import uk.co.rjsoftware.adventure.model.Item
 import uk.co.rjsoftware.adventure.model.Room
 
-import java.util.function.Function
 import java.util.stream.Collectors
-import java.util.stream.Stream
 
 @TypeChecked
 class ObservableRoom implements ObservableDomainObject, ObservableItemContainer {
@@ -112,10 +109,7 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
         })
 
         // setup the observableEntrances's list
-        final List<ObservableEntrance> currentEntrances = room.getEntrances().stream()
-                .map { entrance -> new ObservableEntrance(entrance)}
-                .collect(Collectors.toList())
-        this.observableEntrances = FXCollections.observableList(currentEntrances)
+        this.observableEntrances = FXCollections.observableList(new ArrayList<ObservableEntrance>())
     }
 
     ObservableRoom() {
@@ -233,6 +227,22 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
         this.observableExits.any {it.getExit().getDirection().equals(exit.getExit().getDirection())}
     }
 
+
+    void addEntrance(ObservableEntrance entrance) {
+        if (!contains(entrance)) {
+            this.observableEntrances.add(entrance)
+        }
+    }
+
+    void removeEntrance(ObservableEntrance entrance) {
+        if (!contains(entrance)) {
+            this.observableEntrances.remove(entrance)
+        }
+    }
+
+    boolean contains(ObservableEntrance entrance) {
+        this.observableEntrances.any {it.getEntranceDirection().equals(entrance.getEntranceDirection())}
+    }
 
 }
 

@@ -39,13 +39,6 @@ class Adventure {
             }
         }
 
-        // now fixup the entrances on the rooms.
-        for (Room room : adventureCopy.rooms) {
-            for (Exit exit : room.getExits().values()) {
-                exit.getDestination().addEntrance(exit)
-            }
-        }
-
         // now fixup the player reference
         if (this.player != null) {
             adventureCopy.player = adventureCopy.getItemByName(this.player.getName())

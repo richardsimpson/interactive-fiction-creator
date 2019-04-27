@@ -51,9 +51,6 @@ class LoaderTest {
         assertEquals("afterEnterRoomFirstTimeScript", bedroom.getAfterEnterRoomFirstTimeScript())
         assertEquals(1, bedroom.getExits().size())
         assertExit(bedroom.getExit(Direction.EAST), bedroom, landing, Direction.WEST, true, "prefix", "suffix")
-        final List<Entrance> bedroomEntrances = bedroom.getEntrances()
-        assertEquals(1, bedroomEntrances.size())
-        assertEntrance(bedroomEntrances.get(0), landing, Direction.EAST)
 
         assertEquals("landing", landing.getName())
         assertEquals("custom description2", landing.getDescription())
@@ -66,20 +63,12 @@ class LoaderTest {
         assertEquals(2, landing.getExits().size())
         assertExit(landing.getExit(Direction.WEST), landing, bedroom, Direction.EAST, false)
         assertExit(landing.getExit(Direction.NORTH), landing, toilet, Direction.EAST, false)
-        final Map<Room, Exit> landingEntrances = landing.getEntrances().collectEntries { entrance -> [entrance.getOrigin(), entrance] }
-        assertEquals(2, landingEntrances.size())
-
-        assertEntrance(landingEntrances.get(bedroom), bedroom, Direction.WEST)
-        assertEntrance(landingEntrances.get(toilet), toilet, Direction.WEST)
 
         assertEquals("toilet", toilet.getName())
         assertEquals("custom description2", toilet.getDescription())
         assertFalse(toilet.isDescriptionScriptEnabled())
         assertEquals(1, toilet.getExits().size())
         assertExit(toilet.getExit(Direction.EAST), toilet, landing, Direction.WEST, false)
-        final List<Entrance> toiletEntrances = toilet.getEntrances()
-        assertEquals(1, toiletEntrances.size())
-        assertEntrance(toiletEntrances.get(0), landing, Direction.EAST)
 
         // TODO: Verify the entrances
 
@@ -137,11 +126,6 @@ class LoaderTest {
         assertEquals(expectedIsScenery, exit.isScenery())
         assertEquals(expectedPrefix, exit.getPrefix())
         assertEquals(expectedSuffix, exit.getSuffix())
-    }
-
-    private void assertEntrance(Entrance entrance, Room expectedOrigin, Direction expectedEntranceDirection) {
-        assertEquals(expectedOrigin, entrance.getOrigin())
-        assertEquals(expectedEntranceDirection, entrance.getEntranceDirection())
     }
 
 }

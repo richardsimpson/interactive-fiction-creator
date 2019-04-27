@@ -20,6 +20,8 @@ import uk.co.rjsoftware.adventure.view.editor.model.ObservableExit
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.treeitems.RoomTreeItem
 
+import java.util.stream.Collectors
+
 @TypeChecked
 class RoomComponent extends CustomComponent {
 
@@ -95,14 +97,17 @@ class RoomComponent extends CustomComponent {
             }
         }
 
-        // create paths for all entrances that lead to RoomComponents that are already visible (or are this room)
+        final List<ObservableRoom> exitDestinations = this.room.getObservableExits().stream()
+                .map {it.getObservableDestination()}.collect(Collectors.toList())
+
+        // create paths for all entrances that lead to RoomComponents that are already visible,
+        // and for which we don't have a reciprocal exit
         for (ObservableEntrance observableEntrance : this.room.getObservableEntrances()) {
             final ObservableRoom origin = observableEntrance.getObservableOrigin()
             final Direction originDirection = observableEntrance.getOriginDirection()
             final Direction entranceDirection = observableEntrance.getEntranceDirection()
 
-            // make sure we don't create a second path if the origin of this entrance is ourselves
-            if (this.room.getRoom() != origin) {
+            if (!exitDestinations.contains(origin)) {
                 final RoomComponent sourceRoom = findRoomComponent(origin, pane)
                 if (sourceRoom != null) {
                     final PathComponent path = new PathComponent(sourceRoom, originDirection)

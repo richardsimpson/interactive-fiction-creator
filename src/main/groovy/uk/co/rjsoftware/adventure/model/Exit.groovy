@@ -2,7 +2,7 @@ package uk.co.rjsoftware.adventure.model
 
 import uk.co.rjsoftware.adventure.utils.StringUtils
 
-class Exit implements Entrance {
+class Exit {
     private Room origin
     private Direction direction
     private Room destination
@@ -18,11 +18,15 @@ class Exit implements Entrance {
     }
 
     Exit(Direction direction, Room destination) {
-        this(direction, destination, direction.oppositeDirection)
+        this(direction, destination, direction == null ? null : direction.oppositeDirection)
     }
 
     Exit(Direction direction) {
         this(direction, null)
+    }
+
+    Exit() {
+        this(null)
     }
 
     Exit copy() {
@@ -48,14 +52,6 @@ class Exit implements Entrance {
     }
 
     void setDirection(Direction direction) {
-        this.direction = direction
-    }
-
-    Direction getOriginDirection() {
-        this.direction
-    }
-
-    void setOriginDirection(Direction direction) {
         this.direction = direction
     }
 

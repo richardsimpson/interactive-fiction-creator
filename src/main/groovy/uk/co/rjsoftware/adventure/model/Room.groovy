@@ -7,7 +7,6 @@ class Room implements ItemContainer, VerbContainer {
 
     private final UUID id
     private final Map<Direction, Exit> exits = new TreeMap<>()
-    private final List<Entrance> entrances = new ArrayList<>()
     private final Map<UUID, CustomVerbInstance> customVerbs = new HashMap<>()
     // items map: key is the UPPER CASE name, to ensure the map is ordered by the name, and to ensure that items can be found regardless of case
     private final List<Item> items = new ArrayList<>()
@@ -116,9 +115,6 @@ class Room implements ItemContainer, VerbContainer {
     void addExit(Exit exit) {
         exit.setOrigin(this)
         this.exits.put(exit.getDirection(), exit)
-        if (exit.getDestination() != null) {
-            exit.getDestination().addEntrance(exit)
-        }
     }
 
     Map<Direction, Exit> getExits() {
@@ -134,19 +130,6 @@ class Room implements ItemContainer, VerbContainer {
         for (Exit exit : exits) {
             addExit(exit)
         }
-    }
-
-    void addEntrance(Entrance entrance) {
-        this.entrances.add(entrance)
-    }
-
-    List<Entrance> getEntrances() {
-        this.entrances
-    }
-
-    void setEntrances(List<Entrance> entrances) {
-        this.entrances.clear()
-        this.entrances.addAll(entrances)
     }
 
     void addItem(Item item) {
