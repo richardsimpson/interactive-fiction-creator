@@ -9,7 +9,7 @@ class PathComponent extends Path {
 
     private final LineTo line
     private final RoomComponent sourceRoom
-    private final Direction sourceDirection
+    private Direction sourceDirection
     private RoomComponent targetRoom
     private Direction targetDirection
 
@@ -34,6 +34,12 @@ class PathComponent extends Path {
         this.sourceDirection
     }
 
+    void setSourceDirection(Direction direction) {
+        this.sourceDirection = direction
+        updatePathToSourceRoom()
+        updatePathToTargetRoom()
+    }
+
     void setEndpoint(double x, double y) {
         line.setX(x)
         line.setY(y)
@@ -50,8 +56,18 @@ class PathComponent extends Path {
         this.targetRoom
     }
 
+    void setTarget(RoomComponent roomComponent) {
+        this.targetRoom = roomComponent
+        updatePathToTargetRoom()
+    }
+
     Direction getTargetDirection() {
         this.targetDirection
+    }
+
+    void setTargetDirection(Direction direction) {
+        this.targetDirection = direction
+        updatePathToTargetRoom()
     }
 
     void updatePathTo(RoomComponent roomComponent) {

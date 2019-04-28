@@ -125,8 +125,60 @@ class RoomComponent extends CustomComponent {
             }
         })
 
-        // TODO: Listen to each exit's direction, destination (but read observableDestination) and entranceDirection properties to update the path when it changes.
+        // Listen to each exit's direction, destination and entranceDirection properties to update the path when it changes.
+        for (ObservableExit exit : this.room.observableExits) {
+            exit.directionProperty().addListener(new DirectionChangeListener(this, exit))
+            exit.destinationProperty().addListener(new DestinationChangeListener(this, exit))
+            exit.entranceDirectionProperty().addListener(new EntranceDirectionChangeListener(this, exit))
+        }
 
+        // TODO: When edit or remove an exit in the EditRoomView/EditExitView, if there is a reciprocal entrance,
+        // remove that as well.
+    }
+
+    private static class DirectionChangeListener implements ChangeListener<Direction> {
+        private final RoomComponent roomComponent
+        private final ObservableExit exit
+
+        DirectionChangeListener(RoomComponent roomComponent, ObservableExit exit) {
+            this.exit = exit
+            this.roomComponent = roomComponent
+        }
+
+        @Override
+        void changed(ObservableValue<? extends Direction> observable, Direction oldValue, Direction newValue) {
+            this.roomComponent.updatePathDirection(exit, oldValue)
+        }
+    }
+
+    private static class EntranceDirectionChangeListener implements ChangeListener<Direction> {
+        private final RoomComponent roomComponent
+        private final ObservableExit exit
+
+        EntranceDirectionChangeListener(RoomComponent roomComponent, ObservableExit exit) {
+            this.exit = exit
+            this.roomComponent = roomComponent
+        }
+
+        @Override
+        void changed(ObservableValue<? extends Direction> observable, Direction oldValue, Direction newValue) {
+            this.roomComponent.updatePathEntranceDirection(exit)
+        }
+    }
+
+    private static class DestinationChangeListener implements ChangeListener<Room> {
+        private final RoomComponent roomComponent
+        private final ObservableExit exit
+
+        DestinationChangeListener(RoomComponent roomComponent, ObservableExit exit) {
+            this.exit = exit
+            this.roomComponent = roomComponent
+        }
+
+        @Override
+        void changed(ObservableValue<? extends Room> observable, Room oldValue, Room newValue) {
+            this.roomComponent.updatePathDestination(exit)
+        }
     }
 
     private void listOnChanged(ListChangeListener.Change<? extends ObservableExit> c) {
@@ -145,6 +197,9 @@ class RoomComponent extends CustomComponent {
                 }
                 for (ObservableExit exitToAdd : c.getAddedSubList()) {
                     println "Exit Added: " + exitToAdd.getDirection()
+                    exitToAdd.directionProperty().addListener(new DirectionChangeListener(this, exitToAdd))
+                    exitToAdd.destinationProperty().addListener(new DestinationChangeListener(this, exitToAdd))
+                    exitToAdd.entranceDirectionProperty().addListener(new EntranceDirectionChangeListener(this, exitToAdd))
                     createPath(exitToAdd)
                 }
             }
@@ -175,6 +230,7 @@ class RoomComponent extends CustomComponent {
             it.getTargetDirection() == targetDirection
         }
     }
+
     private void removePath(ObservableExit exit) {
         final PathComponent pathToRemove = this.exits.get(exit.getDirection())
 
@@ -190,6 +246,29 @@ class RoomComponent extends CustomComponent {
         // then remove it.
         if (!this.entrances.contains(pathToRemove)) {
             this.getParent().getChildren().remove(pathToRemove)
+        }
+    }
+
+    private void updatePathDirection(ObservableExit exit, Direction oldDirection) {
+        final PathComponent pathToUpdate = this.exits.get(oldDirection)
+
+        this.exits.remove(oldDirection)
+        this.exits.put(exit.getDirection(), pathToUpdate)
+
+        pathToUpdate.setSourceDirection(exit.getDirection())
+    }
+
+    private void updatePathEntranceDirection(ObservableExit exit) {
+        final PathComponent pathToUpdate = this.exits.get(exit.getDirection())
+        pathToUpdate.setTargetDirection(exit.getEntranceDirection())
+    }
+
+    private void updatePathDestination(ObservableExit exit) {
+        final PathComponent pathToUpdate = this.exits.get(exit.getDirection())
+        final RoomComponent roomComponent = findRoomComponent(exit.getObservableDestination(), this.getParent())
+
+        if (roomComponent != null) {
+            pathToUpdate.setTarget(roomComponent)
         }
     }
 
