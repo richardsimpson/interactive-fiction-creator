@@ -218,29 +218,29 @@ class ObservableRoom implements ObservableDomainObject, ObservableItemContainer 
     }
 
     void addExit(ObservableExit exit) {
-        if (!contains(exit)) {
+        if (!containsExit(exit)) {
             this.observableExits.add(exit)
         }
     }
 
-    boolean contains(ObservableExit exit) {
+    boolean containsExit(ObservableExit exit) {
         this.observableExits.any {it.getExit().getDirection().equals(exit.getExit().getDirection())}
     }
 
 
     void addEntrance(ObservableEntrance entrance) {
-        if (!contains(entrance)) {
+        if (!containsEntrance(entrance)) {
             this.observableEntrances.add(entrance)
         }
     }
 
     void removeEntrance(ObservableEntrance entrance) {
-        if (!contains(entrance)) {
+        if (!containsEntrance(entrance)) {
             this.observableEntrances.remove(entrance)
         }
     }
 
-    boolean contains(ObservableEntrance entrance) {
+    boolean containsEntrance(ObservableEntrance entrance) {
         this.observableEntrances.any {it.getEntranceDirection().equals(entrance.getEntranceDirection())}
     }
 

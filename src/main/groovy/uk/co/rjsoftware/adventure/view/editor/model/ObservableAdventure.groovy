@@ -71,18 +71,11 @@ class ObservableAdventure implements ObservableDomainObject {
             }
         })
 
-        // now fixup the room references (exits).
+        // now fixup the room references (exits). (this will also fixup the entrances)
         for (ObservableRoom observableRoom : this.observableRooms) {
             for (ObservableExit observableExit : observableRoom.getObservableExits()) {
                 ObservableRoom destination = getRoomByName(observableExit.getExit().getDestination().getName())
                 observableExit.setObservableDestination(destination)
-            }
-        }
-
-        // now fixup the entrances on the rooms.
-        for (ObservableRoom room : this.observableRooms) {
-            for (ObservableExit exit : room.getObservableExits()) {
-                exit.getObservableDestination().addEntrance(exit)
             }
         }
     }
