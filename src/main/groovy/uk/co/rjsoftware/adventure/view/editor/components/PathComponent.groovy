@@ -52,7 +52,7 @@ class PathComponent extends Path {
         updatePathToTargetRoom()
     }
 
-    RoomComponent getTarget(){
+    RoomComponent getTargetRoom(){
         this.targetRoom
     }
 

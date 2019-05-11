@@ -17,13 +17,10 @@ import uk.co.rjsoftware.adventure.model.Direction
 import uk.co.rjsoftware.adventure.model.Exit
 import uk.co.rjsoftware.adventure.model.Room
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableAdventure
-import uk.co.rjsoftware.adventure.view.editor.model.ObservableDomainObject
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableEntrance
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableExit
 import uk.co.rjsoftware.adventure.view.editor.model.ObservableRoom
 import uk.co.rjsoftware.adventure.view.editor.treeitems.RoomTreeItem
-
-import java.util.stream.Collectors
 
 @TypeChecked
 class RoomComponent extends CustomComponent {
@@ -240,7 +237,7 @@ class RoomComponent extends CustomComponent {
         if (path == null) {
             return null
         }
-        else if (path.getTarget() == origin && path.getTargetDirection() == originDirection) {
+        else if (path.getTargetRoom() == origin && path.getTargetDirection() == originDirection) {
             return path
         }
         else {
