@@ -224,10 +224,22 @@ class RoomComponent extends CustomComponent {
 
     private PathComponent findEntrance(RoomComponent sourceRoom, Direction sourceDirection, Direction targetDirection) {
         // if there is an existing, matching entrance from the specified target room, then return it
-        this.entrances.find {
+        final PathComponent path =  this.entrances.find {
             it.getSourceRoom() == sourceRoom &&
             it.getSourceDirection() == sourceDirection &&
             it.getTargetDirection() == targetDirection
+        }
+
+        if (path != null) {
+            return path
+        }
+        else {
+            // try to find the reverse path - may exist since paths are shared between reciprocal exits
+            this.entrances.find {
+                it.getTargetRoom() == sourceRoom &&
+                        it.getTargetDirection() == sourceDirection &&
+                        it.getSourceDirection() == targetDirection
+            }
         }
     }
 
