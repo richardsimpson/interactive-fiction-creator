@@ -100,8 +100,8 @@ class RoomComponent extends CustomComponent {
             }
         }
 
-        // create paths for all entrances that lead to RoomComponents that are already visible,
-        // and for which we don't have a reciprocal exit
+        // create paths for all entrances that lead to RoomComponents that are already visible.
+        // Re-use paths that have a reciprocal exit
         for (ObservableEntrance observableEntrance : this.room.getObservableEntrances()) {
             final ObservableRoom origin = observableEntrance.getObservableOrigin()
             final Direction originDirection = observableEntrance.getOriginDirection()
@@ -109,9 +109,12 @@ class RoomComponent extends CustomComponent {
 
             final RoomComponent sourceRoom = findRoomComponent(origin, pane)
             if (sourceRoom != null) {
-                final PathComponent path = new PathComponent(sourceRoom, originDirection)
-                path.setTarget(this, entranceDirection)
-                pane.getChildren().add(path)
+                PathComponent path = findExit(entranceDirection, sourceRoom, originDirection)
+                if (path == null) {
+                    path = new PathComponent(sourceRoom, originDirection)
+                    path.setTarget(this, entranceDirection)
+                    pane.getChildren().add(path)
+                }
                 sourceRoom.exits.put(originDirection, path)
                 this.entrances.add(path)
             }
@@ -228,6 +231,20 @@ class RoomComponent extends CustomComponent {
             it.getSourceRoom() == sourceRoom &&
             it.getSourceDirection() == sourceDirection &&
             it.getTargetDirection() == targetDirection
+        }
+    }
+
+    private PathComponent findExit(Direction direction, RoomComponent origin, Direction originDirection) {
+        // if there is an existing, matching exit from the specified origin, then return it
+        final PathComponent path = this.exits.get(direction)
+        if (path == null) {
+            return null
+        }
+        else if (path.getTarget() == origin && path.getTargetDirection() == originDirection) {
+            return path
+        }
+        else {
+            return null
         }
     }
 
