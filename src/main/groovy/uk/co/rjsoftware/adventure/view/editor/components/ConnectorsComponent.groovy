@@ -135,10 +135,10 @@ class ConnectorsComponent extends AnchorPane {
         this.path.setTarget(targetRoom, targetDirection)
 
         // add an exit from source to target
-        this.sourceRoom.addExit(sourceDirection, this.path, targetRoom, targetDirection)
+        this.sourceRoom.addExit(sourceDirection, targetRoom, targetDirection)
 
         // then add an exit from target to source
-        targetRoom.addExit(targetDirection, this.path, this.sourceRoom, sourceDirection)
+        targetRoom.addExit(targetDirection, this.sourceRoom, sourceDirection)
 
         // then remove our temporary path.
         this.pane.getChildren().remove(this.path)

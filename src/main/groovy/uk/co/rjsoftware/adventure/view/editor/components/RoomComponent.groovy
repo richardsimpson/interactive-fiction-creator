@@ -306,7 +306,7 @@ class RoomComponent extends CustomComponent {
         }
     }
 
-    void addExit(Direction direction, PathComponent pathComponent, RoomComponent destination, Direction entranceDirection) {
+    void addExit(Direction direction, RoomComponent destination, Direction entranceDirection) {
         this.room.addExit(
                 new ObservableExit(
                         new Exit(direction, destination.room.getRoom(), entranceDirection),
