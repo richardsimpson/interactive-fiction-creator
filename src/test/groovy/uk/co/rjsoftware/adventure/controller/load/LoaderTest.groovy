@@ -17,7 +17,7 @@ class LoaderTest {
 
     @Test
     void testLoadAdventure() {
-        final File file = new File("/Users/richardsimpson/workspace/interactive-fiction-creator-groovy/src/test/groovy/uk/co/rjsoftware/adventure/controller/load/SampleAdventure.groovy")
+        final File file = new File("/Users/richardsimpson/workspace/Personal/interactive-fiction-creator-groovy/src/test/groovy/uk/co/rjsoftware/adventure/controller/load/SampleAdventure.groovy")
         final Adventure adventure = Loader.loadAdventure(file)
 
         assertEquals("Adventure Game", adventure.getTitle())
