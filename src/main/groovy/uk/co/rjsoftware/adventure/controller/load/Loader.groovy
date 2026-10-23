@@ -10,7 +10,7 @@ import uk.co.rjsoftware.adventure.utils.StringUtils
  */
 @TypeChecked
 class Loader {
-    static Adventure loadAdventure(File dsl) {
+    static Adventure loadAdventure(InputStream dsl) {
         def config = new CompilerConfiguration();
         config.scriptBaseClass = AdventureLoaderScript.getCanonicalName()
 

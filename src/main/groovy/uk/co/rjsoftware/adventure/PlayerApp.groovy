@@ -24,8 +24,10 @@ class PlayerApp extends Application {
         final AdventureController controller = new AdventureController(playerAppView)
 
         final File file = new File(Paths.get("").toAbsolutePath().toString() + "/adventures/TheBoggit.groovy")
-        final Adventure adventure = Loader.loadAdventure(file)
-        controller.loadAdventure(adventure)
+        file.withInputStream {
+            final Adventure adventure = Loader.loadAdventure(it)
+            controller.loadAdventure(adventure)
+        }
     }
 
 }

@@ -31,8 +31,10 @@ class EditorApp extends Application {
         final EditorController controller = new EditorController(editorAppView)
 
         final File file = new File(Paths.get("").toAbsolutePath().toString() + "/adventures/TheBoggit.groovy")
-        final Adventure adventure = Loader.loadAdventure(file)
-        controller.loadAdventure(adventure)
+        file.withInputStream {
+            final Adventure adventure = Loader.loadAdventure(it)
+            controller.loadAdventure(adventure)
+        }
     }
 
 }

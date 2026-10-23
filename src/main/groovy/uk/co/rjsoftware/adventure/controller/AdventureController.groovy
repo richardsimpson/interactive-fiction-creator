@@ -46,8 +46,10 @@ class AdventureController {
 
     private void loadAdventureInternal(LoadEvent event) {
         if (event.getFile() != null) {
-            final Adventure adventure = Loader.loadAdventure(event.getFile())
-            loadAdventure(adventure)
+            event.getFile().withInputStream {
+                final Adventure adventure = Loader.loadAdventure(it)
+                loadAdventure(adventure)
+            }
         }
     }
 
